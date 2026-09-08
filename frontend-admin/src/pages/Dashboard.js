@@ -1,12 +1,37 @@
-// src/pages/Dashboard.js
+// src/pages/Dashboard.jsx
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { 
+  FaBox, 
+  FaCog, 
+  FaTruck, 
+  FaProjectDiagram,
+  FaUsers 
+} from 'react-icons/fa';
+import {
+  LineChart,
+  Line,
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+  ResponsiveContainer,
+  PieChart,
+  Pie,
+  Cell
+} from 'recharts';
 
-const API_URL = process.env.REACT_APP_API_URL;
-
-function Dashboard() {
-  const [stats, setStats] = useState({});
-  const token = localStorage.getItem('adminToken');
+const Dashboard = () => {
+  const [stats, setStats] = useState({
+    products: 0,
+    services: 0,
+    truckTypes: 0,
+    projects: 0,
+  });
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     fetchStats();
@@ -14,44 +39,107 @@ function Dashboard() {
 
   const fetchStats = async () => {
     try {
-      const response = await axios.get(`${API_URL}/company`, {
-        headers: { 'Authorization': `Bearer ${token}` }
-      });
-      const data = response.data;
+      const [products, services, truckTypes, projects] = await Promise.all([
+        axios.get('/api/content/products'),
+        axios.get('/api/content/services'),
+        axios.get('/api/content/truck-types'),
+        axios.get('/api/content/projects'),
+      ]);
+
       setStats({
-        services: data.services?.length || 0,
-        products: data.products?.length || 0,
-        faqs: data.faqs?.length || 0,
-        images: data.gallery_images?.length || 0,
+        products: products.data.length,
+        services: services.data.length,
+        truckTypes: truckTypes.data.length,
+        projects: projects.data.length,
       });
     } catch (error) {
       console.error('Error fetching stats:', error);
+    } finally {
+      setLoading(false);
     }
   };
 
+  const statCards = [
+    { title: 'Products', value: stats.products, icon: <FaBox />, color: '#4CAF50' },
+    { title: 'Services', value: stats.services, icon: <FaCog />, color: '#2196F3' },
+    { title: 'Truck Types', value: stats.truckTypes, icon: <FaTruck />, color: '#FF9800' },
+    { title: 'Projects', value: stats.projects, icon: <FaProjectDiagram />, color: '#9C27B0' },
+  ];
+
+  const chartData = [
+    { name: 'Products', value: stats.products },
+    { name: 'Services', value: stats.services },
+    { name: 'Truck Types', value: stats.truckTypes },
+    { name: 'Projects', value: stats.projects },
+  ];
+
+  const COLORS = ['#4CAF50', '#2196F3', '#FF9800', '#9C27B0'];
+
   return (
     <div className="dashboard">
-      <h1>Tableau de bord</h1>
+      <div className="dashboard-header">
+        <h1>Dashboard</h1>
+        <p>Welcome to the AUTOMOTORS admin panel</p>
+      </div>
+
       <div className="stats-grid">
-        <div className="stat-card">
-          <h3>{stats.services || 0}</h3>
-          <p>Services</p>
+        {statCards.map((stat, index) => (
+          <div key={index} className="stat-card" style={{ borderColor: stat.color }}>
+            <div className="stat-icon" style={{ color: stat.color }}>
+              {stat.icon}
+            </div>
+            <div className="stat-content">
+              <h3>{stat.value}</h3>
+              <p>{stat.title}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <div className="charts-grid">
+        <div className="chart-card">
+          <h3>Content Distribution</h3>
+          <ResponsiveContainer width="100%" height={300}>
+            <PieChart>
+              <Pie
+                data={chartData}
+                cx="50%"
+                cy="50%"
+                labelLine={false}
+                label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                outerRadius={80}
+                fill="#8884d8"
+                dataKey="value"
+              >
+                {chartData.map((entry, index) => (
+                  <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                ))}
+              </Pie>
+              <Tooltip />
+            </PieChart>
+          </ResponsiveContainer>
         </div>
-        <div className="stat-card">
-          <h3>{stats.products || 0}</h3>
-          <p>Produits</p>
-        </div>
-        <div className="stat-card">
-          <h3>{stats.faqs || 0}</h3>
-          <p>FAQ</p>
-        </div>
-        <div className="stat-card">
-          <h3>{stats.images || 0}</h3>
-          <p>Images</p>
+
+        <div className="chart-card">
+          <h3>Content Overview</h3>
+          <ResponsiveContainer width="100%" height={300}>
+            <BarChart data={chartData}>
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="name" />
+              <YAxis />
+              <Tooltip />
+              <Legend />
+              <Bar dataKey="value" fill="#2196F3">
+                {chartData.map((entry, index) => (
+                  <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                ))}
+              </Bar>
+            </BarChart>
+          </ResponsiveContainer>
         </div>
       </div>
     </div>
   );
-}
+};
 
 export default Dashboard;

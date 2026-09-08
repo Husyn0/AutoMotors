@@ -1,0 +1,161 @@
+// src/styles/_content.scss
+.content-page {
+  .page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+    flex-wrap: wrap;
+    gap: 15px;
+
+    h1 {
+      color: $dark;
+      font-size: 24px;
+    }
+
+    .btn-add {
+      background: $success;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 8px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: background 0.3s;
+
+      &:hover {
+        background: darken($success, 10%);
+      }
+    }
+  }
+
+  .content-form {
+    background: white;
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    margin-bottom: 30px;
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 15px;
+
+      @media (max-width: 768px) {
+        grid-template-columns: 1fr;
+      }
+
+      .full-width {
+        grid-column: 1 / -1;
+      }
+
+      input, select, textarea {
+        padding: 10px 12px;
+        border: 2px solid #e0e0e0;
+        border-radius: 8px;
+        font-size: 14px;
+
+        &:focus {
+          border-color: $primary;
+          outline: none;
+        }
+      }
+
+      textarea {
+        min-height: 80px;
+        resize: vertical;
+      }
+
+      .btn-submit {
+        padding: 12px;
+        background: $primary;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: 600;
+        transition: background 0.3s;
+
+        &:hover {
+          background: $secondary;
+        }
+      }
+    }
+  }
+
+  .table-container {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    overflow-x: auto;
+
+    .content-table {
+      width: 100%;
+      border-collapse: collapse;
+
+      th, td {
+        padding: 12px 15px;
+        text-align: left;
+        border-bottom: 1px solid #f0f0f0;
+      }
+
+      th {
+        background: #f8f9fa;
+        color: $dark;
+        font-weight: 600;
+      }
+
+      td.description-cell {
+        max-width: 200px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      .category-badge {
+        padding: 4px 10px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 500;
+
+        &.batteries { background: #e3f2fd; color: #1565c0; }
+        &.lubricants { background: #f3e5f5; color: #7b1fa2; }
+        &.tires { background: #e8f5e9; color: #2e7d32; }
+        &.spareParts { background: #fff3e0; color: #e65100; }
+      }
+
+      .actions-cell {
+        display: flex;
+        gap: 8px;
+
+        button {
+          padding: 6px 10px;
+          border: none;
+          border-radius: 6px;
+          cursor: pointer;
+          transition: all 0.3s;
+
+          &.btn-edit {
+            background: $info;
+            color: white;
+
+            &:hover {
+              background: darken($info, 10%);
+            }
+          }
+
+          &.btn-delete {
+            background: $danger;
+            color: white;
+
+            &:hover {
+              background: darken($danger, 10%);
+            }
+          }
+        }
+      }
+    }
+  }
+}

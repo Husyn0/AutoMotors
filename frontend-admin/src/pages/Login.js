@@ -1,64 +1,73 @@
-// src/pages/Login.js
+// src/pages/Login.jsx
 import React, { useState } from 'react';
-import axios from 'axios';
+import { useAuth } from '../context/AuthContext';
+import { useNavigate } from 'react-router-dom';
 
-const API_URL = process.env.REACT_APP_API_URL;
-
-function Login({ setToken }) {
+const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const { login } = useAuth();
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true);
     setError('');
+    setLoading(true);
 
-    try {
-      const response = await axios.post(`${API_URL}/login`, { email, password });
-      const { token } = response.data;
-      localStorage.setItem('adminToken', token);
-      setToken(token);
-    } catch (err) {
-      setError(err.response?.data?.message || 'Identifiants incorrects');
-    } finally {
-      setLoading(false);
+    const result = await login(email, password);
+    setLoading(false);
+
+    if (result.success) {
+      navigate('/dashboard');
+    } else {
+      setError(result.error);
     }
   };
 
   return (
     <div className="login-page">
-      <div className="login-card">
-        <h1>Administration</h1>
-        <h2>AUTO MOTORS SARL</h2>
-        <form onSubmit={handleSubmit}>
-          <div className="form-group">
-            <label>Email</label>
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-            />
+      <div className="login-container">
+        <div className="login-box">
+          <div className="login-header">
+            <h1>AUTOMOTORS</h1>
+            <h2>Admin Panel</h2>
           </div>
-          <div className="form-group">
-            <label>Mot de passe</label>
-            <input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-            />
-          </div>
-          {error && <div className="error">{error}</div>}
-          <button type="submit" disabled={loading}>
-            {loading ? 'Connexion...' : 'Se connecter'}
-          </button>
-        </form>
+          
+          {error && <div className="alert alert-danger">{error}</div>}
+          
+          <form onSubmit={handleSubmit}>
+            <div className="form-group">
+              <label>Email</label>
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+                placeholder="admin@example.com"
+              />
+            </div>
+            
+            <div className="form-group">
+              <label>Password</label>
+              <input
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+                placeholder="••••••••"
+              />
+            </div>
+            
+            <button type="submit" disabled={loading}>
+              {loading ? 'Loading...' : 'Sign In'}
+            </button>
+          </form>
+        </div>
       </div>
     </div>
   );
-}
+};
 
 export default Login;

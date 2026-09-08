@@ -1,0 +1,27 @@
+// src/styles/_truckTypes.scss
+.truck-types {
+  @include section-padding;
+  background: $white;
+
+  &-grid {
+    @include grid-responsive(4, 2rem);
+  }
+
+  .truck-type-card {
+    background: $light-color;
+    padding: 2rem;
+    border-radius: 12px;
+    text-align: center;
+    @include card-hover;
+
+    .truck-icon {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+    }
+
+    h3 {
+      color: $primary-color;
+      font-size: 1.1rem;
+    }
+  }
+}

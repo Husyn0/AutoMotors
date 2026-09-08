@@ -1,0 +1,33 @@
+// src/styles/_services.scss
+.services {
+  @include section-padding;
+  background: $white;
+
+  &-grid {
+    @include grid-responsive(4, 2rem);
+  }
+
+  .service-card {
+    background: $light-color;
+    padding: 2rem;
+    border-radius: 12px;
+    text-align: center;
+    @include card-hover;
+
+    .service-icon {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+    }
+
+    h3 {
+      color: $primary-color;
+      margin-bottom: 0.5rem;
+      font-size: 1.2rem;
+    }
+
+    p {
+      color: $text-color;
+      font-size: 0.95rem;
+    }
+  }
+}

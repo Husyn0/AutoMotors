@@ -1,0 +1,57 @@
+// src/styles/_footer.scss
+.footer {
+  background: $dark-color;
+  color: $white;
+  padding: 2rem 0;
+
+  &-content {
+    @include container;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+  }
+
+  &-brand {
+    h3 {
+      font-size: 1.3rem;
+      margin-bottom: 0.3rem;
+    }
+    
+    p {
+      opacity: 0.7;
+      font-size: 0.9rem;
+    }
+  }
+
+  &-social {
+    display: flex;
+    gap: 1rem;
+
+    a {
+      font-size: 1.5rem;
+      opacity: 0.7;
+      transition: $transition;
+
+      &:hover {
+        opacity: 1;
+        transform: translateY(-3px);
+      }
+    }
+  }
+
+  &-copy {
+    p {
+      opacity: 0.5;
+      font-size: 0.9rem;
+    }
+  }
+
+  @media (max-width: $mobile) {
+    &-content {
+      flex-direction: column;
+      text-align: center;
+    }
+  }
+}

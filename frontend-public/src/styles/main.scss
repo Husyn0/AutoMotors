@@ -1,0 +1,90 @@
+// src/styles/main.scss
+@import 'variables';
+@import 'mixins';
+@import 'navbar';
+@import 'footer';
+@import 'home';
+@import 'services';
+@import 'products';
+@import 'truckTypes';
+@import 'projects';
+@import 'contact';
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: $font-family;
+  color: $text-color;
+  line-height: 1.6;
+  background-color: $light-color;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+// Language toggle styles
+.language-toggle {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  
+  button {
+    background: none;
+    border: 2px solid $white;
+    color: $white;
+    padding: 0.3rem 0.8rem;
+    border-radius: 4px;
+    font-weight: 600;
+    transition: $transition;
+    
+    &:hover {
+      background: $white;
+      color: $primary-color;
+    }
+    
+    &.active {
+      background: $white;
+      color: $primary-color;
+    }
+  }
+}
+
+.section-title {
+  text-align: center;
+  font-size: 2.5rem;
+  color: $primary-color;
+  margin-bottom: 0.5rem;
+  
+  @media (max-width: $mobile) {
+    font-size: 2rem;
+  }
+}
+
+.section-subtitle {
+  text-align: center;
+  color: $text-color;
+  margin-bottom: 3rem;
+  font-size: 1.1rem;
+}
+
+// Animation classes
+.fade-in {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+  
+  &.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

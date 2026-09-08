@@ -1,0 +1,101 @@
+// src/styles/_navbar.scss
+.navbar {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  background: rgba($primary-color, 0.95);
+  padding: 1rem 0;
+  z-index: 1000;
+  backdrop-filter: blur(10px);
+  box-shadow: $shadow;
+
+  &-container {
+    @include container;
+    @include flex-between;
+  }
+
+  &-logo {
+    @include flex-center;
+    gap: 0.5rem;
+    cursor: pointer;
+    
+    .logo-icon {
+      font-size: 2rem;
+    }
+    
+    .logo-text {
+      color: $white;
+      font-size: 1.5rem;
+      font-weight: 700;
+      letter-spacing: 2px;
+    }
+  }
+
+  &-menu {
+    display: flex;
+    gap: 2rem;
+    list-style: none;
+    align-items: center;
+
+    li button {
+      background: none;
+      border: none;
+      color: $white;
+      font-size: 1rem;
+      font-weight: 500;
+      padding: 0.5rem 1rem;
+      border-radius: 4px;
+      transition: $transition;
+      
+      &:hover {
+        background: rgba($white, 0.1);
+        transform: translateY(-2px);
+      }
+    }
+  }
+
+  &-toggle {
+    display: none;
+    flex-direction: column;
+    cursor: pointer;
+    
+    span {
+      width: 25px;
+      height: 3px;
+      background: $white;
+      margin: 4px 0;
+      transition: $transition;
+    }
+  }
+
+  @media (max-width: $tablet) {
+    &-toggle {
+      display: flex;
+    }
+
+    &-menu {
+      display: none;
+      flex-direction: column;
+      position: absolute;
+      top: 100%;
+      left: 0;
+      width: 100%;
+      background: $primary-color;
+      padding: 1rem;
+      
+      &.active {
+        display: flex;
+      }
+      
+      li {
+        width: 100%;
+        text-align: center;
+        
+        button {
+          width: 100%;
+          padding: 0.8rem;
+        }
+      }
+    }
+  }
+}

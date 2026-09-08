@@ -1,0 +1,32 @@
+// src/styles/_projects.scss
+.projects {
+  @include section-padding;
+  background: $light-color;
+
+  &-grid {
+    @include grid-responsive(3, 2rem);
+  }
+
+  .project-card {
+    background: $white;
+    padding: 2rem;
+    border-radius: 12px;
+    text-align: center;
+    @include card-hover;
+
+    .project-image {
+      font-size: 4rem;
+      margin-bottom: 1rem;
+    }
+
+    h3 {
+      color: $primary-color;
+      margin-bottom: 0.5rem;
+    }
+
+    p {
+      color: $text-color;
+      font-size: 0.95rem;
+    }
+  }
+}

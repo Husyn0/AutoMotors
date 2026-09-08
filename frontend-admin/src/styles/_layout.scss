@@ -6,18 +6,14 @@
 
 .sidebar-toggle {
   position: fixed;
-  top: 15px;
-  left: 15px;
+  top: $spacing-md;
+  left: $spacing-md;
   z-index: 1001;
-  background: $primary;
-  color: white;
-  border: none;
+  @include button-primary;
   padding: 10px 12px;
-  border-radius: 8px;
-  cursor: pointer;
   display: none;
 
-  @media (max-width: 768px) {
+  @include tablet-down {
     display: block;
   }
 }
@@ -27,8 +23,8 @@
   background: $primary;
   color: white;
   min-height: 100vh;
-  padding: 20px 0;
-  transition: transform 0.3s ease;
+  padding: $spacing-lg 0;
+  transition: transform $transition-medium;
   position: fixed;
   top: 0;
   left: 0;
@@ -41,7 +37,7 @@
   }
 
   .sidebar-brand {
-    padding: 0 20px 30px;
+    padding: 0 $spacing-lg $spacing-xxl;
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 
     h2 {
@@ -52,22 +48,22 @@
     p {
       color: rgba(255, 255, 255, 0.7);
       font-size: 14px;
-      margin-top: 4px;
+      margin-top: $spacing-xs;
     }
   }
 
   .sidebar-nav {
-    padding: 20px 10px;
+    padding: $spacing-lg 10px;
 
     a {
-      display: flex;
-      align-items: center;
-      padding: 12px 15px;
+      @include flex-center;
+      padding: 12px $spacing-md;
       color: rgba(255, 255, 255, 0.7);
       text-decoration: none;
-      border-radius: 8px;
-      transition: all 0.3s;
-      margin-bottom: 4px;
+      border-radius: $border-radius-sm;
+      transition: all $transition-fast;
+      margin-bottom: $spacing-xs;
+      justify-content: flex-start;
 
       .icon {
         margin-right: 12px;
@@ -89,20 +85,18 @@
 
   .sidebar-logout {
     position: absolute;
-    bottom: 20px;
+    bottom: $spacing-lg;
     left: 50%;
     transform: translateX(-50%);
     width: 90%;
     padding: 12px;
     background: rgba(255, 255, 255, 0.1);
     border: 1px solid rgba(255, 255, 255, 0.2);
-    border-radius: 8px;
+    border-radius: $border-radius-sm;
     color: white;
     cursor: pointer;
-    transition: all 0.3s;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    transition: all $transition-fast;
+    @include flex-center;
     gap: 10px;
 
     &:hover {
@@ -114,15 +108,15 @@
 .admin-content {
   flex: 1;
   margin-left: $sidebar-width;
-  padding: 30px;
-  transition: margin 0.3s ease;
+  padding: $spacing-xxl;
+  transition: margin $transition-medium;
 
   &.closed {
     margin-left: 0;
   }
 
-  @media (max-width: 768px) {
+  @include tablet-down {
     margin-left: 0;
-    padding: 20px;
+    padding: $spacing-lg;
   }
 }

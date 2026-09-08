@@ -1,12 +1,10 @@
 // src/styles/_content.scss
 .content-page {
   .page-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 30px;
+    @include flex-between;
     flex-wrap: wrap;
-    gap: 15px;
+    gap: $spacing-md;
+    margin-bottom: $spacing-xxl;
 
     h1 {
       color: $dark;
@@ -14,36 +12,18 @@
     }
 
     .btn-add {
-      background: $success;
-      color: white;
-      border: none;
-      padding: 10px 20px;
-      border-radius: 8px;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      transition: background 0.3s;
-
-      &:hover {
-        background: darken($success, 10%);
-      }
+      @include button-success;
     }
   }
 
   .content-form {
-    background: white;
-    padding: 25px;
-    border-radius: 12px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-    margin-bottom: 30px;
+    @include card-base;
+    margin-bottom: $spacing-xxl;
 
     .form-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr 1fr;
-      gap: 15px;
+      @include grid-two-column($spacing-md);
 
-      @media (max-width: 768px) {
+      @include tablet-down {
         grid-template-columns: 1fr;
       }
 
@@ -52,15 +32,8 @@
       }
 
       input, select, textarea {
-        padding: 10px 12px;
-        border: 2px solid #e0e0e0;
-        border-radius: 8px;
-        font-size: 14px;
-
-        &:focus {
-          border-color: $primary;
-          outline: none;
-        }
+        @include input-base;
+        width: 100%;
       }
 
       textarea {
@@ -69,26 +42,19 @@
       }
 
       .btn-submit {
+        @include button-primary;
+        grid-column: 1 / -1;
         padding: 12px;
-        background: $primary;
-        color: white;
-        border: none;
-        border-radius: 8px;
-        cursor: pointer;
         font-weight: 600;
-        transition: background 0.3s;
-
-        &:hover {
-          background: $secondary;
-        }
+        justify-content: center;
       }
     }
   }
 
   .table-container {
     background: white;
-    border-radius: 12px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    border-radius: $border-radius-md;
+    box-shadow: $shadow-light;
     overflow-x: auto;
 
     .content-table {
@@ -96,7 +62,7 @@
       border-collapse: collapse;
 
       th, td {
-        padding: 12px 15px;
+        padding: 12px $spacing-md;
         text-align: left;
         border-bottom: 1px solid #f0f0f0;
       }
@@ -107,35 +73,35 @@
         font-weight: 600;
       }
 
-      td.description-cell {
-        max-width: 200px;
+      .icon-cell {
+        font-size: 24px;
+        text-align: center;
+      }
+
+      .description-cell {
+        max-width: 250px;
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
       }
 
       .category-badge {
-        padding: 4px 10px;
-        border-radius: 20px;
-        font-size: 12px;
-        font-weight: 500;
-
-        &.batteries { background: #e3f2fd; color: #1565c0; }
-        &.lubricants { background: #f3e5f5; color: #7b1fa2; }
-        &.tires { background: #e8f5e9; color: #2e7d32; }
-        &.spareParts { background: #fff3e0; color: #e65100; }
+        &.batteries { @include category-badge(batteries); }
+        &.lubricants { @include category-badge(lubricants); }
+        &.tires { @include category-badge(tires); }
+        &.spareParts { @include category-badge(spareParts); }
       }
 
       .actions-cell {
         display: flex;
-        gap: 8px;
+        gap: $spacing-sm;
 
         button {
-          padding: 6px 10px;
+          @include button-small;
           border: none;
           border-radius: 6px;
           cursor: pointer;
-          transition: all 0.3s;
+          transition: all $transition-fast;
 
           &.btn-edit {
             background: $info;

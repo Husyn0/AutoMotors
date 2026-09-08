@@ -1,0 +1,59 @@
+// src/styles/_variables.scss
+// Color Variables
+$primary: #1a3c5e;
+$secondary: #2c5f8a;
+$success: #4CAF50;
+$danger: #f44336;
+$warning: #FF9800;
+$info: #2196F3;
+$dark: #333;
+$light: #f5f7fa;
+
+// Gradients
+$login-gradient: linear-gradient(135deg, #1a3c5e 0%, #2c5f8a 100%);
+
+// Sizing
+$sidebar-width: 250px;
+
+// Spacing
+$spacing-xs: 4px;
+$spacing-sm: 8px;
+$spacing-md: 15px;
+$spacing-lg: 20px;
+$spacing-xl: 25px;
+$spacing-xxl: 30px;
+
+// Border Radius
+$border-radius-sm: 8px;
+$border-radius-md: 12px;
+
+// Shadows
+$shadow-light: 0 2px 10px rgba(0, 0, 0, 0.05);
+$shadow-heavy: 0 10px 40px rgba(0, 0, 0, 0.2);
+
+// Transitions
+$transition-fast: 0.3s;
+$transition-medium: 0.3s ease;
+
+// Breakpoints
+$breakpoint-tablet: 768px;
+
+// Category Colors
+$category-colors: (
+  batteries: #e3f2fd #1565c0,
+  lubricants: #f3e5f5 #7b1fa2,
+  tires: #e8f5e9 #2e7d32,
+  spareParts: #fff3e0 #e65100
+);
+
+// Alert Colors
+$alert-success-bg: #e8f5e9;
+$alert-success-color: #2e7d32;
+$alert-success-border: #c8e6c9;
+$alert-danger-bg: #ffebee;
+$alert-danger-color: #c62828;
+$alert-danger-border: #ffcdd2;
+
+// Input
+$input-border-color: #e0e0e0;
+$input-border-focus: $primary;

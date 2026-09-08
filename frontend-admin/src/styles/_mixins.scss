@@ -1,0 +1,154 @@
+// src/styles/_mixins.scss
+@import 'variables';
+
+// Button Mixins
+@mixin button-base {
+  border: none;
+  border-radius: $border-radius-sm;
+  cursor: pointer;
+  transition: background $transition-fast;
+  display: flex;
+  align-items: center;
+  gap: $spacing-sm;
+}
+
+@mixin button-primary {
+  @include button-base;
+  background: $primary;
+  color: white;
+  padding: 10px $spacing-lg;
+  
+  &:hover:not(:disabled) {
+    background: $secondary;
+  }
+  
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}
+
+@mixin button-success {
+  @include button-base;
+  background: $success;
+  color: white;
+  padding: 10px $spacing-lg;
+  
+  &:hover {
+    background: darken($success, 10%);
+  }
+}
+
+@mixin button-small {
+  padding: 6px 10px;
+  border-radius: 6px;
+}
+
+// Card Mixins
+@mixin card-base {
+  background: white;
+  padding: $spacing-xl;
+  border-radius: $border-radius-md;
+  box-shadow: $shadow-light;
+}
+
+@mixin card-with-border($border-color: null, $border-width: 4px) {
+  @include card-base;
+  @if $border-color {
+    border-left: $border-width solid $border-color;
+  }
+}
+
+// Input Mixins
+@mixin input-base {
+  padding: 10px 12px;
+  border: 2px solid $input-border-color;
+  border-radius: $border-radius-sm;
+  font-size: 14px;
+  transition: border-color $transition-fast;
+  
+  &:focus {
+    border-color: $input-border-focus;
+    outline: none;
+  }
+}
+
+// Grid Mixins
+@mixin grid-responsive($min-width: 350px, $gap: $spacing-lg) {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax($min-width, 1fr));
+  gap: $gap;
+}
+
+@mixin grid-two-column($gap: $spacing-lg) {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: $gap;
+}
+
+// Alert Mixins
+@mixin alert-base {
+  padding: 12px $spacing-lg;
+  border-radius: $border-radius-sm;
+  margin-bottom: $spacing-lg;
+}
+
+@mixin alert-success {
+  @include alert-base;
+  background: $alert-success-bg;
+  color: $alert-success-color;
+  border: 1px solid $alert-success-border;
+}
+
+@mixin alert-danger {
+  @include alert-base;
+  background: $alert-danger-bg;
+  color: $alert-danger-color;
+  border: 1px solid $alert-danger-border;
+}
+
+// Responsive Mixins
+@mixin tablet-down {
+  @media (max-width: $breakpoint-tablet) {
+    @content;
+  }
+}
+
+// Container Mixins
+@mixin page-container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+// Flex Mixins
+@mixin flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@mixin flex-between {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+// Badge Mixin
+@mixin badge($bg-color, $text-color) {
+  padding: $spacing-xs 10px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 500;
+  background: $bg-color;
+  color: $text-color;
+}
+
+// Category Badge Generator
+@mixin category-badge($category) {
+  $colors: map-get($category-colors, $category);
+  @if $colors {
+    @include badge(nth($colors, 1), nth($colors, 2));
+  }
+}

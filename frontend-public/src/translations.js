@@ -30,7 +30,7 @@ export const translations = {
         spareParts: 'Pièces Détachées'
       }
     },
-    truckTypes: {
+        truckTypes: {
       title: 'Types de Camions',
       subtitle: 'Nous desservons tous types de véhicules'
     },

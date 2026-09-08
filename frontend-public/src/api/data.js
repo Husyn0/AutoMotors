@@ -232,18 +232,39 @@ export const productsData = {
   ]
 };
 
+// src/api/data.js - Updated Truck Types
 export const truckTypesData = {
   fr: [
-    { id: 1, name: 'Poids Lourds', icon: '🚛' },
-    { id: 2, name: 'Véhicules Utilitaires', icon: '🚐' },
-    { id: 3, name: 'Véhicules Légers', icon: '🚗' },
-    { id: 4, name: 'Engins de Chantier', icon: '🏗️' }
+    { 
+      id: 1, 
+      name: 'Camionnette', 
+      models: 'Kia, Hyundai, Canter',
+      icon: '🚐',
+      description: 'Véhicules utilitaires légers pour le transport urbain'
+    },
+    { 
+      id: 2, 
+      name: 'Poids Lourds', 
+      models: 'Mercedes, Sinotruck, DAF, Renault',
+      icon: '🚛',
+      description: 'Camions de transport et semi-remorques pour charges lourdes'
+    }
   ],
   en: [
-    { id: 1, name: 'Heavy Trucks', icon: '🚛' },
-    { id: 2, name: 'Utility Vehicles', icon: '🚐' },
-    { id: 3, name: 'Light Vehicles', icon: '🚗' },
-    { id: 4, name: 'Construction Equipment', icon: '🏗️' }
+    { 
+      id: 1, 
+      name: 'Light Trucks', 
+      models: 'Kia, Hyundai, Canter',
+      icon: '🚐',
+      description: 'Light utility vehicles for urban transport'
+    },
+    { 
+      id: 2, 
+      name: 'Heavy Trucks', 
+      models: 'Mercedes, Sinotruck, DAF, Renault',
+      icon: '🚛',
+      description: 'Transport trucks and semi-trailers for heavy loads'
+    }
   ]
 };
 

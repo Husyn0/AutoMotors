@@ -1,0 +1,107 @@
+// src/styles/_responsive.scss
+// Container widths
+.container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 2rem;
+
+  @media (max-width: $tablet) {
+    padding: 0 1.5rem;
+  }
+
+  @media (max-width: $mobile) {
+    padding: 0 1rem;
+  }
+}
+
+// Grid responsive mixins
+@mixin grid-responsive($min-width: 250px, $gap: 2rem) {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax($min-width, 1fr));
+  gap: $gap;
+
+  @media (max-width: $mobile) {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+}
+
+// Section padding responsive
+@mixin section-padding {
+  padding: 5rem 0;
+
+  @media (max-width: $tablet) {
+    padding: 3rem 0;
+  }
+
+  @media (max-width: $mobile) {
+    padding: 2rem 0;
+  }
+}
+
+// Touch-friendly targets
+.touch-target {
+  min-height: 44px;
+  min-width: 44px;
+}
+
+// Prevent text selection on interactive elements
+.no-select {
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
+
+// Smooth scrolling
+.smooth-scroll {
+  scroll-behavior: smooth;
+}
+
+// Responsive images
+.responsive-img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+// Hide scrollbar but keep functionality
+.hide-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+  
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+// Print styles
+@media print {
+  .no-print {
+    display: none !important;
+  }
+  
+  .navbar {
+    position: static !important;
+  }
+}
+
+// Accessibility: Reduced motion
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+// High contrast mode
+@media (prefers-contrast: high) {
+  .home-title .highlight {
+    -webkit-text-fill-color: $secondary-color;
+    background: none;
+    color: $secondary-color;
+  }
+}

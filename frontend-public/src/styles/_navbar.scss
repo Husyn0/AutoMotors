@@ -8,10 +8,14 @@
   z-index: 1000;
   backdrop-filter: blur(10px);
   box-shadow: $shadow;
+  transition: all 0.3s ease;
 
   &-container {
     @include container;
     @include flex-between;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 2rem;
   }
 
   &-logo {
@@ -21,6 +25,10 @@
     
     .logo-icon {
       font-size: 2rem;
+      
+      @media (max-width: $mobile) {
+        font-size: 1.5rem;
+      }
     }
     
     .logo-text {
@@ -28,28 +36,60 @@
       font-size: 1.5rem;
       font-weight: 700;
       letter-spacing: 2px;
+      
+      @media (max-width: $mobile) {
+        font-size: 1.2rem;
+      }
     }
   }
 
   &-menu {
     display: flex;
-    gap: 2rem;
+    gap: 1.5rem;
     list-style: none;
     align-items: center;
 
-    li button {
-      background: none;
-      border: none;
-      color: $white;
-      font-size: 1rem;
-      font-weight: 500;
-      padding: 0.5rem 1rem;
-      border-radius: 4px;
-      transition: $transition;
-      
-      &:hover {
-        background: rgba($white, 0.1);
-        transform: translateY(-2px);
+    li {
+      position: relative;
+
+      button {
+        background: none;
+        border: none;
+        color: rgba($white, 0.7);
+        font-size: 0.95rem;
+        font-weight: 500;
+        padding: 0.5rem 0.8rem;
+        border-radius: 4px;
+        transition: all 0.3s ease;
+        position: relative;
+        cursor: pointer;
+
+        @media (max-width: $tablet) {
+          font-size: 0.9rem;
+          padding: 0.4rem 0.6rem;
+        }
+
+        &:hover {
+          color: $white;
+          background: rgba($white, 0.1);
+        }
+
+        &.active {
+          color: $white;
+          background: rgba($white, 0.15);
+          
+          .active-indicator {
+            position: absolute;
+            bottom: -2px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 20px;
+            height: 3px;
+            background: $secondary-color;
+            border-radius: 2px;
+            animation: slideIn 0.3s ease;
+          }
+        }
       }
     }
   }
@@ -64,7 +104,23 @@
       height: 3px;
       background: $white;
       margin: 4px 0;
-      transition: $transition;
+      transition: all 0.3s ease;
+      border-radius: 2px;
+    }
+
+    &:hover span {
+      background: $accent-color;
+    }
+  }
+
+  @keyframes slideIn {
+    from {
+      width: 0;
+      opacity: 0;
+    }
+    to {
+      width: 20px;
+      opacity: 1;
     }
   }
 
@@ -82,6 +138,7 @@
       width: 100%;
       background: $primary-color;
       padding: 1rem;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
       
       &.active {
         display: flex;
@@ -94,6 +151,11 @@
         button {
           width: 100%;
           padding: 0.8rem;
+          font-size: 1rem;
+
+          &.active .active-indicator {
+            bottom: 0;
+          }
         }
       }
     }

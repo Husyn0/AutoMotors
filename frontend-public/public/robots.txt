@@ -1,3 +1,17 @@
-# https://www.robotstxt.org/robotstxt.html
+# public/robots.txt
 User-agent: *
-Disallow:
+Disallow: /node_modules/
+Disallow: /src/
+Disallow: /build/
+Disallow: /.*\.json$
+Disallow: /.*\.env$
+Disallow: /.*\.log$
+Disallow: /.*\.git$
+Disallow: /.*\.md$
+Disallow: /.*\.yml$
+Disallow: /.*\.yaml$
+Disallow: /.*\.xml$
+Disallow: /.*\.config$
+Disallow: /.*\.sql$
+Disallow: /.*\.sqlite$
+Disallow: /.*\.lock$

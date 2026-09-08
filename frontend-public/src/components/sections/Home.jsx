@@ -30,10 +30,18 @@ const Home = () => {
       </div>
       <div className="home-bg">
         <div className="floating-icons">
-          <span className="icon"><img src={battery} style={{width:250}}/></span>
-          <span className="icon"><img src={Lub} style={{width:450}}/></span>
-          <span className="icon"><img src={wheel} style={{width:250}}/></span>
-          <span className="icon"><img src={spare} style={{width:450}}/></span>
+          <span className="icon icon-1">
+            <img src={battery} alt="Battery" />
+          </span>
+          <span className="icon icon-2">
+            <img src={Lub} alt="Lubricants" />
+          </span>
+          <span className="icon icon-3">
+            <img src={wheel} alt="Wheel" />
+          </span>
+          <span className="icon icon-4">
+            <img src={spare} alt="Spare Parts" />
+          </span>
         </div>
       </div>
     </section>

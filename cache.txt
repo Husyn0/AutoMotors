@@ -1,0 +1,4 @@
+import logo from '../../assets/output/logo1.ico';
+
+
+<img src={logo} style={{width:100}}/>

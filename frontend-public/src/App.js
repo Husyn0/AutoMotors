@@ -6,7 +6,7 @@ import Services from './components/sections/Services';
 import Products from './components/sections/Products';
 import TruckTypes from './components/sections/TruckTypes';
 import Projects from './components/sections/Projects';
-import Contact from './components/sections/Contact';
+import SecurityGuard from './components/common/SecurityGuard';
 import { translations } from './translations';
 import './styles/main.scss';
 
@@ -18,14 +18,15 @@ function App() {
 
   return (
     <LanguageContext.Provider value={{ language, setLanguage, t }}>
-      <Layout>
-        <Home />
-        <Services />
-        <Products />
-        <TruckTypes />
-        <Projects />
-        <Contact />
-      </Layout>
+      <SecurityGuard>
+        <Layout>
+          <Home />
+          <Services />
+          <Products />
+          <TruckTypes />
+          <Projects />
+        </Layout>
+      </SecurityGuard>
     </LanguageContext.Provider>
   );
 }

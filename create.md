@@ -1,6 +1,14 @@
 # Laravel Backend
 composer create-project laravel/laravel backend-laravel
 cd backend-laravel
+# Install required packages
+composer require tymon/jwtauth
+composer require laravel/sanctum
+composer require laravel/cors
+
+# Generate application key and JWT secret:
+php artisan key:generate
+php artisan jwt:secret
 
 php artisan migrate
 php artisan db:seed --class=AdminUserSeeder

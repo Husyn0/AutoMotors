@@ -23,6 +23,7 @@ export const translations = {
       title: 'Nos Produits',
       subtitle: 'Des produits de qualité pour votre véhicule',
       categories: {
+        all: 'Tous',
         batteries: 'Batteries',
         lubricants: 'Lubrifiants',
         tires: 'Pneus',
@@ -75,6 +76,7 @@ export const translations = {
       title: 'Our Products',
       subtitle: 'Quality products for your vehicle',
       categories: {
+        all: 'All',
         batteries: 'Batteries',
         lubricants: 'Lubricants',
         tires: 'Tires',

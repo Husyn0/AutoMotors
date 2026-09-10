@@ -5,7 +5,8 @@ cp .env.example .env
 # Edit .env with database credentials
 php artisan key:generate
 php artisan migrate
-php artisan db:seed --class=AdminUserSeeder
+php artisan db:seed --class=DatabaseSeeder
+php artisan migrate:fresh --seed
 php artisan storage:link
 php artisan serve
 

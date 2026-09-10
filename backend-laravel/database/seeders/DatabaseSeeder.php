@@ -1,85 +1,134 @@
-// database/seeders/DatabaseSeeder.php
 <?php
+// database/seeders/DatabaseSeeder.php
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
 use App\Models\AdminUser;
 use App\Models\Product;
 use App\Models\Service;
 use App\Models\TruckType;
 use App\Models\Project;
+use App\Models\Setting;
+
+use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 
 class DatabaseSeeder extends Seeder
 {
     public function run()
     {
-        // Create admin user
         AdminUser::create([
             'name' => 'Admin',
             'email' => 'admin@automotors.com',
             'password' => Hash::make('password123'),
         ]);
 
-        // Products
+        // Products (FR in main fields, EN in translations)
         $products = [
             [
                 'name' => 'Batterie Plomb 12V 60Ah',
                 'category' => 'batteries',
                 'price' => 89.00,
                 'short_description' => 'Batterie automobile fiable pour démarrage optimal',
-                'image' => '/images/battery1.jpg'
+                'image' => '/images/battery1.jpg',
+                'translations' => [
+                    'en' => [
+                        'name' => 'Lead Battery 12V 60Ah',
+                        'short_description' => 'Reliable car battery for optimal starting',
+                    ],
+                ],
             ],
             [
                 'name' => 'Batterie Lithium 12V 80Ah',
                 'category' => 'batteries',
                 'price' => 149.00,
                 'short_description' => 'Batterie lithium haute performance pour véhicules modernes',
-                'image' => '/images/battery2.jpg'
+                'image' => '/images/battery2.jpg',
+                'translations' => [
+                    'en' => [
+                        'name' => 'Lithium Battery 12V 80Ah',
+                        'short_description' => 'High performance lithium battery for modern vehicles',
+                    ],
+                ],
             ],
             [
                 'name' => 'Huile Moteur 5W30 5L',
                 'category' => 'lubricants',
                 'price' => 45.00,
                 'short_description' => 'Huile synthétique haute performance pour moteurs essence',
-                'image' => '/images/lubricant1.jpg'
+                'image' => '/images/lubricant1.jpg',
+                'translations' => [
+                    'en' => [
+                        'name' => 'Engine Oil 5W30 5L',
+                        'short_description' => 'High performance synthetic oil for gasoline engines',
+                    ],
+                ],
             ],
             [
                 'name' => 'Huile Moteur 10W40 5L',
                 'category' => 'lubricants',
                 'price' => 38.00,
                 'short_description' => 'Huile minérale pour moteurs diesel et essence',
-                'image' => '/images/lubricant2.jpg'
+                'image' => '/images/lubricant2.jpg',
+                'translations' => [
+                    'en' => [
+                        'name' => 'Engine Oil 10W40 5L',
+                        'short_description' => 'Mineral oil for diesel and gasoline engines',
+                    ],
+                ],
             ],
             [
                 'name' => 'Pneu Été 205/55R16',
                 'category' => 'tires',
                 'price' => 120.00,
                 'short_description' => 'Pneu été haute performance pour une conduite sécurisée',
-                'image' => '/images/tire1.jpg'
+                'image' => '/images/tire1.jpg',
+                'translations' => [
+                    'en' => [
+                        'name' => 'Summer Tire 205/55R16',
+                        'short_description' => 'High performance summer tire for safe driving',
+                    ],
+                ],
             ],
             [
                 'name' => 'Pneu Hiver 195/65R15',
                 'category' => 'tires',
                 'price' => 135.00,
                 'short_description' => 'Pneu hiver avec adhérence optimale sur neige',
-                'image' => '/images/tire2.jpg'
+                'image' => '/images/tire2.jpg',
+                'translations' => [
+                    'en' => [
+                        'name' => 'Winter Tire 195/65R15',
+                        'short_description' => 'Winter tire with optimal grip on snow',
+                    ],
+                ],
             ],
             [
                 'name' => 'Plaquettes Frein Avant',
                 'category' => 'spareParts',
                 'price' => 65.00,
                 'short_description' => 'Kit de plaquettes de frein de haute qualité',
-                'image' => '/images/brake.jpg'
+                'image' => '/images/brake.jpg',
+                'translations' => [
+                    'en' => [
+                        'name' => 'Front Brake Pads',
+                        'short_description' => 'High quality brake pad kit',
+                    ],
+                ],
             ],
             [
                 'name' => 'Filtre à Huile',
                 'category' => 'spareParts',
                 'price' => 15.00,
                 'short_description' => 'Filtre à huile haute efficacité pour moteur',
-                'image' => '/images/oilfilter.jpg'
-            ]
+                'image' => '/images/oilfilter.jpg',
+                'translations' => [
+                    'en' => [
+                        'name' => 'Oil Filter',
+                        'short_description' => 'High efficiency engine oil filter',
+                    ],
+                ],
+            ],
         ];
 
         foreach ($products as $product) {
@@ -91,33 +140,69 @@ class DatabaseSeeder extends Seeder
             [
                 'title' => 'Importation de pièces automobiles',
                 'description' => 'Importation de pièces et équipements automobiles de qualité.',
-                'icon' => '🚢'
+                'icon' => '🚢',
+                'translations' => [
+                    'en' => [
+                        'title' => 'Automotive Parts Import',
+                        'description' => 'Import of quality automotive parts and equipment.',
+                    ],
+                ],
             ],
             [
                 'title' => 'Pneus pour véhicules et camions',
                 'description' => 'Fourniture de pneus adaptés aux différents types de véhicules.',
-                'icon' => '🚛'
+                'icon' => '🚛',
+                'translations' => [
+                    'en' => [
+                        'title' => 'Tires for Vehicles and Trucks',
+                        'description' => 'Supply of tires suited to different vehicle types.',
+                    ],
+                ],
             ],
             [
                 'title' => 'Batteries automobiles',
                 'description' => 'Vente de batteries fiables pour voitures et véhicules professionnels.',
-                'icon' => '🔋'
+                'icon' => '🔋',
+                'translations' => [
+                    'en' => [
+                        'title' => 'Car Batteries',
+                        'description' => 'Sale of reliable batteries for cars and professional vehicles.',
+                    ],
+                ],
             ],
             [
                 'title' => 'Lubrifiants et huiles moteur',
                 'description' => 'Distribution de lubrifiants et huiles moteur TOTAL.',
-                'icon' => '🛢️'
+                'icon' => '🛢️',
+                'translations' => [
+                    'en' => [
+                        'title' => 'Lubricants and Engine Oils',
+                        'description' => 'Distribution of TOTAL lubricants and engine oils.',
+                    ],
+                ],
             ],
             [
                 'title' => 'Vente en gros',
                 'description' => 'Fourniture de produits automobiles aux magasins, revendeurs et professionnels.',
-                'icon' => '🏪'
+                'icon' => '🏪',
+                'translations' => [
+                    'en' => [
+                        'title' => 'Wholesale',
+                        'description' => 'Supply of automotive products to stores, resellers and professionals.',
+                    ],
+                ],
             ],
             [
                 'title' => 'Distribution en Côte d\'Ivoire',
                 'description' => 'Distribution de nos produits dans différentes régions de la Côte d\'Ivoire.',
-                'icon' => '🇨🇮'
-            ]
+                'icon' => '🇨🇮',
+                'translations' => [
+                    'en' => [
+                        'title' => 'Distribution in Côte d\'Ivoire',
+                        'description' => 'Distribution of our products across various regions of Côte d\'Ivoire.',
+                    ],
+                ],
+            ],
         ];
 
         foreach ($services as $service) {
@@ -130,14 +215,26 @@ class DatabaseSeeder extends Seeder
                 'name' => 'Camionnette',
                 'models' => 'Kia, Hyundai, Canter',
                 'icon' => '🚐',
-                'description' => 'Véhicules utilitaires légers pour le transport urbain'
+                'description' => 'Véhicules utilitaires légers pour le transport urbain',
+                'translations' => [
+                    'en' => [
+                        'name' => 'Light Truck',
+                        'description' => 'Light utility vehicles for urban transport',
+                    ],
+                ],
             ],
             [
                 'name' => 'Poids Lourds',
                 'models' => 'Mercedes, Sinotruck, DAF, Renault',
                 'icon' => '🚛',
-                'description' => 'Camions de transport et semi-remorques pour charges lourdes'
-            ]
+                'description' => 'Camions de transport et semi-remorques pour charges lourdes',
+                'translations' => [
+                    'en' => [
+                        'name' => 'Heavy Truck',
+                        'description' => 'Transport trucks and semi-trailers for heavy loads',
+                    ],
+                ],
+            ],
         ];
 
         foreach ($truckTypes as $truckType) {
@@ -149,25 +246,43 @@ class DatabaseSeeder extends Seeder
             [
                 'title' => 'Flotte de Transport',
                 'description' => 'Équipement complet pour une flotte de 50 camions',
-                'image' => '🚛'
+                'image' => '🚛',
+                'translations' => [
+                    'en' => [
+                        'title' => 'Transport Fleet',
+                        'description' => 'Complete equipment for a fleet of 50 trucks',
+                    ],
+                ],
             ],
             [
                 'title' => 'Station Service',
                 'description' => 'Fourniture de lubrifiants pour une station-service',
-                'image' => '⛽'
+                'image' => '⛽',
+                'translations' => [
+                    'en' => [
+                        'title' => 'Service Station',
+                        'description' => 'Supply of lubricants for a service station',
+                    ],
+                ],
             ],
             [
                 'title' => 'Garage Partenaire',
                 'description' => 'Approvisionnement en pièces détachées pour un garage',
-                'image' => '🔧'
-            ]
+                'image' => '🔧',
+                'translations' => [
+                    'en' => [
+                        'title' => 'Partner Garage',
+                        'description' => 'Supply of spare parts for a garage',
+                    ],
+                ],
+            ],
         ];
 
         foreach ($projects as $project) {
             Project::create($project);
         }
 
-        // Settings
+        // Settings — note: we'll handle translated settings separately below
         $settings = [
             ['group' => 'general', 'key' => 'company_name', 'value' => 'AUTOMOTORS', 'type' => 'text'],
             ['group' => 'general', 'key' => 'company_slogan', 'value' => 'Spécialiste en vente de pièces automobiles', 'type' => 'text'],
@@ -178,10 +293,15 @@ class DatabaseSeeder extends Seeder
             ['group' => 'social', 'key' => 'twitter_url', 'value' => '#', 'type' => 'url'],
             ['group' => 'social', 'key' => 'instagram_url', 'value' => '#', 'type' => 'url'],
             ['group' => 'social', 'key' => 'linkedin_url', 'value' => '#', 'type' => 'url'],
+
+            // English versions of settings that need translation
+            ['group' => 'general', 'key' => 'company_slogan_en', 'value' => 'Specialist in automotive parts sales', 'type' => 'text'],
+            // Keep address in FR (it's a physical location) — optionally add EN version
+            ['group' => 'contact', 'key' => 'main_address_en', 'value' => 'SAN PEDRO GAR CARTIER SOTREF OPPOSITE SACC CACAO', 'type' => 'text'],
         ];
 
         foreach ($settings as $setting) {
-            \App\Models\Setting::create($setting);
+            Setting::create($setting);
         }
     }
 }

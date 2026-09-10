@@ -1,6 +1,5 @@
-// app/Http/Controllers/Api/ContentController.php
 <?php
-
+// app/Http/Controllers/Api/ContentController.php
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
@@ -17,7 +16,9 @@ class ContentController extends Controller
     // Products
     public function getProducts()
     {
-        return response()->json(Product::all());
+        return response()->json(
+            Product::all()->map(fn($p)=>$p->toTranslatedArray())
+            );
     }
 
     public function getProduct($id)
@@ -26,7 +27,7 @@ class ContentController extends Controller
         if (!$product) {
             return response()->json(['error' => 'Product not found'], 404);
         }
-        return response()->json($product);
+        return response()->json($product->toTranslatedArray());
     }
 
     public function createProduct(Request $request)
@@ -36,6 +37,8 @@ class ContentController extends Controller
             'category' => 'required|string|max:100',
             'price' => 'required|numeric|min:0',
             'short_description' => 'required|string',
+            'translations.en.name' => 'sometimes|string|max:255',
+            'translations.en.short_description' => 'sometimes|string',
         ]);
 
         if ($validator->fails()) {
@@ -58,6 +61,8 @@ class ContentController extends Controller
             'category' => 'sometimes|required|string|max:100',
             'price' => 'sometimes|required|numeric|min:0',
             'short_description' => 'sometimes|required|string',
+            'translations.en.name' => 'sometimes|string|max:255',
+            'translations.en.short_description' => 'sometimes|string',
         ]);
 
         if ($validator->fails()) {
@@ -78,10 +83,14 @@ class ContentController extends Controller
         return response()->json(['message' => 'Product deleted']);
     }
 
+
+
     // Services
     public function getServices()
     {
-        return response()->json(Service::all());
+        return response()->json(
+            Service::all()->map(fn($p)=>$p->toTranslatedArray())
+            );
     }
 
     public function getService($id)
@@ -90,7 +99,7 @@ class ContentController extends Controller
         if (!$service) {
             return response()->json(['error' => 'Service not found'], 404);
         }
-        return response()->json($service);
+        return response()->json($service->toTranslatedArray());
     }
 
     public function createService(Request $request)
@@ -98,6 +107,8 @@ class ContentController extends Controller
         $validator = Validator::make($request->all(), [
             'title' => 'required|string|max:255',
             'description' => 'required|string',
+            'translations.en.title' => 'sometimes|string|max:255',
+            'translations.en.description' => 'sometimes|string',
         ]);
 
         if ($validator->fails()) {
@@ -118,6 +129,8 @@ class ContentController extends Controller
         $validator = Validator::make($request->all(), [
             'title' => 'sometimes|required|string|max:255',
             'description' => 'sometimes|required|string',
+            'translations.en.title' => 'sometimes|string|max:255',
+            'translations.en.description' => 'sometimes|string',
         ]);
 
         if ($validator->fails()) {
@@ -138,10 +151,14 @@ class ContentController extends Controller
         return response()->json(['message' => 'Service deleted']);
     }
 
+
+
     // Truck Types
     public function getTruckTypes()
     {
-        return response()->json(TruckType::all());
+        return response()->json(
+            TruckType::all()->map(fn($p)=>$p->toTranslatedArray())
+            );
     }
 
     public function getTruckType($id)
@@ -150,7 +167,7 @@ class ContentController extends Controller
         if (!$truckType) {
             return response()->json(['error' => 'Truck type not found'], 404);
         }
-        return response()->json($truckType);
+        return response()->json($truckType->toTranslatedArray());
     }
 
     public function createTruckType(Request $request)
@@ -159,6 +176,8 @@ class ContentController extends Controller
             'name' => 'required|string|max:255',
             'models' => 'required|string|max:255',
             'description' => 'required|string',
+            'translations.en.name' => 'sometimes|string|max:255',
+            'translations.en.description' => 'sometimes|string',
         ]);
 
         if ($validator->fails()) {
@@ -180,6 +199,8 @@ class ContentController extends Controller
             'name' => 'sometimes|required|string|max:255',
             'models' => 'sometimes|required|string|max:255',
             'description' => 'sometimes|required|string',
+            'translations.en.name' => 'sometimes|string|max:255',
+            'translations.en.description' => 'sometimes|string',
         ]);
 
         if ($validator->fails()) {
@@ -200,10 +221,14 @@ class ContentController extends Controller
         return response()->json(['message' => 'Truck type deleted']);
     }
 
+
+
     // Projects
     public function getProjects()
     {
-        return response()->json(Project::all());
+        return response()->json(
+            Project::all()->map(fn($p)=>$p->toTranslatedArray())
+            );
     }
 
     public function getProject($id)
@@ -212,7 +237,7 @@ class ContentController extends Controller
         if (!$project) {
             return response()->json(['error' => 'Project not found'], 404);
         }
-        return response()->json($project);
+        return response()->json($project->toTranslatedArray());
     }
 
     public function createProject(Request $request)
@@ -220,6 +245,8 @@ class ContentController extends Controller
         $validator = Validator::make($request->all(), [
             'title' => 'required|string|max:255',
             'description' => 'required|string',
+            'translations.en.title' => 'sometimes|string|max:255',
+            'translations.en.description' => 'sometimes|string',
         ]);
 
         if ($validator->fails()) {
@@ -240,6 +267,8 @@ class ContentController extends Controller
         $validator = Validator::make($request->all(), [
             'title' => 'sometimes|required|string|max:255',
             'description' => 'sometimes|required|string',
+            'translations.en.title' => 'sometimes|string|max:255',
+            'translations.en.description' => 'sometimes|string',
         ]);
 
         if ($validator->fails()) {
@@ -260,14 +289,24 @@ class ContentController extends Controller
         return response()->json(['message' => 'Project deleted']);
     }
 
+
+
+
     // Settings
     public function getSettings()
     {
+        $locale=app()->getLocale();
         $settings = Setting::all()->groupBy('group');
         $flatSettings = [];
         foreach ($settings as $group => $items) {
             foreach ($items as $item) {
-                $flatSettings[$item->key] = $item->value;
+                $key=$item->key;
+                if($local==='en' && str_ends_with($key,'_en')){
+                    $basekey=substr($key,0,-3);
+                    $flatSettings[$basekey]=$item->value;
+                }elseif(!str_ends_with($key,'_en')){
+                    $flatSettings[$item->key] = $item->value;
+                }
             }
         }
         return response()->json($flatSettings);

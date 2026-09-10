@@ -14,7 +14,7 @@ class SetLocale
             ?? $request->query('lang')
             ?? config('app.fallback_locale', 'fr');
 
-        // Normalize (e.g., "en-US,en;q=0.9" → "en")
+        // Normalize: "en-US,en;q=0.9" → "en"
         $locale = substr($locale, 0, 2);
 
         if (in_array($locale, ['fr', 'en'])) {

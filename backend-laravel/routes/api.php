@@ -1,53 +1,63 @@
-// routes/api.php
 <?php
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AuthController;
-use App\Http\Controllers\Api\ContentController;
+use App\Http\Controllers\Api\ProductController;
+use App\Http\Controllers\Api\ServiceController;
+use App\Http\Controllers\Api\TruckTypeController;
+use App\Http\Controllers\Api\ProjectController;
+use App\Http\Controllers\Api\SettingController;
 
-// Public routes
-Route::post('/auth/login', [AuthController::class, 'login']);
+/*
+|--------------------------------------------------------------------------
+| Public routes
+|--------------------------------------------------------------------------
+*/
+Route::post('/auth/login',    [AuthController::class, 'login']);
 Route::post('/auth/register', [AuthController::class, 'register']);
-Route::post('/auth/refresh', [AuthController::class, 'refresh']);
+Route::post('/auth/refresh',  [AuthController::class, 'refresh']);
 
-// Protected routes
+// Public content read (frontend visitors)
+Route::get('/products',       [ProductController::class,   'index']);
+Route::get('/products/{id}',  [ProductController::class,   'show']);
+Route::get('/services',       [ServiceController::class,   'index']);
+Route::get('/services/{id}',  [ServiceController::class,   'show']);
+Route::get('/truck-types',    [TruckTypeController::class, 'index']);
+Route::get('/truck-types/{id}',[TruckTypeController::class,'show']);
+Route::get('/projects',       [ProjectController::class,   'index']);
+Route::get('/projects/{id}',  [ProjectController::class,   'show']);
+Route::get('/settings',       [SettingController::class,   'index']);
+
+/*
+|--------------------------------------------------------------------------
+| Protected routes (admin only)
+|--------------------------------------------------------------------------
+*/
 Route::middleware('auth:api')->group(function () {
-    // Auth routes
+    // Auth
     Route::post('/auth/logout', [AuthController::class, 'logout']);
-    Route::get('/auth/me', [AuthController::class, 'me']);
-    
-    // Content management routes
-    Route::prefix('content')->group(function () {
-        // Products
-        Route::get('/products', [ContentController::class, 'getProducts']);
-        Route::get('/products/{id}', [ContentController::class, 'getProduct']);
-        Route::post('/products', [ContentController::class, 'createProduct']);
-        Route::put('/products/{id}', [ContentController::class, 'updateProduct']);
-        Route::delete('/products/{id}', [ContentController::class, 'deleteProduct']);
-        
-        // Services
-        Route::get('/services', [ContentController::class, 'getServices']);
-        Route::get('/services/{id}', [ContentController::class, 'getService']);
-        Route::post('/services', [ContentController::class, 'createService']);
-        Route::put('/services/{id}', [ContentController::class, 'updateService']);
-        Route::delete('/services/{id}', [ContentController::class, 'deleteService']);
-        
-        // Truck Types
-        Route::get('/truck-types', [ContentController::class, 'getTruckTypes']);
-        Route::get('/truck-types/{id}', [ContentController::class, 'getTruckType']);
-        Route::post('/truck-types', [ContentController::class, 'createTruckType']);
-        Route::put('/truck-types/{id}', [ContentController::class, 'updateTruckType']);
-        Route::delete('/truck-types/{id}', [ContentController::class, 'deleteTruckType']);
-        
-        // Projects
-        Route::get('/projects', [ContentController::class, 'getProjects']);
-        Route::get('/projects/{id}', [ContentController::class, 'getProject']);
-        Route::post('/projects', [ContentController::class, 'createProject']);
-        Route::put('/projects/{id}', [ContentController::class, 'updateProject']);
-        Route::delete('/projects/{id}', [ContentController::class, 'deleteProject']);
-        
-        // Settings
-        Route::get('/settings', [ContentController::class, 'getSettings']);
-        Route::put('/settings', [ContentController::class, 'updateSettings']);
-    });
+    Route::get('/auth/me',      [AuthController::class, 'me']);
+
+    // Products
+    Route::post  ('/products',      [ProductController::class,   'store']);
+    Route::put   ('/products/{id}', [ProductController::class,   'update']);
+    Route::delete('/products/{id}', [ProductController::class,   'destroy']);
+
+    // Services
+    Route::post  ('/services',      [ServiceController::class,   'store']);
+    Route::put   ('/services/{id}', [ServiceController::class,   'update']);
+    Route::delete('/services/{id}', [ServiceController::class,   'destroy']);
+
+    // Truck Types
+    Route::post  ('/truck-types',      [TruckTypeController::class, 'store']);
+    Route::put   ('/truck-types/{id}', [TruckTypeController::class, 'update']);
+    Route::delete('/truck-types/{id}', [TruckTypeController::class, 'destroy']);
+
+    // Projects
+    Route::post  ('/projects',      [ProjectController::class,   'store']);
+    Route::put   ('/projects/{id}', [ProjectController::class,   'update']);
+    Route::delete('/projects/{id}', [ProjectController::class,   'destroy']);
+
+    // Settings
+    Route::put('/settings', [SettingController::class, 'update']);
 });

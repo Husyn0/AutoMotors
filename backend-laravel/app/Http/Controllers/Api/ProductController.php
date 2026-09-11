@@ -41,7 +41,7 @@ class ProductController extends Controller
         }
 
         $product = Product::create($request->all());
-        return response()->json($product, 201);
+        return response()->json($product->toTranslatedArray(), 201);
     }
 
     public function update(Request $request, $id)
@@ -64,8 +64,19 @@ class ProductController extends Controller
             return response()->json(['errors' => $validator->errors()], 422);
         }
 
-        $product->update($request->all());
-        return response()->json($product);
+        $data = $request->all();
+
+        // Deep-merge translations so partial updates don't wipe other keys
+        if (isset($data['translations'])) {
+            $existing = $product->translations ?? [];
+            foreach ($data['translations'] as $locale => $fields) {
+                $existing[$locale] = array_merge($existing[$locale] ?? [], $fields);
+            }
+            $data['translations'] = $existing;
+        }
+
+        $product->update($data);
+        return response()->json($product->toTranslatedArray());
     }
 
     public function destroy($id)

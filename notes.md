@@ -81,3 +81,8 @@ Password: password123
   }
 }
 
+
+
+# Login info:
+'email' => 'admin@automotors.com'
+'password' => Hash::make('password123'),

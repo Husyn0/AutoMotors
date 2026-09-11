@@ -3,3 +3,4 @@ node_modules/
 __pycache__/
 *.log
 package-lock.json
+/backend-laravel/vendor/

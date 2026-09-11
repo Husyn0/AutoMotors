@@ -8,6 +8,12 @@ php artisan key:generate
 php artisan migrate
 # insert to db
 php artisan db:seed --class=DatabaseSeeder
+
+# default Laravel cache migration
+php artisan make:cache-table
+php artisan make:queue-table       # (optional, for queue)
+php artisan make:session-table     # (optional, but your SESSION_DRIVER=database)
+
 # Rebuild DB
 php artisan migrate:fresh --seed
 

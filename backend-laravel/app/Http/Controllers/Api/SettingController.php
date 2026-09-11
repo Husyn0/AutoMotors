@@ -32,6 +32,14 @@ class SettingController extends Controller
 
     public function update(Request $request)
     {
+        $allowed = [
+            'company_name', 'company_slogan', 'company_slogan_en',
+            'email_address', 'phone_numbers',
+            'main_address', 'main_address_en',
+            'facebook_url', 'twitter_url', 'instagram_url', 'linkedin_url',
+        ];
+
+        $data = $request->only($allowed);
         foreach ($request->all() as $key => $value) {
             Setting::set($key, $value);
         }

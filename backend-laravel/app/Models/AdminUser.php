@@ -7,7 +7,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 
-class AdminUser extends Authenticatable
+class AdminUser extends Authenticatable implements JWTSubject
 {
     use HasFactory, Notifiable;
 

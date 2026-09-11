@@ -1,6 +1,5 @@
-// config/cors.php
 <?php
-
+// config/cors.php
 return [
     'paths' => ['api/*', 'sanctum/csrf-cookie'],
     'allowed_methods' => ['*'],

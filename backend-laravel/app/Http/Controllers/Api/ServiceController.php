@@ -39,7 +39,7 @@ class ServiceController extends Controller
         }
 
         $service = Service::create($request->all());
-        return response()->json($service, 201);
+        return response()->json($service->toTranslatedArray(), 201);
     }
 
     public function update(Request $request, $id)
@@ -59,9 +59,19 @@ class ServiceController extends Controller
         if ($validator->fails()) {
             return response()->json(['errors' => $validator->errors()], 422);
         }
+        $data = $request->all();
+
+        // Deep-merge translations so partial updates don't wipe other keys
+        if (isset($data['translations'])) {
+            $existing = $service->translations ?? [];
+            foreach ($data['translations'] as $locale => $fields) {
+                $existing[$locale] = array_merge($existing[$locale] ?? [], $fields);
+            }
+            $data['translations'] = $existing;
+        }
 
         $service->update($request->all());
-        return response()->json($service);
+        return response()->json($service->toTranslatedArray());
     }
 
     public function destroy($id)

@@ -2,10 +2,16 @@
 import React, { useContext, useState, useRef, useEffect } from 'react';
 import { LanguageContext } from '../../App';
 import { truckTypesData } from '../../api/data';
+import { getTruckTypes } from '../../api/endpoints';    // API
+import { useApi } from '../../hooks/useApi';
 
 const TruckTypes = () => {
   const { language, t } = useContext(LanguageContext);
-  const truckTypes = truckTypesData[language];
+  const { data, loading } = useApi(getTruckTypes, [], truckTypesData[language]);
+
+  const truckTypes = Array.isArray(data)
+    ? data
+    : data?.data || truckTypesData[language];
   const [isAutoScrolling, setIsAutoScrolling] = useState(true);
   const scrollContainerRef = useRef(null);
   const autoScrollInterval = useRef(null);
@@ -83,6 +89,9 @@ const TruckTypes = () => {
       }
     };
   }, []);
+
+
+  if (loading) return <div className="loader">Loading truck types…</div>;
 
   return (
     <section id="truckTypes" className="truck-types">

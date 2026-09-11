@@ -2,10 +2,23 @@
 import React, { useContext } from 'react';
 import { LanguageContext } from '../../App';
 import { servicesData } from '../../api/data';
+import { getServices } from '../../api/endpoints';
+import { useApi } from '../../hooks/useApi';
 
 const Services = () => {
   const { language, t } = useContext(LanguageContext);
-  const data = servicesData[language];
+  const fallback = servicesData[language];
+
+  const { data, loading } = useApi(getServices, [], {
+    services: fallback.services,
+    advantages: fallback.advantages,
+  });
+
+  // Handle Laravel shape: { data: { services: [...], advantages: [...] } } OR plain
+  const services = data?.services || data?.data?.services || fallback.services;
+  const advantages = data?.advantages || data?.data?.advantages || fallback.advantages;
+
+  if (loading) return <div className="loader">Loading services…</div>;
 
   return (
     <section id="services" className="services">
@@ -17,7 +30,7 @@ const Services = () => {
           {/* Services List - Left Side */}
           <div className="services-list">
             <h3 className="list-title">📋 Nos services</h3>
-            {data.services.map((service, index) => (
+            {services.map((service, index) => (
               <div key={service.id} className="service-item">
                 <div className="service-number">{String(index + 1).padStart(2, '0')}</div>
                 <div className="service-info">
@@ -33,7 +46,7 @@ const Services = () => {
           <div className="advantages-section">
             <h3 className="advantages-title">{t.services.advantagesTitle}</h3>
             <div className="advantages-list">
-              {data.advantages.map((advantage, index) => (
+              {advantages.map((advantage, index) => (
                 <div key={index} className="advantage-item">
                   <span className="advantage-icon">✦</span>
                   <span className="advantage-text">{advantage}</span>

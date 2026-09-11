@@ -2,10 +2,20 @@
 import React, { useContext, useState, useRef, useEffect } from 'react';
 import { LanguageContext } from '../../App';
 import { productsData } from '../../api/data';
+import { getProducts } from '../../api/endpoints';    // API
+import { useApi } from '../../hooks/useApi';
 
 const Products = () => {
   const { language, t } = useContext(LanguageContext);
-  const products = productsData[language];
+    // Fetch from API, fall back to static data on error
+  const { data, loading, error } = useApi(
+    getProducts,
+    [],
+    productsData[language]
+  );
+
+  // Normalize: handle { data: [...] } or plain array
+  const products = Array.isArray(data) ? data : data?.data || productsData[language];
   const [activeCategory, setActiveCategory] = useState('all');
   const [isAutoScrolling, setIsAutoScrolling] = useState(true);
   const scrollContainerRef = useRef(null);
@@ -23,6 +33,7 @@ const Products = () => {
   const filteredProducts = activeCategory === 'all' 
     ? products 
     : products.filter(product => product.category === activeCategory);
+
 
   // Auto-scroll function
   const startAutoScroll = () => {
@@ -120,6 +131,9 @@ const Products = () => {
     setTimeout(() => resumeAutoScroll(), 1000);
   }, [activeCategory]);
 
+
+  if (loading) return <div className="loader">Loading products…</div>;
+  
   return (
     <section id="products" className="products">
       <div className="container">

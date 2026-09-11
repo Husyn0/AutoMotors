@@ -1,6 +1,9 @@
 // src/components/common/Footer.jsx
 import React, { useContext } from 'react';
 import { LanguageContext } from '../../App';
+import { getSettings } from '../../api/endpoints';
+import { useApi } from '../../hooks/useApi';
+
 import { FaSquareXTwitter } from "react-icons/fa6";
 import { FaInstagramSquare, FaFacebook, FaLinkedin } from "react-icons/fa";
 import { MdMyLocation } from "react-icons/md";
@@ -11,6 +14,11 @@ import { IoIosMailOpen } from "react-icons/io";
 const Footer = () => {
   const { t } = useContext(LanguageContext);
   const currentYear = new Date().getFullYear();
+  const { data: settings } = useApi(getSettings, [], null);
+
+  const phoneNumbers = settings?.phoneNumbers || t.footer.phoneNumbers;
+  const email = settings?.emailAddress || t.footer.emailAddress;
+  const address = settings?.mainAddress || t.footer.mainAddress;
 
   return (
     <footer className="footer">
@@ -41,7 +49,7 @@ const Footer = () => {
                 <span className="icon"><BsFillPhoneVibrateFill /></span>
                 <div>
                   <strong>{t.footer.phone}</strong>
-                  {t.footer.phoneNumbers.map((number, index) => (
+                  {phoneNumbers.map((number, index) => (
                     <p key={index}>
                       <a href={`tel:${number}`}>{number}</a>
                     </p>
@@ -53,8 +61,8 @@ const Footer = () => {
                 <div>
                   <strong>{t.footer.email}</strong>
                   <p>
-                    <a href={`mailto:${t.footer.emailAddress}`}>
-                      {t.footer.emailAddress}
+                    <a href={`mailto:${email}`}>
+                      {email}
                     </a>
                   </p>
                 </div>
@@ -70,7 +78,7 @@ const Footer = () => {
                 <span className="icon"><MdMyLocation /></span>
                 <div>
                   <strong>{t.footer.branches}</strong>
-                  <p>{t.footer.mainAddress}</p>
+                  <p>{address}</p>
                 </div>
               </div>
               <div className="delivery-info">

@@ -1,6 +1,6 @@
 // src/context/AuthContext.jsx
 import React, { createContext, useState, useContext, useEffect } from 'react';
-import axios from 'axios';
+import authApi from '../api/authApi';
 
 const AuthContext = createContext();
 
@@ -13,7 +13,6 @@ export const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     if (token) {
-      axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
       fetchUser();
     } else {
       setLoading(false);
@@ -22,7 +21,7 @@ export const AuthProvider = ({ children }) => {
 
   const fetchUser = async () => {
     try {
-      const response = await axios.get('/api/auth/me');
+      const response = await authApi.me();
       setUser(response.data);
     } catch (error) {
       logout();
@@ -33,33 +32,38 @@ export const AuthProvider = ({ children }) => {
 
   const login = async (email, password) => {
     try {
-      const response = await axios.post('/api/auth/login', { email, password });
-      const { token, user } = response.data;
+      const response = await authApi.login(email, password);
+      const { token } = response.data;
       localStorage.setItem('token', token);
-      axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
       setToken(token);
-      setUser(user);
+
+      // Fetch user explicitly (backend may not return user in login response)
+      const me = await authApi.me();
+      setUser(me.data);
+
       return { success: true };
     } catch (error) {
-      return { 
-        success: false, 
-        error: error.response?.data?.error || 'Login failed' 
+      return {
+        success: false,
+        error: error.response?.data?.error || error.response?.data?.message || 'Login failed',
       };
     }
   };
 
-  const logout = () => {
+  const logout = async () => {
+    try {
+      if (localStorage.getItem('token')) {
+        await authApi.logout();
+      }
+    } catch (_) {
+      // ignore logout errors
+    }
     localStorage.removeItem('token');
-    delete axios.defaults.headers.common['Authorization'];
     setToken(null);
     setUser(null);
   };
 
   const value = { user, login, logout, loading };
 
-  return (
-    <AuthContext.Provider value={value}>
-      {children}
-    </AuthContext.Provider>
-  );
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };

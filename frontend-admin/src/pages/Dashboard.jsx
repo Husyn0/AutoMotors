@@ -1,16 +1,7 @@
 // src/pages/Dashboard.jsx
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import { 
-  FaBox, 
-  FaCog, 
-  FaTruck, 
-  FaProjectDiagram,
-  FaUsers 
-} from 'react-icons/fa';
+import { FaBox, FaCog, FaTruck, FaProjectDiagram } from 'react-icons/fa';
 import {
-  LineChart,
-  Line,
   BarChart,
   Bar,
   XAxis,
@@ -21,8 +12,12 @@ import {
   ResponsiveContainer,
   PieChart,
   Pie,
-  Cell
+  Cell,
 } from 'recharts';
+import productsApi from '../api/productsApi';
+import servicesApi from '../api/servicesApi';
+import truckTypesApi from '../api/truckTypesApi';
+import projectsApi from '../api/projectsApi';
 
 const Dashboard = () => {
   const [stats, setStats] = useState({
@@ -40,10 +35,10 @@ const Dashboard = () => {
   const fetchStats = async () => {
     try {
       const [products, services, truckTypes, projects] = await Promise.all([
-        axios.get('/api/content/products'),
-        axios.get('/api/content/services'),
-        axios.get('/api/content/truck-types'),
-        axios.get('/api/content/projects'),
+        productsApi.list(),
+        servicesApi.list(),
+        truckTypesApi.list(),
+        projectsApi.list(),
       ]);
 
       setStats({

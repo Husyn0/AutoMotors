@@ -34,9 +34,9 @@ const Login = () => {
             <h1>AUTOMOTORS</h1>
             <h2>Admin Panel</h2>
           </div>
-          
+
           {error && <div className="alert alert-danger">{error}</div>}
-          
+
           <form onSubmit={handleSubmit}>
             <div className="form-group">
               <label>Email</label>
@@ -48,7 +48,7 @@ const Login = () => {
                 placeholder="admin@example.com"
               />
             </div>
-            
+
             <div className="form-group">
               <label>Password</label>
               <input
@@ -59,7 +59,7 @@ const Login = () => {
                 placeholder="••••••••"
               />
             </div>
-            
+
             <button type="submit" disabled={loading}>
               {loading ? 'Loading...' : 'Sign In'}
             </button>

@@ -1,17 +1,13 @@
-// frontend-admin/src/pages/Projects.jsx
+// src/pages/Projects.jsx
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
 import { FaEdit, FaTrash, FaPlus } from 'react-icons/fa';
+import projectsApi from '../api/projectsApi';
 
 const Projects = () => {
   const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(true);
   const [editing, setEditing] = useState(null);
-  const [formData, setFormData] = useState({
-    title: '',
-    description: '',
-    image: ''
-  });
+  const [formData, setFormData] = useState({ title: '', description: '', image: '' });
 
   useEffect(() => {
     fetchProjects();
@@ -19,7 +15,7 @@ const Projects = () => {
 
   const fetchProjects = async () => {
     try {
-      const response = await axios.get('/api/content/projects');
+      const response = await projectsApi.list();
       setProjects(response.data);
     } catch (error) {
       console.error('Error fetching projects:', error);
@@ -32,9 +28,9 @@ const Projects = () => {
     e.preventDefault();
     try {
       if (editing) {
-        await axios.put(`/api/content/projects/${editing.id}`, formData);
+        await projectsApi.update(editing.id, formData);
       } else {
-        await axios.post('/api/content/projects', formData);
+        await projectsApi.create(formData);
       }
       setFormData({ title: '', description: '', image: '' });
       setEditing(null);
@@ -49,14 +45,14 @@ const Projects = () => {
     setFormData({
       title: project.title,
       description: project.description,
-      image: project.image || ''
+      image: project.image || '',
     });
   };
 
   const handleDelete = async (id) => {
     if (window.confirm('Are you sure you want to delete this project?')) {
       try {
-        await axios.delete(`/api/content/projects/${id}`);
+        await projectsApi.remove(id);
         fetchProjects();
       } catch (error) {
         console.error('Error deleting project:', error);
@@ -121,7 +117,7 @@ const Projects = () => {
             ) : projects.length === 0 ? (
               <tr><td colSpan="5">No projects found</td></tr>
             ) : (
-              projects.map(project => (
+              projects.map((project) => (
                 <tr key={project.id}>
                   <td>{project.id}</td>
                   <td className="icon-cell">{project.image || '📁'}</td>

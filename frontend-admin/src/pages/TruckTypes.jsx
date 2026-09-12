@@ -1,18 +1,13 @@
-// frontend-admin/src/pages/TruckTypes.jsx
+// src/pages/TruckTypes.jsx
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
 import { FaEdit, FaTrash, FaPlus } from 'react-icons/fa';
+import truckTypesApi from '../api/truckTypesApi';
 
 const TruckTypes = () => {
   const [truckTypes, setTruckTypes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [editing, setEditing] = useState(null);
-  const [formData, setFormData] = useState({
-    name: '',
-    models: '',
-    icon: '',
-    description: ''
-  });
+  const [formData, setFormData] = useState({ name: '', models: '', icon: '', description: '' });
 
   useEffect(() => {
     fetchTruckTypes();
@@ -20,7 +15,7 @@ const TruckTypes = () => {
 
   const fetchTruckTypes = async () => {
     try {
-      const response = await axios.get('/api/content/truck-types');
+      const response = await truckTypesApi.list();
       setTruckTypes(response.data);
     } catch (error) {
       console.error('Error fetching truck types:', error);
@@ -33,9 +28,9 @@ const TruckTypes = () => {
     e.preventDefault();
     try {
       if (editing) {
-        await axios.put(`/api/content/truck-types/${editing.id}`, formData);
+        await truckTypesApi.update(editing.id, formData);
       } else {
-        await axios.post('/api/content/truck-types', formData);
+        await truckTypesApi.create(formData);
       }
       setFormData({ name: '', models: '', icon: '', description: '' });
       setEditing(null);
@@ -51,14 +46,14 @@ const TruckTypes = () => {
       name: type.name,
       models: type.models,
       icon: type.icon || '',
-      description: type.description
+      description: type.description,
     });
   };
 
   const handleDelete = async (id) => {
     if (window.confirm('Are you sure you want to delete this truck type?')) {
       try {
-        await axios.delete(`/api/content/truck-types/${id}`);
+        await truckTypesApi.remove(id);
         fetchTruckTypes();
       } catch (error) {
         console.error('Error deleting truck type:', error);
@@ -131,7 +126,7 @@ const TruckTypes = () => {
             ) : truckTypes.length === 0 ? (
               <tr><td colSpan="6">No truck types found</td></tr>
             ) : (
-              truckTypes.map(type => (
+              truckTypes.map((type) => (
                 <tr key={type.id}>
                   <td>{type.id}</td>
                   <td className="icon-cell">{type.icon || '🚛'}</td>

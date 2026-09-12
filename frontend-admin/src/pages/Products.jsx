@@ -1,7 +1,7 @@
 // src/pages/Products.jsx
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
 import { FaEdit, FaTrash, FaPlus } from 'react-icons/fa';
+import productsApi from '../api/productsApi';
 
 const Products = () => {
   const [products, setProducts] = useState([]);
@@ -12,7 +12,7 @@ const Products = () => {
     category: '',
     price: '',
     short_description: '',
-    image: ''
+    image: '',
   });
 
   const categories = ['batteries', 'lubricants', 'tires', 'spareParts'];
@@ -23,7 +23,7 @@ const Products = () => {
 
   const fetchProducts = async () => {
     try {
-      const response = await axios.get('/api/content/products');
+      const response = await productsApi.list();
       setProducts(response.data);
     } catch (error) {
       console.error('Error fetching products:', error);
@@ -36,9 +36,9 @@ const Products = () => {
     e.preventDefault();
     try {
       if (editing) {
-        await axios.put(`/api/content/products/${editing.id}`, formData);
+        await productsApi.update(editing.id, formData);
       } else {
-        await axios.post('/api/content/products', formData);
+        await productsApi.create(formData);
       }
       setFormData({ name: '', category: '', price: '', short_description: '', image: '' });
       setEditing(null);
@@ -55,14 +55,14 @@ const Products = () => {
       category: product.category,
       price: product.price,
       short_description: product.short_description,
-      image: product.image || ''
+      image: product.image || '',
     });
   };
 
   const handleDelete = async (id) => {
     if (window.confirm('Are you sure you want to delete this product?')) {
       try {
-        await axios.delete(`/api/content/products/${id}`);
+        await productsApi.remove(id);
         fetchProducts();
       } catch (error) {
         console.error('Error deleting product:', error);
@@ -82,7 +82,6 @@ const Products = () => {
         </button>
       </div>
 
-      {/* Form */}
       <form className="content-form" onSubmit={handleSubmit}>
         <div className="form-grid">
           <input
@@ -98,7 +97,7 @@ const Products = () => {
             required
           >
             <option value="">Select Category</option>
-            {categories.map(cat => (
+            {categories.map((cat) => (
               <option key={cat} value={cat}>{cat}</option>
             ))}
           </select>
@@ -128,7 +127,6 @@ const Products = () => {
         </div>
       </form>
 
-      {/* Table */}
       <div className="table-container">
         <table className="content-table">
           <thead>
@@ -147,7 +145,7 @@ const Products = () => {
             ) : products.length === 0 ? (
               <tr><td colSpan="6">No products found</td></tr>
             ) : (
-              products.map(product => (
+              products.map((product) => (
                 <tr key={product.id}>
                   <td>{product.id}</td>
                   <td>{product.name}</td>

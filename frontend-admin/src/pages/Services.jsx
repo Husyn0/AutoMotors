@@ -1,17 +1,13 @@
-// frontend-admin/src/pages/Services.jsx
+// src/pages/Services.jsx
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
 import { FaEdit, FaTrash, FaPlus } from 'react-icons/fa';
+import servicesApi from '../api/servicesApi';
 
 const Services = () => {
   const [services, setServices] = useState([]);
   const [loading, setLoading] = useState(true);
   const [editing, setEditing] = useState(null);
-  const [formData, setFormData] = useState({
-    title: '',
-    description: '',
-    icon: ''
-  });
+  const [formData, setFormData] = useState({ title: '', description: '', icon: '' });
 
   useEffect(() => {
     fetchServices();
@@ -19,7 +15,7 @@ const Services = () => {
 
   const fetchServices = async () => {
     try {
-      const response = await axios.get('/api/content/services');
+      const response = await servicesApi.list();
       setServices(response.data);
     } catch (error) {
       console.error('Error fetching services:', error);
@@ -32,9 +28,9 @@ const Services = () => {
     e.preventDefault();
     try {
       if (editing) {
-        await axios.put(`/api/content/services/${editing.id}`, formData);
+        await servicesApi.update(editing.id, formData);
       } else {
-        await axios.post('/api/content/services', formData);
+        await servicesApi.create(formData);
       }
       setFormData({ title: '', description: '', icon: '' });
       setEditing(null);
@@ -49,14 +45,14 @@ const Services = () => {
     setFormData({
       title: service.title,
       description: service.description,
-      icon: service.icon || ''
+      icon: service.icon || '',
     });
   };
 
   const handleDelete = async (id) => {
     if (window.confirm('Are you sure you want to delete this service?')) {
       try {
-        await axios.delete(`/api/content/services/${id}`);
+        await servicesApi.remove(id);
         fetchServices();
       } catch (error) {
         console.error('Error deleting service:', error);
@@ -121,7 +117,7 @@ const Services = () => {
             ) : services.length === 0 ? (
               <tr><td colSpan="5">No services found</td></tr>
             ) : (
-              services.map(service => (
+              services.map((service) => (
                 <tr key={service.id}>
                   <td>{service.id}</td>
                   <td className="icon-cell">{service.icon || '📋'}</td>

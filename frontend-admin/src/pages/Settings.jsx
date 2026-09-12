@@ -1,7 +1,7 @@
 // src/pages/Settings.jsx
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
 import { FaSave } from 'react-icons/fa';
+import settingsApi from '../api/settingsApi';
 
 const Settings = () => {
   const [settings, setSettings] = useState({});
@@ -15,7 +15,7 @@ const Settings = () => {
 
   const fetchSettings = async () => {
     try {
-      const response = await axios.get('/api/content/settings');
+      const response = await settingsApi.get();
       setSettings(response.data);
     } catch (error) {
       console.error('Error fetching settings:', error);
@@ -28,7 +28,7 @@ const Settings = () => {
     setSaving(true);
     setMessage('');
     try {
-      await axios.put('/api/content/settings', settings);
+      await settingsApi.update(settings);
       setMessage('Settings saved successfully!');
     } catch (error) {
       setMessage('Error saving settings');
@@ -39,7 +39,7 @@ const Settings = () => {
   };
 
   const handleChange = (key, value) => {
-    setSettings(prev => ({ ...prev, [key]: value }));
+    setSettings((prev) => ({ ...prev, [key]: value }));
   };
 
   return (
@@ -51,13 +51,16 @@ const Settings = () => {
         </button>
       </div>
 
-      {message && <div className={`alert ${message.includes('Error') ? 'alert-danger' : 'alert-success'}`}>{message}</div>}
+      {message && (
+        <div className={`alert ${message.includes('Error') ? 'alert-danger' : 'alert-success'}`}>
+          {message}
+        </div>
+      )}
 
       {loading ? (
         <div>Loading settings...</div>
       ) : (
         <div className="settings-grid">
-          {/* Company Settings */}
           <div className="settings-card">
             <h3>Company Information</h3>
             <div className="setting-group">
@@ -86,7 +89,6 @@ const Settings = () => {
             </div>
           </div>
 
-          {/* Contact Settings */}
           <div className="settings-card">
             <h3>Contact Information</h3>
             <div className="setting-group">
@@ -107,7 +109,6 @@ const Settings = () => {
             </div>
           </div>
 
-          {/* Social Media */}
           <div className="settings-card">
             <h3>Social Media</h3>
             <div className="setting-group">

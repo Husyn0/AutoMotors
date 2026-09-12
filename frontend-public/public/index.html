@@ -6,21 +6,16 @@
     <meta name="theme-color" content="#1a3c5e" />
     <meta name="description" content="AUTOMOTORS - Spécialiste en vente de pièces automobiles" />
     <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo.png" />
-    <!-- Security Headers -->
+
+    <!-- Security Headers (static ones — fine to keep) -->
     <meta http-equiv="X-Content-Type-Options" content="nosniff" />
     <meta http-equiv="X-XSS-Protection" content="1; mode=block" />
     <meta http-equiv="X-Frame-Options" content="DENY" />
     <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin" />
-    
-    <!-- Content Security Policy -->
-    <meta http-equiv="Content-Security-Policy" 
-      content="default-src 'self'; 
-               script-src 'self' 'unsafe-inline' 'unsafe-eval'; 
-               style-src 'self' 'unsafe-inline'; 
-               img-src 'self' data: https:; 
-               font-src 'self' data:; 
-               connect-src 'self';" />
-    
+
+    <!-- CSP is injected at runtime by csp.js (env-aware) -->
+    <script src="%PUBLIC_URL%/csp.js"></script>
+
     <title>AUTOMOTORS - Pièces Automobiles</title>
   </head>
   <body>

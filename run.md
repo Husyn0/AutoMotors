@@ -1,7 +1,11 @@
 #### Backend (Laravel) ####
+
 cd backend-laravel
+
 composer install
+
 cp .env.example .env
+
 # Edit .env with database credentials
 php artisan key:generate
 # create db

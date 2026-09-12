@@ -189,7 +189,7 @@ const Products = () => {
                   <p className="product-description">{product.shortDescription}</p>
                   <div className="product-footer">
                     <span className="product-price">{product.price}</span>
-                    <button className="product-btn">+</button>
+                    {/* <button className="product-btn">+</button> */}
                   </div>
                 </div>
               ))}

@@ -11,10 +11,17 @@
   z-index: 1001;
   @include button-primary;
   padding: 10px 12px;
-  display: none;
+  display: block;
+  transition: left $transition-medium;
+  &.shifted {
+    left: calc(#{$sidebar-width} + #{$spacing-md});  // ← move when sidebar open (desktop only)
+  }
 
   @include tablet-down {
-    display: block;
+    // display: block;
+     &.shifted {
+      left: $spacing-md;
+    }
   }
 }
 

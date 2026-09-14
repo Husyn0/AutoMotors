@@ -81,12 +81,7 @@ const Services = () => {
             onChange={(e) => setFormData({ ...formData, title: e.target.value })}
             required
           />
-          <input
-            type="text"
-            placeholder="Icon (emoji)"
-            value={formData.icon}
-            onChange={(e) => setFormData({ ...formData, icon: e.target.value })}
-          />
+
           <textarea
             placeholder="Description"
             value={formData.description}
@@ -104,7 +99,6 @@ const Services = () => {
         <table className="content-table">
           <thead>
             <tr>
-              <th>Icon</th>
               <th>Title</th>
               <th>Description</th>
               <th>Actions</th>
@@ -118,7 +112,6 @@ const Services = () => {
             ) : (
               services.map((service) => (
                 <tr key={service.id}>
-                  <td className="icon-cell">{service.icon || '📋'}</td>
                   <td>{service.title}</td>
                   <td className="description-cell">{service.description}</td>
                   <td className="actions-cell">

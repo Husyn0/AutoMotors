@@ -1,4 +1,6 @@
-# Login
+# Auth
+### Login
+```bash
 curl -X POST http://127.0.0.1:8000/api/auth/login \
   -H "Content-Type: application/json" \
   -H "Accept: application/json" \
@@ -6,10 +8,11 @@ curl -X POST http://127.0.0.1:8000/api/auth/login \
     "email": "admin@automotors.com",
     "password": "password123"
   }'
+```
 
 
-
-# Register
+### Register
+```bash
 curl -X POST http://127.0.0.1:8000/api/auth/register \
   -H "Content-Type: application/json" \
   -H "Accept: application/json" \
@@ -20,36 +23,42 @@ curl -X POST http://127.0.0.1:8000/api/auth/register \
     "password_confirmation": "password123"
   }'
 
+```
 
-
-# Refresh Token
+### Refresh Token
+```bash
 curl -X POST http://127.0.0.1:8000/api/auth/refresh \
   -H "Authorization: Bearer YOUR_TOKEN_HERE" \
   -H "Accept: application/json"
+```
 
 
-
-################################ Public Content (GET)     ###############################
-#Products
-# List all (default locale = fr)
+# Public Content (GET)     
+## Products
+### List all (default locale = fr)
+```bash
 curl http://127.0.0.1:8000/api/products -H "Accept: application/json"
-
-# List in English
+```
+### List in English
+```bash
 curl "http://127.0.0.1:8000/api/products" \
   -H "Accept-Language: en" \
   -H "Accept: application/json"
-
-# Or via query param
+```
+### Or via query param
+```bash
 curl "http://127.0.0.1:8000/api/products?lang=en" -H "Accept: application/json"
-
-# Single product
+```
+### Single product
+```bash
 curl http://127.0.0.1:8000/api/products/1 -H "Accept: application/json"
+```
 
 
 
 
-
-#Services
+## Services
+```bash
 curl http://127.0.0.1:8000/api/services -H "Accept: application/json"
 echo -e '
 '
@@ -57,9 +66,10 @@ curl http://127.0.0.1:8000/api/services/1 -H "Accept: application/json"
 echo -e '
 '
 curl -H "Accept-Language: en" http://127.0.0.1:8000/api/services
+```
 
-
-# Truck Types
+## Truck Types
+```bash
 curl http://127.0.0.1:8000/api/truck-types -H "Accept: application/json"
 echo -e '
 '
@@ -78,10 +88,11 @@ echo -e '
 '
 curl -H "Accept-Language: en" http://127.0.0.1:8000/api/settings
 
+```
 
-
-####################################### Protected Routes (JWT Required)    #######################################
-# save the token from login:
+# Protected Routes (JWT Required)  
+### save the token from login:
+```bash
 TOKEN=$(curl -s -X POST http://127.0.0.1:8000/api/auth/login \
   -H "Content-Type: application/json" \
   -H "Accept: application/json" \
@@ -91,23 +102,27 @@ TOKEN=$(curl -s -X POST http://127.0.0.1:8000/api/auth/login \
 echo $TOKEN
 echo -e '
 #Auth check
-# Current user '
+### Current user  '
+
 curl http://127.0.0.1:8000/api/auth/me \
   -H "Authorization: Bearer $TOKEN" \
   -H "Accept: application/json"
 echo -e '
-# Logout '
+
+### Logout '
+
 curl -X POST http://127.0.0.1:8000/api/auth/logout \
   -H "Authorization: Bearer $TOKEN" \
   -H "Accept: application/json"
 
-
+```
 
 echo -e '
-# CRUD (Protected)
+## CRUD (Protected)
 
-#Products
-# CREATE '
+## Products
+### CREATE '
+```bash
 curl -X POST http://127.0.0.1:8000/api/products \
   -H "Authorization: Bearer $TOKEN" \
   -H "Content-Type: application/json" \
@@ -124,24 +139,24 @@ curl -X POST http://127.0.0.1:8000/api/products \
       }
     }
   }'
-
+```
 echo -e '
-# UPDATE (replace 1 with actual ID) '
+### UPDATE (replace 1 with actual ID) '
 curl -X PUT http://127.0.0.1:8000/api/products/1 \
   -H "Authorization: Bearer $TOKEN" \
   -H "Content-Type: application/json" \
   -H "Accept: application/json" \
   -d '{"price": 79.99}'
 
-# DELETE
+### DELETE
 curl -X DELETE http://127.0.0.1:8000/api/products/1 \
   -H "Authorization: Bearer $TOKEN" \
   -H "Accept: application/json"
 
 
 echo -e '
-# Services
-# CREATE '
+## Services
+### CREATE '
 curl -X POST http://127.0.0.1:8000/api/services \
   -H "Authorization: Bearer $TOKEN" \
   -H "Content-Type: application/json" \
@@ -159,7 +174,7 @@ curl -X POST http://127.0.0.1:8000/api/services \
   }'
 
 echo -e '
-# UPDATE '
+### UPDATE '
 curl -X PUT http://127.0.0.1:8000/api/services/1 \
   -H "Authorization: Bearer $TOKEN" \
   -H "Content-Type: application/json" \
@@ -167,7 +182,7 @@ curl -X PUT http://127.0.0.1:8000/api/services/1 \
   -d '{"title": "Service Modifié"}'
 
 echo -e '
-# DELETE '
+### DELETE '
 curl -X DELETE http://127.0.0.1:8000/api/services/1 \
   -H "Authorization: Bearer $TOKEN" \
   -H "Accept: application/json"
@@ -177,8 +192,8 @@ curl -X DELETE http://127.0.0.1:8000/api/services/1 \
 
 
 echo -e '
-#Truck Types
-# CREATE '
+## Truck Types
+### CREATE '
 curl -X POST http://127.0.0.1:8000/api/truck-types \
   -H "Authorization: Bearer $TOKEN" \
   -H "Content-Type: application/json" \
@@ -197,7 +212,7 @@ curl -X POST http://127.0.0.1:8000/api/truck-types \
   }'
 
 echo -e '
-# UPDATE '
+### UPDATE '
 curl -X PUT http://127.0.0.1:8000/api/truck-types/1 \
   -H "Authorization: Bearer $TOKEN" \
   -H "Content-Type: application/json" \
@@ -206,7 +221,7 @@ curl -X PUT http://127.0.0.1:8000/api/truck-types/1 \
 
 
 echo -e '
-# DELETE '
+### DELETE '
 curl -X DELETE http://127.0.0.1:8000/api/truck-types/1 \
   -H "Authorization: Bearer $TOKEN" \
   -H "Accept: application/json"
@@ -214,8 +229,8 @@ curl -X DELETE http://127.0.0.1:8000/api/truck-types/1 \
 
 
 echo -e '
-#Projects '
-# CREATE
+## Projects '
+### CREATE
 curl -X POST http://127.0.0.1:8000/api/projects \
   -H "Authorization: Bearer $TOKEN" \
   -H "Content-Type: application/json" \
@@ -233,7 +248,7 @@ curl -X POST http://127.0.0.1:8000/api/projects \
   }'
 
 echo -e '
-# UPDATE '
+### UPDATE '
 curl -X PUT http://127.0.0.1:8000/api/projects/1 \
   -H "Authorization: Bearer $TOKEN" \
   -H "Content-Type: application/json" \
@@ -241,7 +256,7 @@ curl -X PUT http://127.0.0.1:8000/api/projects/1 \
   -d '{"title": "Projet Modifié"}'
 
 echo -e ' 
-# DELETE '
+### DELETE '
 curl -X DELETE http://127.0.0.1:8000/api/projects/1 \
   -H "Authorization: Bearer $TOKEN" \
   -H "Accept: application/json"
@@ -249,7 +264,7 @@ curl -X DELETE http://127.0.0.1:8000/api/projects/1 \
 
 
 echo -e '
-#Settings '
+## Settings '
 
 curl -X PUT http://127.0.0.1:8000/api/settings \
   -H "Authorization: Bearer $TOKEN" \

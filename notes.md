@@ -56,7 +56,11 @@ npm start
 
 
 # ***Default Admin Login Credentials***
-```json
-Email: admin@automotors.com
-Password: password123
+### Email: 
+```
+admin@automotors.com
+```
+### Password: 
+```
+password123
 ```

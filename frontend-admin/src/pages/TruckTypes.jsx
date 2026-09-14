@@ -112,7 +112,6 @@ const TruckTypes = () => {
         <table className="content-table">
           <thead>
             <tr>
-              <th>ID</th>
               <th>Icon</th>
               <th>Name</th>
               <th>Models</th>
@@ -128,7 +127,6 @@ const TruckTypes = () => {
             ) : (
               truckTypes.map((type) => (
                 <tr key={type.id}>
-                  <td>{type.id}</td>
                   <td className="icon-cell">{type.icon || '🚛'}</td>
                   <td>{type.name}</td>
                   <td>{type.models}</td>

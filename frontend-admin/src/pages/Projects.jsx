@@ -104,7 +104,6 @@ const Projects = () => {
         <table className="content-table">
           <thead>
             <tr>
-              <th>ID</th>
               <th>Image</th>
               <th>Title</th>
               <th>Description</th>
@@ -119,7 +118,6 @@ const Projects = () => {
             ) : (
               projects.map((project) => (
                 <tr key={project.id}>
-                  <td>{project.id}</td>
                   <td className="icon-cell">{project.image || '📁'}</td>
                   <td>{project.title}</td>
                   <td className="description-cell">{project.description}</td>

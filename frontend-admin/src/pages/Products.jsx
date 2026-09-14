@@ -131,7 +131,6 @@ const Products = () => {
         <table className="content-table">
           <thead>
             <tr>
-              <th>ID</th>
               <th>Name</th>
               <th>Category</th>
               <th>Price</th>
@@ -147,7 +146,6 @@ const Products = () => {
             ) : (
               products.map((product) => (
                 <tr key={product.id}>
-                  <td>{product.id}</td>
                   <td>{product.name}</td>
                   <td><span className={`category-badge ${product.category}`}>{product.category}</span></td>
                   <td>€{product.price}</td>

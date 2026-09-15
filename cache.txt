@@ -22,25 +22,30 @@ hkali@hkali-G3-3779:~/Desktop/VioletPro/AutoMotors/frontend-admin$
 
 
 
-
-
-
 #ffd878 ---> #e5a91f
 
 #e51f1f
 
 
 
-
-
-
-
-
-
-
-
-
-
-
 previous colors:
 $secondary-color: #e63946
+
+
+
+
+
+
+
+
+icons:
+import { TbBrandMercedes } from "react-icons/tb";
+<TbBrandMercedes />
+import { SiDaf } from "react-icons/si";
+<SiDaf />
+import { SiRenault } from "react-icons/si";
+<SiRenault />
+import { SiVolvo } from "react-icons/si";
+<SiVolvo />
+import { SiScania } from "react-icons/si";
+<SiScania />

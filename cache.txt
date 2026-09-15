@@ -18,3 +18,29 @@ hkali@hkali-G3-3779:~/Desktop/VioletPro/AutoMotors/frontend-admin$ npm start
 Invalid options object. Dev Server has been initialized using an options object that does not match the API schema.
  - options.allowedHosts[0] should be a non-empty string.
 hkali@hkali-G3-3779:~/Desktop/VioletPro/AutoMotors/frontend-admin$ 
+
+
+
+
+
+
+
+#ffd878 ---> #e5a91f
+
+#e51f1f
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+previous colors:
+$secondary-color: #e63946

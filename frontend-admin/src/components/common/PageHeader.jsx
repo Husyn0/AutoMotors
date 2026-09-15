@@ -1,12 +1,23 @@
 // src/components/common/PageHeader.jsx
 import React from 'react';
-import { FaPlus } from 'react-icons/fa';
+import { FaPlus, FaTimes } from 'react-icons/fa';
 
-const PageHeader = ({ title, onAdd, addLabel = 'Add' }) => (
+const PageHeader = ({
+  title,
+  onAdd,
+  addLabel = 'Add',
+  isFormOpen = false,
+}) => (
   <div className="page-header">
     <h1>{title}</h1>
-    <button className="btn-add" onClick={onAdd}>
-      <FaPlus /> {addLabel}
+    <button
+      className={`btn-add ${isFormOpen ? 'btn-add--cancel' : ''}`}
+      onClick={onAdd}
+      aria-expanded={isFormOpen}
+      aria-controls="crud-form"
+    >
+      {isFormOpen ? <FaTimes /> : <FaPlus />}
+      {isFormOpen ? 'Cancel' : addLabel}
     </button>
   </div>
 );

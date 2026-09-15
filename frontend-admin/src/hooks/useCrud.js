@@ -12,6 +12,9 @@ export const useCrud = (api, initialFormData, options = {}) => {
   const [formData, setFormData] = useState(initialFormData);
   const [error, setError] = useState(null);
 
+  // ── Form visibility ────────────────────────────────────────────
+  const [isFormOpen, setIsFormOpen] = useState(false);
+
   // ── Pagination state ───────────────────────────────────────────
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(initialPageSize);
@@ -39,6 +42,24 @@ export const useCrud = (api, initialFormData, options = {}) => {
     setEditing(null);
   }, [initialFormData]);
 
+  const openFormForCreate = useCallback(() => {
+    resetForm();
+    setIsFormOpen(true);
+  }, [resetForm]);
+
+  const closeForm = useCallback(() => {
+    resetForm();
+    setIsFormOpen(false);
+  }, [resetForm]);
+
+  const toggleForm = useCallback(() => {
+    if (isFormOpen) {
+      closeForm();
+    } else {
+      openFormForCreate();
+    }
+  }, [isFormOpen, closeForm, openFormForCreate]);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -47,7 +68,7 @@ export const useCrud = (api, initialFormData, options = {}) => {
       } else {
         await api.create(formData);
       }
-      resetForm();
+      closeForm();
       fetchItems();
     } catch (err) {
       console.error('Error saving item:', err);
@@ -61,6 +82,7 @@ export const useCrud = (api, initialFormData, options = {}) => {
       next[key] = item[key] ?? initialFormData[key];
     });
     setFormData(next);
+    setIsFormOpen(true);
   };
 
   const handleDelete = async (id, itemLabel = 'item') => {
@@ -81,7 +103,6 @@ export const useCrud = (api, initialFormData, options = {}) => {
   const totalItems = items.length;
   const totalPages = Math.max(1, Math.ceil(totalItems / pageSize));
 
-  // Clamp page when totalPages shrinks (e.g. after delete or page-size change)
   useEffect(() => {
     if (page > totalPages) setPage(totalPages);
   }, [page, totalPages]);
@@ -105,13 +126,17 @@ export const useCrud = (api, initialFormData, options = {}) => {
     editing,
     formData,
 
-    // form handlers
+    // form
+    isFormOpen,
     setFormData,
     handleChange,
     handleSubmit,
     handleEdit,
     handleDelete,
     resetForm,
+    openFormForCreate,
+    closeForm,
+    toggleForm,
 
     // pagination
     page,

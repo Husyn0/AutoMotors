@@ -1,5 +1,5 @@
 // src/components/common/CrudPage.jsx
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import PageHeader from './PageHeader';
 import CrudForm from './CrudForm';
 import CrudTable from './CrudTable';
@@ -20,11 +20,13 @@ const CrudPage = ({
     loading,
     editing,
     formData,
+    isFormOpen,
     handleChange,
     handleSubmit,
     handleEdit,
     handleDelete,
-    resetForm,
+    closeForm,
+    toggleForm,
     // pagination
     page,
     pageSize,
@@ -34,21 +36,43 @@ const CrudPage = ({
     handlePageSizeChange,
   } = useCrud(api, initialFormData, { initialPageSize });
 
+  // Scroll the form into view when it opens via Edit
+  const formWrapperRef = useRef(null);
+  useEffect(() => {
+    if (isFormOpen && editing) {
+      formWrapperRef.current?.scrollIntoView({
+        behavior: 'smooth',
+        block: 'nearest',
+      });
+    }
+  }, [isFormOpen, editing]);
+
   return (
     <div className="content-page">
       <PageHeader
         title={title}
-        onAdd={resetForm}
+        onAdd={toggleForm}
         addLabel={`Add ${entityName}`}
+        isFormOpen={isFormOpen}
       />
-      <CrudForm
-        fields={fields}
-        formData={formData}
-        onChange={handleChange}
-        onSubmit={handleSubmit}
-        isEditing={!!editing}
-        entityName={entityName}
-      />
+
+      <div
+        ref={formWrapperRef}
+        className={`crud-form-wrapper ${isFormOpen ? 'open' : 'closed'}`}
+      >
+        {isFormOpen && (
+          <CrudForm
+            fields={fields}
+            formData={formData}
+            onChange={handleChange}
+            onSubmit={handleSubmit}
+            onCancel={closeForm}
+            isEditing={!!editing}
+            entityName={entityName}
+          />
+        )}
+      </div>
+
       <CrudTable
         columns={columns}
         items={pagedItems}

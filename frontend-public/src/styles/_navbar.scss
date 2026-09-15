@@ -11,44 +11,68 @@
   transition: all 0.3s ease;
 
   &-container {
-    @include container;
-    @include flex-between;
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 2rem;
+  width: 100%;
+  max-width: 100%;        // ✅ full width, not 1200px
+  margin: 0 auto;
+  padding: 0 2rem;        // side padding — reduce to 1rem or 1.5rem if you want tighter
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+
+  @media (max-width: $tablet) {
+    padding: 0 1.5rem;
   }
 
+  @media (max-width: $mobile) {
+    padding: 0 1rem;
+  }
+}
+
   &-logo {
-    @include flex-center;
+    display: flex;
+    align-items: center;
     gap: 0.5rem;
     cursor: pointer;
-    
-    
+    flex-shrink: 0;
+
     .logo-icon {
       font-size: 2rem;
-      filter: drop-shadow(0px 0px 5px rgb(255, 255, 255));
+      filter: drop-shadow(0 0 5px rgb(255, 255, 255));
+      display: flex;
+      align-items: center;
+
+      img {
+        width: 80px;
+        height: auto;
+      }
+
       @media (max-width: $mobile) {
         font-size: 1.5rem;
+        img { width: 60px; }
       }
     }
-    
+
     .logo-text {
       color: $white;
       font-size: 1.5rem;
       font-weight: 700;
       letter-spacing: 2px;
-      
+
       @media (max-width: $mobile) {
         font-size: 1.2rem;
       }
     }
   }
 
+  // Nav links (center)
   &-menu {
     display: flex;
     gap: 1.5rem;
     list-style: none;
     align-items: center;
+    margin: 0;
+    padding: 0;
 
     li {
       position: relative;
@@ -78,7 +102,7 @@
         &.active {
           color: $white;
           background: rgba($white, 0.15);
-          
+
           .active-indicator {
             position: absolute;
             bottom: -2px;
@@ -95,11 +119,33 @@
     }
   }
 
+  // Language toggle (right)
+  &-lang {
+    flex-shrink: 0;
+
+    @media (max-width: $tablet) {
+      display: none; // hide on mobile; shown inside dropdown instead
+    }
+  }
+  .navbar-lang-mobile {
+  display: none; // hidden on desktop
+
+  @media (max-width: $tablet) {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    margin-top: 0.75rem;
+    padding-top: 0.75rem;
+    border-top: 1px solid rgba($white, 0.15);
+  }
+  }
+
   &-toggle {
     display: none;
     flex-direction: column;
     cursor: pointer;
-    
+    flex-shrink: 0;
+
     span {
       width: 25px;
       height: 3px;
@@ -115,16 +161,11 @@
   }
 
   @keyframes slideIn {
-    from {
-      width: 0;
-      opacity: 0;
-    }
-    to {
-      width: 20px;
-      opacity: 1;
-    }
+    from { width: 0; opacity: 0; }
+    to   { width: 20px; opacity: 1; }
   }
 
+  // ----- TABLET / MOBILE -----
   @media (max-width: $tablet) {
     &-toggle {
       display: flex;
@@ -140,23 +181,20 @@
       background: $primary-color;
       padding: 1rem;
       box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-      
+      gap: 0.5rem;
+
       &.active {
         display: flex;
       }
-      
+
       li {
         width: 100%;
         text-align: center;
-        
+
         button {
           width: 100%;
           padding: 0.8rem;
           font-size: 1rem;
-
-          &.active .active-indicator {
-            bottom: 0;
-          }
         }
       }
     }

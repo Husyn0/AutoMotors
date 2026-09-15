@@ -4,9 +4,6 @@ import { LanguageContext } from '../../App';
 import LanguageToggle from './LanguageToggle';
 import logo from '../../assets/output/logo1.ico';
 
-
-
-
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [activeSection, setActiveSection] = useState('home');
@@ -30,7 +27,6 @@ const Navbar = () => {
         if (section) {
           const sectionTop = section.offsetTop;
           const sectionBottom = sectionTop + section.offsetHeight;
-          
           if (scrollPosition >= sectionTop && scrollPosition < sectionBottom) {
             setActiveSection(navItems[i].id);
             break;
@@ -40,8 +36,7 @@ const Navbar = () => {
     };
 
     window.addEventListener('scroll', handleScroll);
-    handleScroll(); // Initial check
-
+    handleScroll();
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
@@ -57,24 +52,19 @@ const Navbar = () => {
   return (
     <nav className="navbar">
       <div className="navbar-container">
+        {/* LEFT: Logo */}
         <div className="navbar-logo" onClick={() => scrollToSection('home')}>
           <span className="logo-icon">
-            <img src={logo} style={{width:100}}/>
-
-            </span>
+            <img src={logo} style={{ width: 100 }} alt="AUTOMOTORS" />
+          </span>
           <span className="logo-text">AUTOMOTORS</span>
         </div>
 
-        <div className="navbar-toggle" onClick={() => setIsOpen(!isOpen)}>
-          <span></span>
-          <span></span>
-          <span></span>
-        </div>
-
+        {/* CENTER: Nav links */}
         <ul className={`navbar-menu ${isOpen ? 'active' : ''}`}>
           {navItems.map((item) => (
             <li key={item.id}>
-              <button 
+              <button
                 onClick={() => scrollToSection(item.id)}
                 className={activeSection === item.id ? 'active' : ''}
               >
@@ -83,10 +73,24 @@ const Navbar = () => {
               </button>
             </li>
           ))}
-          <li>
+
+          {/* ✅ Language toggle INSIDE the mobile dropdown */}
+          <li className="navbar-lang-mobile">
             <LanguageToggle />
           </li>
         </ul>
+
+        {/* RIGHT: Language toggle (desktop only) */}
+        <div className="navbar-lang">
+          <LanguageToggle />
+        </div>
+
+        {/* Mobile hamburger */}
+        <div className="navbar-toggle" onClick={() => setIsOpen(!isOpen)}>
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
       </div>
     </nav>
   );

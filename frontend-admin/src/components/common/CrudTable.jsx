@@ -1,17 +1,23 @@
 // src/components/common/CrudTable.jsx
 import React from 'react';
 import { FaEdit, FaTrash } from 'react-icons/fa';
+import Pagination from './Pagination';
 
-/**
- * @param {Object} props
- * @param {Array} props.columns - [{ key, label, render?, className? }]
- * @param {Array} props.items
- * @param {boolean} props.loading
- * @param {(item) => void} props.onEdit
- * @param {(id) => void} props.onDelete
- * @param {number} props.colSpan - total columns + 1 (for actions)
- */
-const CrudTable = ({ columns, items, loading, onEdit, onDelete, colSpan }) => {
+const CrudTable = ({
+  columns,
+  items,
+  loading,
+  onEdit,
+  onDelete,
+  colSpan,
+  // pagination
+  page,
+  pageSize,
+  totalItems,
+  totalPages,
+  onPageChange,
+  onPageSizeChange,
+}) => {
   return (
     <div className="table-container">
       <table className="content-table">
@@ -49,6 +55,17 @@ const CrudTable = ({ columns, items, loading, onEdit, onDelete, colSpan }) => {
           )}
         </tbody>
       </table>
+
+      {!loading && (
+        <Pagination
+          page={page}
+          pageSize={pageSize}
+          totalItems={totalItems}
+          totalPages={totalPages}
+          onPageChange={onPageChange}
+          onPageSizeChange={onPageSizeChange}
+        />
+      )}
     </div>
   );
 };

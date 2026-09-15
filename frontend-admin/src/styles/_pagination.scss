@@ -1,0 +1,102 @@
+// src/styles/_pagination.scss
+.pagination {
+  @include flex-between;
+  flex-wrap: wrap;
+  gap: $spacing-md;
+  padding: $spacing-md $spacing-lg;
+  border-top: 1px solid #f0f0f0;
+  background: #fafbfc;
+
+  .pagination-info {
+    color: #666;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: $spacing-lg;
+    flex-wrap: wrap;
+
+    strong {
+      color: $dark;
+      font-weight: 600;
+    }
+
+    .pagination-size {
+      display: flex;
+      align-items: center;
+      gap: $spacing-sm;
+
+      label {
+        color: #666;
+      }
+
+      select {
+        padding: 4px 8px;
+        border: 1px solid $input-border-color;
+        border-radius: $border-radius-sm;
+        background: white;
+        font-size: 13px;
+        cursor: pointer;
+
+        &:focus {
+          outline: none;
+          border-color: $primary;
+        }
+      }
+    }
+  }
+
+  .pagination-controls {
+    display: flex;
+    align-items: center;
+    gap: $spacing-xs;
+  }
+
+  .pagination-btn {
+    min-width: 34px;
+    height: 34px;
+    padding: 0 10px;
+    border: 1px solid $input-border-color;
+    background: white;
+    color: $dark;
+    border-radius: $border-radius-sm;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    @include flex-center;
+    transition: all $transition-fast;
+
+    &:hover:not(:disabled):not(.active) {
+      background: #f0f4f8;
+      border-color: $primary;
+      color: $primary;
+    }
+
+    &.active {
+      background: $primary;
+      border-color: $primary;
+      color: white;
+      cursor: default;
+    }
+
+    &:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+    }
+  }
+
+  .pagination-ellipsis {
+    min-width: 24px;
+    text-align: center;
+    color: #999;
+    user-select: none;
+  }
+
+  @include tablet-down {
+    justify-content: center;
+
+    .pagination-info {
+      justify-content: center;
+      width: 100%;
+    }
+  }
+}

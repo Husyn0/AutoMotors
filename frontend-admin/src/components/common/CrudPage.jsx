@@ -5,16 +5,6 @@ import CrudForm from './CrudForm';
 import CrudTable from './CrudTable';
 import { useCrud } from '../../hooks/useCrud';
 
-/**
- * @param {Object} props
- * @param {string} props.title             - Page title
- * @param {string} props.entityName        - e.g. "Product"
- * @param {string} props.entityNamePlural  - e.g. "products" (for delete confirm)
- * @param {Object} props.api               - { list, create, update, remove }
- * @param {Object} props.initialFormData
- * @param {Array}  props.fields            - Form config
- * @param {Array}  props.columns           - Table config
- */
 const CrudPage = ({
   title,
   entityName,
@@ -23,9 +13,10 @@ const CrudPage = ({
   initialFormData,
   fields,
   columns,
+  initialPageSize = 10,
 }) => {
   const {
-    items,
+    pagedItems,
     loading,
     editing,
     formData,
@@ -34,7 +25,14 @@ const CrudPage = ({
     handleEdit,
     handleDelete,
     resetForm,
-  } = useCrud(api, initialFormData);
+    // pagination
+    page,
+    pageSize,
+    totalItems,
+    totalPages,
+    setPage,
+    handlePageSizeChange,
+  } = useCrud(api, initialFormData, { initialPageSize });
 
   return (
     <div className="content-page">
@@ -53,11 +51,17 @@ const CrudPage = ({
       />
       <CrudTable
         columns={columns}
-        items={items}
+        items={pagedItems}
         loading={loading}
         onEdit={handleEdit}
         onDelete={(id) => handleDelete(id, entityNamePlural)}
         colSpan={columns.length + 1}
+        page={page}
+        pageSize={pageSize}
+        totalItems={totalItems}
+        totalPages={totalPages}
+        onPageChange={setPage}
+        onPageSizeChange={handlePageSizeChange}
       />
     </div>
   );

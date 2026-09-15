@@ -61,17 +61,19 @@
     border-radius: 12px;
     text-align: center;
     transition: $transition;
-    border: 1px solid rgba(0, 0, 0, 0.04);
+    border: 2px solid transparent;
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
     min-height: 220px;
 
     &:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
       border-color: $primary-color;
-    }
+      filter:
+        drop-shadow(0 0 6px rgba($primary-color, 0.7))
+        drop-shadow(0 0 18px rgba($primary-color, 0.35));
+      transform: translateY(-5px);
+    } 
 
     .project-image {
       font-size: 4rem;

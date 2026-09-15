@@ -4,3 +4,4 @@ __pycache__/
 *.log
 package-lock.json
 /backend-laravel/vendor/
+cache.txt

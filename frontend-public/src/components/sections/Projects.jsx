@@ -16,13 +16,20 @@ const Projects = () => {
   const scrollContainerRef = useRef(null);
   const autoScrollInterval = useRef(null);
   const [isAutoScrolling, setIsAutoScrolling] = useState(true);
-  const [activeIndex, setActiveIndex] = useState(0); // which dot is active
+  const [activeIndex, setActiveIndex] = useState(0);
 
-  // ---- Compute "pages" (how many dots) ----
-  // Each "page" is a card. If you want pages of 2 cards, adjust below.
+  // 🆕 Modal state
+  const [selectedProject, setSelectedProject] = useState(null);
+
+  // ---- Helpers ----
+  const isImageUrl = (value) =>
+    typeof value === 'string' &&
+    (value.startsWith('/') ||
+      value.startsWith('http') ||
+      /\.(png|jpe?g|gif|webp|svg|avif)$/i.test(value));
+
   const totalPages = projects.length;
 
-  // ---- Scroll to a specific card ----
   const scrollToIndex = (index) => {
     const container = scrollContainerRef.current;
     if (!container) return;
@@ -36,43 +43,35 @@ const Projects = () => {
     }
   };
 
-  // ---- Detect the currently visible card while scrolling ----
   const handleScroll = () => {
     const container = scrollContainerRef.current;
     if (!container) return;
     const cards = container.querySelectorAll('.project-card');
-    const containerLeft = container.scrollLeft;
-    const containerCenter = containerLeft + container.clientWidth / 2;
-
+    const center = container.scrollLeft + container.clientWidth / 2;
     let closest = 0;
     let closestDist = Infinity;
     cards.forEach((card, i) => {
       const cardCenter = card.offsetLeft + card.offsetWidth / 2;
-      const dist = Math.abs(cardCenter - containerCenter);
-      if (dist < closestDist) {
-        closestDist = dist;
+      const d = Math.abs(cardCenter - center);
+      if (d < closestDist) {
+        closestDist = d;
         closest = i;
       }
     });
     setActiveIndex(closest);
   };
 
-  // ---- Auto-scroll (advances one card at a time) ----
   const startAutoScroll = () => {
     if (autoScrollInterval.current) clearInterval(autoScrollInterval.current);
-
     autoScrollInterval.current = setInterval(() => {
       if (!scrollContainerRef.current || !isAutoScrolling) return;
-      const next = (activeIndex + 1) % totalPages;
-      scrollToIndex(next);
+      scrollToIndex((activeIndex + 1) % totalPages);
     }, 4000);
   };
 
   const stopAutoScroll = () => {
-    if (autoScrollInterval.current) {
-      clearInterval(autoScrollInterval.current);
-      autoScrollInterval.current = null;
-    }
+    if (autoScrollInterval.current) clearInterval(autoScrollInterval.current);
+    autoScrollInterval.current = null;
     setIsAutoScrolling(false);
   };
 
@@ -81,7 +80,6 @@ const Projects = () => {
     startAutoScroll();
   };
 
-  // Start / stop auto-scroll based on state
   useEffect(() => {
     if (isAutoScrolling) startAutoScroll();
     return () => {
@@ -89,9 +87,18 @@ const Projects = () => {
     };
   }, [isAutoScrolling, activeIndex]);
 
-  // Pause when user manually swipes, resume after a delay
-  const handleTouchStart = () => stopAutoScroll();
-  const handleTouchEnd = () => setTimeout(resumeAutoScroll, 3000);
+  // 🆕 Esc closes the modal + lock body scroll while open
+  useEffect(() => {
+    if (!selectedProject) return;
+    const onKey = (e) => e.key === 'Escape' && setSelectedProject(null);
+    document.addEventListener('keydown', onKey);
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.removeEventListener('keydown', onKey);
+      document.body.style.overflow = prev;
+    };
+  }, [selectedProject]);
 
   if (loading) return <div className="loader">Loading projects…</div>;
 
@@ -108,13 +115,31 @@ const Projects = () => {
             onScroll={handleScroll}
             onMouseEnter={stopAutoScroll}
             onMouseLeave={resumeAutoScroll}
-            onTouchStart={handleTouchStart}
-            onTouchEnd={handleTouchEnd}
+            onTouchStart={stopAutoScroll}
+            onTouchEnd={() => setTimeout(resumeAutoScroll, 3000)}
           >
             <div className="projects-track">
               {projects.map((project) => (
-                <div key={project.id} className="project-card">
-                  <div className="project-image">{project.image}</div>
+                <div
+                  key={project.id}
+                  className="project-card"
+                  onClick={() => setSelectedProject(project)}
+                  role="button"
+                  tabIndex={0}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      e.preventDefault();
+                      setSelectedProject(project);
+                    }
+                  }}
+                >
+                  <div className="project-image">
+                    {isImageUrl(project.image) ? (
+                      <img src={project.image} alt={project.title} />
+                    ) : (
+                      project.image
+                    )}
+                  </div>
                   <h3>{project.title}</h3>
                   <p>{project.description}</p>
                 </div>
@@ -123,7 +148,7 @@ const Projects = () => {
           </div>
         </div>
 
-        {/* ✅ Pagination dots below */}
+        {/* Pagination dots */}
         <div className="projects-dots" role="tablist" aria-label="Project pagination">
           {projects.map((project, index) => (
             <button
@@ -142,6 +167,43 @@ const Projects = () => {
           ))}
         </div>
       </div>
+
+      {/* 🆕 Lightbox / modal */}
+      {selectedProject && (
+        <div
+          className="project-modal-overlay"
+          onClick={() => setSelectedProject(null)}
+          role="dialog"
+          aria-modal="true"
+          aria-label={selectedProject.title}
+        >
+          <div
+            className="project-modal"
+            onClick={(e) => e.stopPropagation()} // don't close when clicking the content
+          >
+            <button
+              className="project-modal-close"
+              onClick={() => setSelectedProject(null)}
+              aria-label="Close"
+            >
+              ×
+            </button>
+
+            <div className="project-modal-media">
+              {isImageUrl(selectedProject.image) ? (
+                <img src={selectedProject.image} alt={selectedProject.title} />
+              ) : (
+                <span className="project-modal-emoji">{selectedProject.image}</span>
+              )}
+            </div>
+
+            <div className="project-modal-info">
+              <h3>{selectedProject.title}</h3>
+              <p>{selectedProject.description}</p>
+            </div>
+          </div>
+        </div>
+      )}
     </section>
   );
 };

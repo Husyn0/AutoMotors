@@ -132,6 +132,45 @@
         }
       }
     }
+
+    .locale-tabs {
+    display: flex;
+    gap: $spacing-xs;
+    margin-bottom: $spacing-lg;
+    border-bottom: 1px solid #e5e7eb;
+    padding-bottom: 0;
+
+    .locale-tab {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 16px;
+      background: transparent;
+      border: none;
+      border-bottom: 2px solid transparent;
+      color: #6b7280;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all $transition-fast;
+      margin-bottom: -1px;
+
+      .locale-flag {
+        font-size: 16px;
+        line-height: 1;
+      }
+      &:hover {
+        color: $primary;
+        background: #f8f9fa;
+      }
+
+      &.active {
+        color: $primary;
+        border-bottom-color: $primary;
+        font-weight: 600;
+      }
+    }
+  }
   }
 
   .table-container {

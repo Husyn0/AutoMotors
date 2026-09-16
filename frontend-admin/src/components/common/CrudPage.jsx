@@ -27,6 +27,10 @@ const CrudPage = ({
     handleDelete,
     closeForm,
     toggleForm,
+    // translations
+    activeLocale,
+    setActiveLocale,
+    isTranslatable,
     // pagination
     page,
     pageSize,
@@ -36,7 +40,6 @@ const CrudPage = ({
     handlePageSizeChange,
   } = useCrud(api, initialFormData, { initialPageSize });
 
-  // Scroll the form into view when it opens via Edit
   const formWrapperRef = useRef(null);
   useEffect(() => {
     if (isFormOpen && editing) {
@@ -69,6 +72,9 @@ const CrudPage = ({
             onCancel={closeForm}
             isEditing={!!editing}
             entityName={entityName}
+            activeLocale={activeLocale}
+            onLocaleChange={setActiveLocale}
+            isTranslatable={isTranslatable}
           />
         )}
       </div>

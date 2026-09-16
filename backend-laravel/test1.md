@@ -100,17 +100,20 @@ TOKEN=$(curl -s -X POST http://127.0.0.1:8000/api/auth/login \
   | grep -o '"token":"[^"]*"' | cut -d'"' -f4)
 
 echo $TOKEN
+```
 echo -e '
-#Auth check
+##Auth check
 ### Current user  '
 
+```bash
 curl http://127.0.0.1:8000/api/auth/me \
   -H "Authorization: Bearer $TOKEN" \
   -H "Accept: application/json"
+```
 echo -e '
 
 ### Logout '
-
+```bash
 curl -X POST http://127.0.0.1:8000/api/auth/logout \
   -H "Authorization: Bearer $TOKEN" \
   -H "Accept: application/json"
@@ -142,21 +145,24 @@ curl -X POST http://127.0.0.1:8000/api/products \
 ```
 echo -e '
 ### UPDATE (replace 1 with actual ID) '
+```bash
 curl -X PUT http://127.0.0.1:8000/api/products/1 \
   -H "Authorization: Bearer $TOKEN" \
   -H "Content-Type: application/json" \
   -H "Accept: application/json" \
   -d '{"price": 79.99}'
-
+```
 ### DELETE
+```bash
 curl -X DELETE http://127.0.0.1:8000/api/products/1 \
   -H "Authorization: Bearer $TOKEN" \
   -H "Accept: application/json"
-
+```
 
 echo -e '
 ## Services
 ### CREATE '
+```bash
 curl -X POST http://127.0.0.1:8000/api/services \
   -H "Authorization: Bearer $TOKEN" \
   -H "Content-Type: application/json" \
@@ -164,7 +170,6 @@ curl -X POST http://127.0.0.1:8000/api/services \
   -d '{
     "title": "Service Test",
     "description": "Description test",
-    "icon": "🔧",
     "translations": {
       "en": {
         "title": "Test Service",
@@ -172,21 +177,23 @@ curl -X POST http://127.0.0.1:8000/api/services \
       }
     }
   }'
-
+```
 echo -e '
 ### UPDATE '
+```bash
 curl -X PUT http://127.0.0.1:8000/api/services/1 \
   -H "Authorization: Bearer $TOKEN" \
   -H "Content-Type: application/json" \
   -H "Accept: application/json" \
   -d '{"title": "Service Modifié"}'
-
+```
 echo -e '
 ### DELETE '
+```bash
 curl -X DELETE http://127.0.0.1:8000/api/services/1 \
   -H "Authorization: Bearer $TOKEN" \
   -H "Accept: application/json"
-
+```
 
 
 
@@ -194,6 +201,7 @@ curl -X DELETE http://127.0.0.1:8000/api/services/1 \
 echo -e '
 ## Truck Types
 ### CREATE '
+```bash
 curl -X POST http://127.0.0.1:8000/api/truck-types \
   -H "Authorization: Bearer $TOKEN" \
   -H "Content-Type: application/json" \
@@ -210,27 +218,30 @@ curl -X POST http://127.0.0.1:8000/api/truck-types \
       }
     }
   }'
-
+```
 echo -e '
 ### UPDATE '
+```bash
 curl -X PUT http://127.0.0.1:8000/api/truck-types/1 \
   -H "Authorization: Bearer $TOKEN" \
   -H "Content-Type: application/json" \
   -H "Accept: application/json" \
   -d '{"name": "Camion Modifié"}'
-
+```
 
 echo -e '
 ### DELETE '
+```bash
 curl -X DELETE http://127.0.0.1:8000/api/truck-types/1 \
   -H "Authorization: Bearer $TOKEN" \
   -H "Accept: application/json"
-
+```
 
 
 echo -e '
 ## Projects '
 ### CREATE
+```bash
 curl -X POST http://127.0.0.1:8000/api/projects \
   -H "Authorization: Bearer $TOKEN" \
   -H "Content-Type: application/json" \
@@ -246,26 +257,28 @@ curl -X POST http://127.0.0.1:8000/api/projects \
       }
     }
   }'
-
+```
 echo -e '
 ### UPDATE '
+```bash
 curl -X PUT http://127.0.0.1:8000/api/projects/1 \
   -H "Authorization: Bearer $TOKEN" \
   -H "Content-Type: application/json" \
   -H "Accept: application/json" \
   -d '{"title": "Projet Modifié"}'
-
+```
 echo -e ' 
 ### DELETE '
+```bash
 curl -X DELETE http://127.0.0.1:8000/api/projects/1 \
   -H "Authorization: Bearer $TOKEN" \
   -H "Accept: application/json"
-
+```
 
 
 echo -e '
 ## Settings '
-
+```bash
 curl -X PUT http://127.0.0.1:8000/api/settings \
   -H "Authorization: Bearer $TOKEN" \
   -H "Content-Type: application/json" \
@@ -274,6 +287,4 @@ curl -X PUT http://127.0.0.1:8000/api/settings \
     "company_name": "AUTOMOTORS CI",
     "email_address": "new@automotors.com"
   }'
-
-
-
+```

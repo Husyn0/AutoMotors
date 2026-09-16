@@ -3,6 +3,12 @@ import { useState, useEffect, useCallback, useMemo } from 'react';
 
 const DEFAULT_PAGE_SIZE = 10;
 
+/**
+ * Fields that should NOT be duplicated into translations.
+ * These are language-agnostic (images, prices, categories, icons...).
+ */
+const NON_TRANSLATABLE_FIELDS = new Set(['price', 'category', 'image', 'icon']);
+
 export const useCrud = (api, initialFormData, options = {}) => {
   const { initialPageSize = DEFAULT_PAGE_SIZE } = options;
 
@@ -14,6 +20,10 @@ export const useCrud = (api, initialFormData, options = {}) => {
 
   // ── Form visibility ────────────────────────────────────────────
   const [isFormOpen, setIsFormOpen] = useState(false);
+
+  // ── Translation state ──────────────────────────────────────────
+  // Which language tab is active: 'fr' (base) or 'en' (translation)
+  const [activeLocale, setActiveLocale] = useState('fr');
 
   // ── Pagination state ───────────────────────────────────────────
   const [page, setPage] = useState(1);
@@ -40,6 +50,7 @@ export const useCrud = (api, initialFormData, options = {}) => {
   const resetForm = useCallback(() => {
     setFormData(initialFormData);
     setEditing(null);
+    setActiveLocale('fr');
   }, [initialFormData]);
 
   const openFormForCreate = useCallback(() => {
@@ -60,13 +71,52 @@ export const useCrud = (api, initialFormData, options = {}) => {
     }
   }, [isFormOpen, closeForm, openFormForCreate]);
 
+  /**
+   * Build the payload sent to the API.
+   * - Base fields (FR) are sent at the root.
+   * - Translatable fields for other locales go inside `translations`.
+   */
+  const buildPayload = useCallback(() => {
+    const base = {};
+    const translations = {};
+
+    Object.keys(formData).forEach((key) => {
+      // Skip the internal `translations` container
+      if (key === 'translations') return;
+
+      const value = formData[key];
+
+      // Locale-scoped keys look like `en.name`, `en.description`
+      const localeMatch = key.match(/^([a-z]{2})\.(.+)$/);
+      if (localeMatch) {
+        const [, locale, field] = localeMatch;
+        if (!translations[locale]) translations[locale] = {};
+        // Only keep non-empty values
+        if (value !== '' && value !== null && value !== undefined) {
+          translations[locale][field] = value;
+        }
+        return;
+      }
+
+      base[key] = value;
+    });
+
+    // Attach translations only if at least one locale has values
+    const hasTranslations = Object.values(translations).some(
+      (localeObj) => Object.keys(localeObj).length > 0
+    );
+
+    return hasTranslations ? { ...base, translations } : base;
+  }, [formData]);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      const payload = buildPayload();
       if (editing) {
-        await api.update(editing.id, formData);
+        await api.update(editing.id, payload);
       } else {
-        await api.create(formData);
+        await api.create(payload);
       }
       closeForm();
       fetchItems();
@@ -77,11 +127,27 @@ export const useCrud = (api, initialFormData, options = {}) => {
 
   const handleEdit = (item) => {
     setEditing(item);
+
+    // Start from the initial shape so we always have the right keys
     const next = { ...initialFormData };
+
+    // Hydrate base (FR) fields
     Object.keys(initialFormData).forEach((key) => {
+      if (key === 'translations') return;
       next[key] = item[key] ?? initialFormData[key];
     });
+
+    // Hydrate EN translations if present
+    const itemTranslations = item.translations || {};
+    Object.entries(itemTranslations).forEach(([locale, fields]) => {
+      if (locale === 'fr') return; // FR is stored as base fields
+      Object.entries(fields).forEach(([field, value]) => {
+        next[`${locale}.${field}`] = value ?? '';
+      });
+    });
+
     setFormData(next);
+    setActiveLocale('fr');
     setIsFormOpen(true);
   };
 
@@ -95,6 +161,12 @@ export const useCrud = (api, initialFormData, options = {}) => {
     }
   };
 
+  /**
+   * Unified change handler.
+   * Accepts either:
+   *   handleChange('name', value)          → base (FR) field
+   *   handleChange('en.name', value)       → translated field
+   */
   const handleChange = (key, value) => {
     setFormData((prev) => ({ ...prev, [key]: value }));
   };
@@ -137,6 +209,11 @@ export const useCrud = (api, initialFormData, options = {}) => {
     openFormForCreate,
     closeForm,
     toggleForm,
+
+    // translations
+    activeLocale,
+    setActiveLocale,
+    isTranslatable: (fieldName) => !NON_TRANSLATABLE_FIELDS.has(fieldName),
 
     // pagination
     page,

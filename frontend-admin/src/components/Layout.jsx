@@ -10,6 +10,7 @@ import {
   FaSignOutAlt,
   FaBars,
   FaCogs,
+  FaUsers
 } from 'react-icons/fa';
 import { useAuth } from '../context/AuthContext';
 
@@ -24,6 +25,7 @@ const Layout = () => {
     { path: '/services', label: 'Services', icon: <FaCog /> },
     { path: '/truck-types', label: 'Truck Types', icon: <FaTruck /> },
     { path: '/projects', label: 'Projects', icon: <FaProjectDiagram /> },
+    { path: '/users',       label: 'Users',       icon: <FaUsers /> },
     { path: '/settings', label: 'Settings', icon: <FaCogs /> },
   ];
 

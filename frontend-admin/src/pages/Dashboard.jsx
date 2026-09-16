@@ -1,6 +1,7 @@
 // src/pages/Dashboard.jsx
 import React, { useState, useEffect } from 'react';
-import { FaBox, FaCog, FaTruck, FaProjectDiagram } from 'react-icons/fa';
+import { Link } from 'react-router-dom';
+import { FaBox, FaCog, FaTruck, FaProjectDiagram, FaUsers, FaUserPlus } from 'react-icons/fa';
 import {
   BarChart,
   Bar,
@@ -59,6 +60,7 @@ const Dashboard = () => {
     { title: 'Services', value: stats.services, icon: <FaCog />, color: '#2196F3' },
     { title: 'Truck Types', value: stats.truckTypes, icon: <FaTruck />, color: '#FF9800' },
     { title: 'Projects', value: stats.projects, icon: <FaProjectDiagram />, color: '#9C27B0' },
+    { title: 'Admins',      value: 1,                icon: <FaUsers />,         color: '#E91E63' },
   ];
 
   const chartData = [
@@ -66,9 +68,10 @@ const Dashboard = () => {
     { name: 'Services', value: stats.services },
     { name: 'Truck Types', value: stats.truckTypes },
     { name: 'Projects', value: stats.projects },
+    { name: 'Admins',      value: 1 },
   ];
 
-  const COLORS = ['#4CAF50', '#2196F3', '#FF9800', '#9C27B0'];
+  const COLORS = ['#4CAF50', '#2196F3', '#FF9800', '#9C27B0', '#E91E63'];
 
   return (
     <div className="dashboard">
@@ -131,6 +134,30 @@ const Dashboard = () => {
               </Bar>
             </BarChart>
           </ResponsiveContainer>
+        </div>
+      </div>
+      {/* ── Admin quick actions ─────────────────────────────── */}
+      <div className="dashboard-quick-actions">
+        <div className="chart-card">
+          <h3>Administrators</h3>
+          <p className="muted">
+            The backend exposes a single admin account. You can register additional
+            administrators below.
+          </p>
+          <Link to="/users" className="btn-primary">
+            <FaUserPlus /> Manage Admins
+          </Link>
+        </div>
+
+        <div className="chart-card">
+          <h3>Quick Links</h3>
+          <div className="quick-links">
+            <Link to="/products"    className="quick-link">📦 Products</Link>
+            <Link to="/services"    className="quick-link">🔧 Services</Link>
+            <Link to="/truck-types" className="quick-link">🚛 Truck Types</Link>
+            <Link to="/projects"    className="quick-link">📁 Projects</Link>
+            <Link to="/settings"    className="quick-link">⚙️ Settings</Link>
+          </div>
         </div>
       </div>
     </div>

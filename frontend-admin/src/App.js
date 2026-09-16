@@ -11,6 +11,7 @@ import Settings from './pages/Settings';
 import Layout from './components/Layout';
 import { AuthProvider } from './context/AuthContext';
 import PrivateRoute from './components/PrivateRoute';
+import Users from './pages/Users';
 import './styles/main.scss';
 
 function App() {
@@ -27,6 +28,7 @@ function App() {
               <Route path="services" element={<Services />} />
               <Route path="truck-types" element={<TruckTypes />} />
               <Route path="projects" element={<Projects />} />
+              <Route path="users" element={<Users />} />
               <Route path="settings" element={<Settings />} />
             </Route>
           </Route>

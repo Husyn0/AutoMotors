@@ -1,0 +1,318 @@
+@import './variables';
+
+/* ── Users page ──────────────────────────────────────────────── */
+.users-page {
+  .users-grid {
+    @include grid-responsive(380px);
+    align-items: start;
+
+    .settings-card {
+      @include card-base;
+
+      h3 {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        color: $dark;
+        margin-bottom: $spacing-lg;
+        padding-bottom: 10px;
+        border-bottom: 2px solid #f0f0f0;
+      }
+    }
+
+    /* ── Current admin card ─────────────────────────────── */
+    .current-user-card {
+      .current-user-info {
+        display: flex;
+        align-items: center;
+        gap: $spacing-md;
+        margin-bottom: $spacing-md;
+
+        .user-avatar {
+          width: 56px;
+          height: 56px;
+          border-radius: 50%;
+          background: linear-gradient(135deg, $primary 0%, $secondary 100%);
+          color: white;
+          font-size: 24px;
+          font-weight: 600;
+          @include flex-center;
+          flex-shrink: 0;
+        }
+
+        .user-meta {
+          display: flex;
+          flex-direction: column;
+
+          strong { color: $dark; font-size: 16px; }
+          span   { color: #666; font-size: 14px; }
+          small  { color: #999; font-size: 12px; margin-top: 2px; }
+        }
+      }
+
+      .user-badge-row {
+        display: flex;
+        gap: $spacing-sm;
+        margin-bottom: $spacing-lg;
+        flex-wrap: wrap;
+
+        .user-badge {
+          display: inline-flex;
+          align-items: center;
+          gap: 6px;
+          padding: 5px 12px;
+          border-radius: 20px;
+          font-size: 12px;
+          font-weight: 500;
+
+          &.badge-admin {
+            background: #e3f2fd;
+            color: #1565c0;
+          }
+
+          &.badge-active {
+            background: $alert-success-bg;
+            color: $alert-success-color;
+          }
+        }
+      }
+
+      .hint {
+        color: #999;
+        font-size: 12px;
+        font-style: italic;
+        line-height: 1.5;
+        border-top: 1px dashed #eee;
+        padding-top: $spacing-md;
+      }
+    }
+
+    /* ── Register card ──────────────────────────────────── */
+    .register-card {
+      .register-card__header {
+        display: flex;
+        align-items: center;
+        gap: $spacing-md;
+        margin-bottom: $spacing-lg;
+        padding-bottom: $spacing-md;
+        border-bottom: 2px solid #f0f0f0;
+
+        .register-card__icon {
+          width: 44px;
+          height: 44px;
+          border-radius: $border-radius-sm;
+          background: linear-gradient(135deg, $primary 0%, $secondary 100%);
+          color: white;
+          font-size: 18px;
+          @include flex-center;
+          flex-shrink: 0;
+        }
+
+        h3 {
+          margin: 0;
+          padding: 0;
+          border: none;
+          font-size: 16px;
+        }
+
+        .register-card__subtitle {
+          color: #777;
+          font-size: 13px;
+          margin-top: 2px;
+        }
+      }
+
+      .alert--with-icon {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+
+        .alert-icon { flex-shrink: 0; }
+      }
+
+      /* ── Avatar preview ─────────────────────────────── */
+      .avatar-preview {
+        display: flex;
+        align-items: center;
+        gap: $spacing-md;
+        padding: $spacing-md;
+        background: #f8f9fa;
+        border-radius: $border-radius-sm;
+        margin-bottom: $spacing-lg;
+
+        &__circle {
+          width: 48px;
+          height: 48px;
+          border-radius: 50%;
+          background: linear-gradient(135deg, $primary 0%, $secondary 100%);
+          color: white;
+          font-size: 20px;
+          font-weight: 600;
+          @include flex-center;
+          flex-shrink: 0;
+          transition: transform $transition-fast;
+        }
+
+        &__text {
+          display: flex;
+          flex-direction: column;
+          overflow: hidden;
+
+          strong {
+            color: $dark;
+            font-size: 14px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+          }
+
+          span {
+            color: #888;
+            font-size: 12px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+          }
+        }
+      }
+
+      /* ── Fields ─────────────────────────────────────── */
+      .field {
+        margin-bottom: $spacing-md;
+
+        label {
+          display: flex;
+          align-items: center;
+          gap: 6px;
+          color: #555;
+          font-size: 13px;
+          font-weight: 500;
+          margin-bottom: 6px;
+
+          .field-icon {
+            color: $primary;
+            font-size: 12px;
+          }
+        }
+
+        input {
+          @include input-base;
+          width: 100%;
+          background: #fafbfc;
+          transition: all $transition-fast;
+
+          &:hover {
+            background: white;
+          }
+
+          &:focus {
+            background: white;
+            box-shadow: 0 0 0 3px rgba($primary, 0.1);
+          }
+        }
+
+        &--error input {
+          border-color: $danger;
+          background: #fff5f5;
+
+          &:focus {
+            box-shadow: 0 0 0 3px rgba($danger, 0.12);
+          }
+        }
+
+        .field-error {
+          display: block;
+          color: $danger;
+          font-size: 12px;
+          margin-top: 4px;
+        }
+      }
+
+      .field-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: $spacing-md;
+
+        @include tablet-down {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      /* ── Password strength meter ───────────────────── */
+      .password-strength {
+        display: flex;
+        align-items: center;
+        gap: $spacing-sm;
+        margin-bottom: $spacing-lg;
+
+        &__bar {
+          flex: 1;
+          height: 6px;
+          background: #eef1f4;
+          border-radius: 999px;
+          overflow: hidden;
+        }
+
+        &__fill {
+          height: 100%;
+          border-radius: 999px;
+          transition: width $transition-fast, background $transition-fast;
+
+          &.strength-0,
+          &.strength-1 { background: $danger; }
+          &.strength-2 { background: $warning; }
+          &.strength-3 { background: #8bc34a; }
+          &.strength-4,
+          &.strength-5 { background: $success; }
+        }
+
+        &__label {
+          font-size: 12px;
+          font-weight: 500;
+          color: #666;
+          min-width: 80px;
+          text-align: right;
+        }
+      }
+
+      /* ── Actions ───────────────────────────────────── */
+      .form-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: $spacing-sm;
+        margin-top: $spacing-md;
+        padding-top: $spacing-md;
+        border-top: 1px solid #f0f0f0;
+
+        .btn-secondary {
+          @include button-base;
+          background: #f0f0f0;
+          color: $dark;
+          padding: 10px $spacing-lg;
+          font-weight: 500;
+
+          &:hover:not(:disabled) {
+            background: #e0e0e0;
+          }
+
+          &:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+          }
+        }
+
+        .btn-submit {
+          @include button-primary;
+          padding: 10px $spacing-lg;
+          font-weight: 600;
+          justify-content: center;
+
+          &:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+          }
+        }
+      }
+    }
+  }
+}

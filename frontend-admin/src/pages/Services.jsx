@@ -3,7 +3,7 @@ import React from 'react';
 import CrudPage from '../components/common/CrudPage';
 import servicesApi from '../api/servicesApi';
 
-const initialFormData = { title: '', description: '', icon: '' };
+const initialFormData = { title: '', description: '' };
 
 const fields = [
   { name: 'title', type: 'text', placeholder: 'Service Title', required: true },

@@ -60,32 +60,36 @@ curl http://127.0.0.1:8000/api/products/1 -H "Accept: application/json"
 ## Services
 ```bash
 curl http://127.0.0.1:8000/api/services -H "Accept: application/json"
-echo -e '
-'
+```
+
+```bash
 curl http://127.0.0.1:8000/api/services/1 -H "Accept: application/json"
-echo -e '
-'
+
+```
+```bash
 curl -H "Accept-Language: en" http://127.0.0.1:8000/api/services
 ```
 
 ## Truck Types
 ```bash
 curl http://127.0.0.1:8000/api/truck-types -H "Accept: application/json"
-echo -e '
-'
+```
+```bash
 curl http://127.0.0.1:8000/api/truck-types/1 -H "Accept: application/json"
-
-#Projects
+```
+## Projects
+```bash
 curl http://127.0.0.1:8000/api/projects -H "Accept: application/json"
-echo -e '
-'
+```
+```bash
 curl http://127.0.0.1:8000/api/projects/1 -H "Accept: application/json"
+```
 
-
-#Settings
+## Settings
+```bash
 curl http://127.0.0.1:8000/api/settings -H "Accept: application/json"
-echo -e '
-'
+```
+```bash
 curl -H "Accept-Language: en" http://127.0.0.1:8000/api/settings
 
 ```

@@ -1,5 +1,16 @@
 // src/styles/_settings.scss
 .settings-page {
+  .page-header {
+    @include flex-between;
+    flex-wrap: wrap;
+    gap: $spacing-md;
+    margin-bottom: $spacing-xxl;   // ← margin between header and grid
+
+    h1 {
+      color: $dark;
+      font-size: 24px;
+    }
+  }
   .btn-save {
     @include button-primary;
   }

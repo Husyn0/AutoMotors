@@ -18,7 +18,7 @@ class ProductController extends Controller
 
     public function show($id)
     {
-        $product = Product::find($id);
+        $product = Product::with('category')->find($id);
         if (!$product) {
             return response()->json(['error' => 'Product not found'], 404);
         }
@@ -29,7 +29,7 @@ class ProductController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'name'              => 'required|string|max:255',
-            'category'          => 'required|string|max:100',
+            'category_id'       => 'required|exists:categories,id',
             'price'             => 'required|numeric|min:0',
             'short_description' => 'required|string',
             'translations.en.name'              => 'sometimes|string|max:255',
@@ -37,10 +37,11 @@ class ProductController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return response()->json(['errors' => $validator->errors()], 422);
+            return response()->json(['errors: validator fail in products ' => $validator->errors()], 422);
         }
 
         $product = Product::create($request->all());
+        $product->load('category');
         return response()->json($product->toTranslatedArray(), 201);
     }
 
@@ -53,7 +54,7 @@ class ProductController extends Controller
 
         $validator = Validator::make($request->all(), [
             'name'              => 'sometimes|required|string|max:255',
-            'category'          => 'sometimes|required|string|max:100',
+            'category_id'       => 'sometimes|required|exists:categories,id',
             'price'             => 'sometimes|required|numeric|min:0',
             'short_description' => 'sometimes|required|string',
             'translations.en.name'              => 'sometimes|string|max:255',
@@ -76,6 +77,7 @@ class ProductController extends Controller
         }
 
         $product->update($data);
+        $product->load('category');
         return response()->json($product->toTranslatedArray());
     }
 

@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\ServiceController;
 use App\Http\Controllers\Api\TruckTypeController;
 use App\Http\Controllers\Api\ProjectController;
 use App\Http\Controllers\Api\SettingController;
+use App\Http\Controllers\Api\CategoryController;
 
 /*
 |--------------------------------------------------------------------------
@@ -18,6 +19,8 @@ Route::post('/auth/register', [AuthController::class, 'register']);
 Route::post('/auth/refresh',  [AuthController::class, 'refresh']);
 
 // Public content read (frontend visitors)
+Route::get('/categories',       [CategoryController::class, 'index']);
+Route::get('/categories/{id}',  [CategoryController::class, 'show']);
 Route::get('/products',       [ProductController::class,   'index']);
 Route::get('/products/{id}',  [ProductController::class,   'show']);
 Route::get('/services',       [ServiceController::class,   'index']);
@@ -37,6 +40,11 @@ Route::middleware('auth:api')->group(function () {
     // Auth
     Route::post('/auth/logout', [AuthController::class, 'logout']);
     Route::get('/auth/me',      [AuthController::class, 'me']);
+
+    // Categories
+    Route::post  ('/categories',      [CategoryController::class, 'store']);
+    Route::put   ('/categories/{id}', [CategoryController::class, 'update']);
+    Route::delete('/categories/{id}', [CategoryController::class, 'destroy']);
 
     // Products
     Route::post  ('/products',      [ProductController::class,   'store']);

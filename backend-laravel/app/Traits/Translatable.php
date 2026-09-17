@@ -7,8 +7,14 @@ use Illuminate\Support\Facades\App;
 trait Translatable
 {
     /**
-     * Get a translated attribute value based on current locale.
+     * Relations (that also use Translatable) that should be
+     * expanded by toTranslatedArray(). Override in the model.
      */
+    protected function translatableRelations(): array
+    {
+        return [];
+    }
+
     public function translate(string $field, ?string $locale = null): ?string
     {
         $locale = $locale ?: App::getLocale();
@@ -24,9 +30,6 @@ trait Translatable
             ?? $this->getAttribute($field);
     }
 
-    /**
-     * Return the model as array with translated fields merged in.
-     */
     public function toTranslatedArray(?string $locale = null): array
     {
         $locale = $locale ?: App::getLocale();
@@ -42,6 +45,16 @@ trait Translatable
         }
 
         unset($data['translations']);
+
+        // Expand requested translatable relations (e.g. Product->category)
+        foreach ($this->translatableRelations() as $relation) {
+            if ($this->relationLoaded($relation) && $this->{$relation}) {
+                $related = $this->{$relation};
+                $data[$relation] = method_exists($related, 'toTranslatedArray')
+                    ? $related->toTranslatedArray($locale)
+                    : $related->toArray();
+            }
+        }
 
         return $data;
     }

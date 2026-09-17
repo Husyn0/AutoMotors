@@ -9,6 +9,7 @@ use App\Models\Service;
 use App\Models\TruckType;
 use App\Models\Project;
 use App\Models\Setting;
+use App\Models\Category;
 
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
@@ -17,17 +18,36 @@ class DatabaseSeeder extends Seeder
 {
     public function run()
     {
+        $this->call(CategorySeeder::class);
         AdminUser::create([
             'name' => 'Admin',
             'email' => 'admin@automotors.com',
             'password' => Hash::make('password123'),
         ]);
 
+        $categories = [
+            ['name' => 'Batteries',   'slug' => 'batteries',   'icon' => '🔋',
+            'translations' => ['en' => ['name' => 'Batteries']]],
+            ['name' => 'Lubrifiants', 'slug' => 'lubricants',  'icon' => '🛢️',
+            'translations' => ['en' => ['name' => 'Lubricants']]],
+            ['name' => 'Pneus',       'slug' => 'tires',       'icon' => '🛞',
+            'translations' => ['en' => ['name' => 'Tires']]],
+            ['name' => 'Pièces détachées', 'slug' => 'spareParts', 'icon' => '🔧',
+            'translations' => ['en' => ['name' => 'Spare Parts']]],
+        ];
+
+        foreach ($categories as $c) {
+            Category::create($c);
+        }
+
+        $categoryMap = Category::pluck('id', 'slug')->toArray();
+
         // Products (FR in main fields, EN in translations)
         $products = [
             [
                 'name' => 'Batterie Plomb 12V 60Ah',
                 'category' => 'batteries',
+                'category_id' => $categoryMap['batteries'],
                 'price' => 89.00,
                 'short_description' => 'Batterie automobile fiable pour démarrage optimal',
                 'image' => '/images/battery1.jpg',
@@ -41,6 +61,7 @@ class DatabaseSeeder extends Seeder
             [
                 'name' => 'Batterie Lithium 12V 80Ah',
                 'category' => 'batteries',
+                'category_id' => $categoryMap['batteries'],
                 'price' => 149.00,
                 'short_description' => 'Batterie lithium haute performance pour véhicules modernes',
                 'image' => '/images/battery2.jpg',
@@ -54,6 +75,7 @@ class DatabaseSeeder extends Seeder
             [
                 'name' => 'Huile Moteur 5W30 5L',
                 'category' => 'lubricants',
+                'category_id' => $categoryMap['lubricants'],
                 'price' => 45.00,
                 'short_description' => 'Huile synthétique haute performance pour moteurs essence',
                 'image' => '/images/lubricant1.jpg',
@@ -67,6 +89,7 @@ class DatabaseSeeder extends Seeder
             [
                 'name' => 'Huile Moteur 10W40 5L',
                 'category' => 'lubricants',
+                'category_id' => $categoryMap['lubricants'],
                 'price' => 38.00,
                 'short_description' => 'Huile minérale pour moteurs diesel et essence',
                 'image' => '/images/lubricant2.jpg',
@@ -80,6 +103,7 @@ class DatabaseSeeder extends Seeder
             [
                 'name' => 'Pneu Été 205/55R16',
                 'category' => 'tires',
+                'category_id' => $categoryMap['tires'],
                 'price' => 120.00,
                 'short_description' => 'Pneu été haute performance pour une conduite sécurisée',
                 'image' => '/images/tire1.jpg',
@@ -93,6 +117,7 @@ class DatabaseSeeder extends Seeder
             [
                 'name' => 'Pneu Hiver 195/65R15',
                 'category' => 'tires',
+                'category_id' => $categoryMap['tires'],
                 'price' => 135.00,
                 'short_description' => 'Pneu hiver avec adhérence optimale sur neige',
                 'image' => '/images/tire2.jpg',
@@ -106,6 +131,7 @@ class DatabaseSeeder extends Seeder
             [
                 'name' => 'Plaquettes Frein Avant',
                 'category' => 'spareParts',
+                'category_id' => $categoryMap['spareParts'],
                 'price' => 65.00,
                 'short_description' => 'Kit de plaquettes de frein de haute qualité',
                 'image' => '/images/brake.jpg',
@@ -119,6 +145,7 @@ class DatabaseSeeder extends Seeder
             [
                 'name' => 'Filtre à Huile',
                 'category' => 'spareParts',
+                'category_id' => $categoryMap['spareParts'],
                 'price' => 15.00,
                 'short_description' => 'Filtre à huile haute efficacité pour moteur',
                 'image' => '/images/oilfilter.jpg',

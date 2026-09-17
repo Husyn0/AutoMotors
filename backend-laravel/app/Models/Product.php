@@ -11,14 +11,28 @@ class Product extends Model
     use Translatable;
     protected $fillable = [
         'name',
-        'category',
+        'category_id',
         'price',
         'short_description',
         'image',
-        'translations'
+        'translations',
     ];
 
     protected $casts = [
         'translations' => 'array'
     ];
+
+    protected $with = ['category'];
+
+    public function category()
+    {
+        return $this->belongsTo(Category::class);
+    }
+
+    // app/Models/Product.php
+    protected function translatableRelations(): array
+    {
+        return ['category'];
+    }
+
 }

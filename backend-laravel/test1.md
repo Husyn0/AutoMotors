@@ -34,6 +34,20 @@ curl -X POST http://127.0.0.1:8000/api/auth/refresh \
 
 
 # Public Content (GET)     
+
+## Categories (public)
+```bash
+curl http://127.0.0.1:8000/api/categories -H "Accept: application/json"
+```
+```bash
+curl -H "Accept-Language: en" http://127.0.0.1:8000/api/categories
+```
+```bash
+curl http://127.0.0.1:8000/api/categories/1 -H "Accept: application/json"
+```
+
+
+
 ## Products
 ### List all (default locale = fr)
 ```bash
@@ -127,6 +141,32 @@ curl -X POST http://127.0.0.1:8000/api/auth/logout \
 echo -e '
 ## CRUD (Protected)
 
+## Categories 
+```bash
+curl -X POST http://127.0.0.1:8000/api/categories \
+  -H "Authorization: Bearer $TOKEN" \
+  -H "Content-Type: application/json" \
+  -H "Accept: application/json" \
+  -d '{
+    "name": "Accessoires",
+    "icon": "✨",
+    "translations": { "en": { "name": "Accessories" } }
+  }'
+```
+```bash
+curl -X PUT http://127.0.0.1:8000/api/categories/1 \
+  -H "Authorization: Bearer $TOKEN" \
+  -H "Content-Type: application/json" \
+  -H "Accept: application/json" \
+  -d '{"name": "Batteries Auto"}'
+```
+```bash
+curl -X DELETE http://127.0.0.1:8000/api/categories/1 \
+  -H "Authorization: Bearer $TOKEN" \
+  -H "Accept: application/json"
+```
+
+
 ## Products
 ### CREATE '
 ```bash
@@ -136,7 +176,7 @@ curl -X POST http://127.0.0.1:8000/api/products \
   -H "Accept: application/json" \
   -d '{
     "name": "Batterie Test",
-    "category": "batteries",
+    "category_id": 1,
     "price": 99.99,
     "short_description": "Description test",
     "translations": {

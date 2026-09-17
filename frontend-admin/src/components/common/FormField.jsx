@@ -10,8 +10,9 @@ import React from 'react';
  * @param {(name: string, value: any) => void} props.onChange
  * @param {boolean} [props.required]
  * @param {boolean} [props.fullWidth]
- * @param {Array<{value: string, label: string}>} [props.options] - for select
+ * @param {Array<{value: string, label: string, emoji?: string}>} [props.options] - for select
  * @param {string} [props.selectPlaceholder] - for select
+ * @param {boolean} [props.emoji] - render options as emoji + label
  */
 const FormField = ({
   type = 'text',
@@ -23,6 +24,7 @@ const FormField = ({
   fullWidth = false,
   options = [],
   selectPlaceholder = 'Select...',
+  emoji = false,
 }) => {
   const commonProps = {
     name,
@@ -39,11 +41,11 @@ const FormField = ({
 
   if (type === 'select') {
     return (
-      <select {...commonProps}>
+      <select {...commonProps} className={`${commonProps.className} ${emoji ? 'emoji-select' : ''}`.trim()}>
         <option value="">{selectPlaceholder}</option>
         {options.map((opt) => (
           <option key={opt.value} value={opt.value}>
-            {opt.label}
+            {opt.emoji ? `${opt.emoji}  ${opt.label}` : opt.label}
           </option>
         ))}
       </select>

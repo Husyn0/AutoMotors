@@ -119,7 +119,6 @@ const Users = () => {
                 <div className="user-meta">
                   <strong>{user.name}</strong>
                   <span>{user.email}</span>
-                  <small>ID #{user.id}</small>
                 </div>
               </div>
               <div className="user-badge-row">

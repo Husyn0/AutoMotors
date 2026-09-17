@@ -1,7 +1,23 @@
 // src/components/common/CrudTable.jsx
 import React from 'react';
-import { FaEdit, FaTrash } from 'react-icons/fa';
+import {
+  FaEdit,
+  FaTrash,
+  FaSearch,
+  FaSort,
+  FaSortUp,
+  FaSortDown,
+} from 'react-icons/fa';
 import Pagination from './Pagination';
+
+const SortIcon = ({ active, direction }) => {
+  if (!active || !direction) return <FaSort className="sort-icon" />;
+  return direction === 'asc' ? (
+    <FaSortUp className="sort-icon sort-icon--active" />
+  ) : (
+    <FaSortDown className="sort-icon sort-icon--active" />
+  );
+};
 
 const CrudTable = ({
   columns,
@@ -10,6 +26,17 @@ const CrudTable = ({
   onEdit,
   onDelete,
   colSpan,
+
+  // search
+  searchable = false,
+  search = '',
+  onSearch,
+
+  // sort
+  sortable = false,
+  sort = { key: null, direction: null },
+  onSort,
+
   // pagination
   page,
   pageSize,
@@ -20,20 +47,61 @@ const CrudTable = ({
 }) => {
   return (
     <div className="table-container">
+      {searchable && (
+        <div className="table-toolbar">
+          <div className="table-search">
+            <FaSearch className="table-search__icon" />
+            <input
+              type="text"
+              value={search}
+              onChange={(e) => onSearch?.(e.target.value)}
+              placeholder="Search…"
+              aria-label="Search table"
+            />
+          </div>
+        </div>
+      )}
+
       <table className="content-table">
         <thead>
           <tr>
-            {columns.map((col) => (
-              <th key={col.key}>{col.label}</th>
-            ))}
+            {columns.map((col) => {
+              const isSortable = sortable && col.sortable !== false;
+              const isActive = sort?.key === col.key;
+              return (
+                <th
+                  key={col.key}
+                  className={isSortable ? 'th-sortable' : ''}
+                  onClick={isSortable ? () => onSort?.(col.key) : undefined}
+                  aria-sort={
+                    isActive
+                      ? sort.direction === 'asc'
+                        ? 'ascending'
+                        : 'descending'
+                      : 'none'
+                  }
+                >
+                  <span className="th-content">
+                    {col.label}
+                    {isSortable && (
+                      <SortIcon active={isActive} direction={sort?.direction} />
+                    )}
+                  </span>
+                </th>
+              );
+            })}
             <th>Actions</th>
           </tr>
         </thead>
         <tbody>
           {loading ? (
-            <tr><td colSpan={colSpan}>Loading...</td></tr>
+            <tr>
+              <td colSpan={colSpan}>Loading...</td>
+            </tr>
           ) : items.length === 0 ? (
-            <tr><td colSpan={colSpan}>No items found</td></tr>
+            <tr>
+              <td colSpan={colSpan}>No items found</td>
+            </tr>
           ) : (
             items.map((item) => (
               <tr key={item.id}>

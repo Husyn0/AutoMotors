@@ -14,6 +14,8 @@ const CrudPage = ({
   fields,
   columns,
   initialPageSize = 10,
+  searchable = true, // default on
+  sortable = true,   // default on
 }) => {
   const {
     pagedItems,
@@ -31,6 +33,11 @@ const CrudPage = ({
     activeLocale,
     setActiveLocale,
     isTranslatable,
+    // search + sort
+    search,
+    handleSearch,
+    sort,
+    handleSort,
     // pagination
     page,
     pageSize,
@@ -86,6 +93,12 @@ const CrudPage = ({
         onEdit={handleEdit}
         onDelete={(id) => handleDelete(id, entityNamePlural)}
         colSpan={columns.length + 1}
+        searchable={searchable}
+        search={search}
+        onSearch={handleSearch}
+        sortable={sortable}
+        sort={sort}
+        onSort={handleSort}
         page={page}
         pageSize={pageSize}
         totalItems={totalItems}

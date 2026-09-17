@@ -22,8 +22,12 @@ export const useCrud = (api, initialFormData, options = {}) => {
   const [isFormOpen, setIsFormOpen] = useState(false);
 
   // ── Translation state ──────────────────────────────────────────
-  // Which language tab is active: 'fr' (base) or 'en' (translation)
   const [activeLocale, setActiveLocale] = useState('fr');
+
+  // ── Search + sort state ────────────────────────────────────────
+  const [search, setSearch] = useState('');
+  // sort = { key: string|null, direction: 'asc'|'desc'|null }
+  const [sort, setSort] = useState({ key: null, direction: null });
 
   // ── Pagination state ───────────────────────────────────────────
   const [page, setPage] = useState(1);
@@ -171,8 +175,57 @@ export const useCrud = (api, initialFormData, options = {}) => {
     setFormData((prev) => ({ ...prev, [key]: value }));
   };
 
+  // ── Search handler ─────────────────────────────────────────────
+  const handleSearch = useCallback((value) => {
+    setSearch(value);
+    setPage(1); // reset to first page on new search
+  }, []);
+
+  // ── Sort handler: cycles asc → desc → none ─────────────────────
+  const handleSort = useCallback((key) => {
+    setSort((prev) => {
+      if (prev.key !== key) return { key, direction: 'asc' };
+      if (prev.direction === 'asc') return { key, direction: 'desc' };
+      return { key: null, direction: null }; // third click clears
+    });
+    setPage(1);
+  }, []);
+
+  // ── Derived: filtered by search ────────────────────────────────
+  const filteredItems = useMemo(() => {
+    const q = search.trim().toLowerCase();
+    if (!q) return items;
+    return items.filter((item) =>
+      Object.values(item).some((val) => {
+        if (val === null || val === undefined) return false;
+        if (typeof val === 'object') return false; // skip translations blobs
+        return String(val).toLowerCase().includes(q);
+      })
+    );
+  }, [items, search]);
+
+  // ── Derived: sorted ────────────────────────────────────────────
+  const sortedItems = useMemo(() => {
+    if (!sort.key || !sort.direction) return filteredItems;
+    const dir = sort.direction === 'asc' ? 1 : -1;
+    return [...filteredItems].sort((a, b) => {
+      const av = a[sort.key];
+      const bv = b[sort.key];
+      if (av == null && bv == null) return 0;
+      if (av == null) return 1;
+      if (bv == null) return -1;
+      if (typeof av === 'number' && typeof bv === 'number') {
+        return (av - bv) * dir;
+      }
+      return String(av).localeCompare(String(bv), undefined, {
+        numeric: true,
+        sensitivity: 'base',
+      }) * dir;
+    });
+  }, [filteredItems, sort]);
+
   // ── Derived pagination values ──────────────────────────────────
-  const totalItems = items.length;
+  const totalItems = sortedItems.length;
   const totalPages = Math.max(1, Math.ceil(totalItems / pageSize));
 
   useEffect(() => {
@@ -181,8 +234,8 @@ export const useCrud = (api, initialFormData, options = {}) => {
 
   const pagedItems = useMemo(() => {
     const start = (page - 1) * pageSize;
-    return items.slice(start, start + pageSize);
-  }, [items, page, pageSize]);
+    return sortedItems.slice(start, start + pageSize);
+  }, [sortedItems, page, pageSize]);
 
   const handlePageSizeChange = (newSize) => {
     setPageSize(newSize);
@@ -214,6 +267,12 @@ export const useCrud = (api, initialFormData, options = {}) => {
     activeLocale,
     setActiveLocale,
     isTranslatable: (fieldName) => !NON_TRANSLATABLE_FIELDS.has(fieldName),
+
+    // search + sort
+    search,
+    handleSearch,
+    sort,
+    handleSort,
 
     // pagination
     page,

@@ -134,43 +134,44 @@
     }
 
     .locale-tabs {
-    display: flex;
-    gap: $spacing-xs;
-    margin-bottom: $spacing-lg;
-    border-bottom: 1px solid #e5e7eb;
-    padding-bottom: 0;
-
-    .locale-tab {
       display: flex;
-      align-items: center;
-      gap: 6px;
-      padding: 8px 16px;
-      background: transparent;
-      border: none;
-      border-bottom: 2px solid transparent;
-      color: #6b7280;
-      font-size: 14px;
-      font-weight: 500;
-      cursor: pointer;
-      transition: all $transition-fast;
-      margin-bottom: -1px;
+      gap: $spacing-xs;
+      margin-bottom: $spacing-lg;
+      border-bottom: 1px solid #e5e7eb;
+      padding-bottom: 0;
 
-      .locale-flag {
-        font-size: 16px;
-        line-height: 1;
-      }
-      &:hover {
-        color: $primary;
-        background: #f8f9fa;
-      }
+      .locale-tab {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        padding: 8px 16px;
+        background: transparent;
+        border: none;
+        border-bottom: 2px solid transparent;
+        color: #6b7280;
+        font-size: 14px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all $transition-fast;
+        margin-bottom: -1px;
 
-      &.active {
-        color: $primary;
-        border-bottom-color: $primary;
-        font-weight: 600;
+        .locale-flag {
+          font-size: 16px;
+          line-height: 1;
+        }
+
+        &:hover {
+          color: $primary;
+          background: #f8f9fa;
+        }
+
+        &.active {
+          color: $primary;
+          border-bottom-color: $primary;
+          font-weight: 600;
+        }
       }
     }
-  }
   }
 
   .table-container {
@@ -178,6 +179,54 @@
     border-radius: $border-radius-md;
     box-shadow: $shadow-light;
     overflow-x: auto;
+
+    // ── Table toolbar (search) ─────────────────────────────────
+    .table-toolbar {
+      display: flex;
+      align-items: center;
+      gap: $spacing-md;
+      padding: $spacing-md $spacing-lg;
+      border-bottom: 1px solid #f0f0f0;
+      background: #fafbfc;
+
+      .table-search {
+        position: relative;
+        display: flex;
+        align-items: center;
+        width: 100%;
+        max-width: 320px;
+
+        &__icon {
+          position: absolute;
+          left: 12px;
+          color: #999;
+          font-size: 13px;
+          pointer-events: none;
+        }
+
+        input {
+          width: 100%;
+          padding: 8px 12px 8px 34px;
+          border: 1px solid $input-border-color;
+          border-radius: $border-radius-sm;
+          font-size: 14px;
+          background: white;
+          transition: border-color $transition-fast, box-shadow $transition-fast;
+
+          &:focus {
+            outline: none;
+            border-color: $primary;
+            box-shadow: 0 0 0 3px rgba($primary, 0.1);
+          }
+        }
+      }
+
+      @include tablet-down {
+        .table-search {
+          max-width: 100%;
+        }
+      }
+    }
 
     .content-table {
       width: 100%;
@@ -193,6 +242,34 @@
         background: #f8f9fa;
         color: $dark;
         font-weight: 600;
+      }
+
+      // ── Sortable headers ────────────────────────────────────
+      th.th-sortable {
+        cursor: pointer;
+        user-select: none;
+        transition: background $transition-fast, color $transition-fast;
+
+        &:hover {
+          background: #eef2f7;
+          color: $primary;
+        }
+
+        .th-content {
+          display: inline-flex;
+          align-items: center;
+          gap: 6px;
+        }
+
+        .sort-icon {
+          font-size: 11px;
+          color: #b0b8c1;
+          transition: color $transition-fast;
+
+          &--active {
+            color: $primary;
+          }
+        }
       }
 
       .icon-cell {

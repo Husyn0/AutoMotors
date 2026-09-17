@@ -73,6 +73,7 @@ curl http://127.0.0.1:8000/api/products/1 -H "Accept: application/json"
 
 ## Services
 ```bash
+# All services (mixed)
 curl http://127.0.0.1:8000/api/services -H "Accept: application/json"
 ```
 
@@ -82,6 +83,24 @@ curl http://127.0.0.1:8000/api/services/1 -H "Accept: application/json"
 ```
 ```bash
 curl -H "Accept-Language: en" http://127.0.0.1:8000/api/services
+```
+
+```bash
+# Only services
+curl "http://127.0.0.1:8000/api/services?type=srv" -H "Accept: application/json"
+```
+```bash
+# Only advantages
+curl "http://127.0.0.1:8000/api/services?type=adv" -H "Accept: application/json"
+```
+```bash
+# With English locale
+curl -H "Accept-Language: en" "http://127.0.0.1:8000/api/services?type=adv"
+```
+
+```bash
+# Invalid type → 422
+curl -i "http://127.0.0.1:8000/api/services?type=bogus" -H "Accept: application/json"
 ```
 
 ## Truck Types
@@ -221,6 +240,40 @@ curl -X POST http://127.0.0.1:8000/api/services \
       }
     }
   }'
+```
+```bash
+## Create a service (type defaults to 'srv' if omitted)
+curl -X POST http://127.0.0.1:8000/api/services \
+  -H "Authorization: Bearer $TOKEN" \
+  -H "Content-Type: application/json" \
+  -H "Accept: application/json" \
+  -d '{
+    "title": "Nouveau service",
+    "type": "srv",
+    "description": "Description",
+    "translations": { "en": { "title": "New service", "description": "Description" } }
+  }'
+```
+```bash
+## Create an advantage
+curl -X POST http://127.0.0.1:8000/api/services \
+  -H "Authorization: Bearer $TOKEN" \
+  -H "Content-Type: application/json" \
+  -H "Accept: application/json" \
+  -d '{
+    "title": "Avantage test",
+    "type": "adv",
+    "description": "Description avantage",
+    "translations": { "en": { "title": "Test advantage", "description": "Advantage description" } }
+  }'
+```
+```bash
+## Update type
+curl -X PUT http://127.0.0.1:8000/api/services/1 \
+  -H "Authorization: Bearer $TOKEN" \
+  -H "Content-Type: application/json" \
+  -H "Accept: application/json" \
+  -d '{"type": "adv"}'
 ```
 echo -e '
 ### UPDATE '

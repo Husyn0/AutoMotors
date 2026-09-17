@@ -9,10 +9,23 @@ use Illuminate\Support\Facades\Validator;
 
 class ServiceController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
+        $query = Service::query();
+
+        // Filter by ?type=srv or ?type=adv
+        if ($type = $request->query('type')) {
+            if (!in_array($type, Service::TYPES, true)) {
+                return response()->json([
+                    'error' => 'Invalid type',
+                    'allowed' => Service::TYPES,
+                ], 422);
+            }
+            $query->ofType($type);
+        }
+
         return response()->json(
-            Service::all()->map(fn ($s) => $s->toTranslatedArray())
+            $query->get()->map(fn ($s) => $s->toTranslatedArray())
         );
     }
 
@@ -29,6 +42,7 @@ class ServiceController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'title'       => 'required|string|max:255',
+            'type'        => 'sometimes|in:srv,adv',
             'description' => 'required|string',
             'translations.en.title'       => 'sometimes|string|max:255',
             'translations.en.description' => 'sometimes|string',
@@ -38,7 +52,10 @@ class ServiceController extends Controller
             return response()->json(['errors' => $validator->errors()], 422);
         }
 
-        $service = Service::create($request->all());
+        $data = $request->all();
+        $data['type'] = $data['type'] ?? 'srv';
+
+        $service = Service::create($data);
         return response()->json($service->toTranslatedArray(), 201);
     }
 
@@ -51,6 +68,7 @@ class ServiceController extends Controller
 
         $validator = Validator::make($request->all(), [
             'title'       => 'sometimes|required|string|max:255',
+            'type'        => 'sometimes|in:srv,adv',
             'description' => 'sometimes|required|string',
             'translations.en.title'       => 'sometimes|string|max:255',
             'translations.en.description' => 'sometimes|string',
@@ -59,9 +77,9 @@ class ServiceController extends Controller
         if ($validator->fails()) {
             return response()->json(['errors' => $validator->errors()], 422);
         }
+
         $data = $request->all();
 
-        // Deep-merge translations so partial updates don't wipe other keys
         if (isset($data['translations'])) {
             $existing = $service->translations ?? [];
             foreach ($data['translations'] as $locale => $fields) {
@@ -70,7 +88,7 @@ class ServiceController extends Controller
             $data['translations'] = $existing;
         }
 
-        $service->update($request->all());
+        $service->update($data);
         return response()->json($service->toTranslatedArray());
     }
 

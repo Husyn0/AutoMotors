@@ -10,8 +10,11 @@ class Service extends Model
 {
     use Translatable;
 
+    public const TYPES = ['srv', 'adv'];
+
     protected $fillable = [
         'title',
+        'type',
         'description',
         'translations'
     ];
@@ -19,4 +22,15 @@ class Service extends Model
     protected $casts = [
         'translations' => 'array'
     ];
+
+    /**
+     * Scope: Service::ofType('adv')->get()
+     */
+    public function scopeOfType($query, ?string $type)
+    {
+        if (in_array($type, self::TYPES, true)) {
+            return $query->where('type', $type);
+        }
+        return $query;
+    }
 }

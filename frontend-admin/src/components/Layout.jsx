@@ -36,12 +36,24 @@ const Layout = () => {
 
   return (
     <div className="admin-layout">
-      <button className="sidebar-toggle" onClick={() => setSidebarOpen(!sidebarOpen)}>
-        <FaBars />
-      </button>
-
+      {!sidebarOpen && (
+        <button
+          className="sidebar-toggle sidebar-toggle--floating"
+          onClick={() => setSidebarOpen(true)}
+          aria-label="Open sidebar"
+        >
+          <FaBars />
+        </button>
+      )}
       <aside className={`sidebar ${sidebarOpen ? 'open' : 'closed'}`}>
         <div className="sidebar-brand">
+          <button
+            className="sidebar-toggle"
+            onClick={() => setSidebarOpen(!sidebarOpen)}
+            aria-label="Toggle sidebar"
+          >
+            <FaBars />
+          </button>
           <h2>AUTOMOTORS</h2>
           <p>Admin Panel</p>
         </div>

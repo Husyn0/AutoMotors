@@ -5,7 +5,6 @@
 }
 
 .sidebar-toggle {
-  position: fixed;
   top: $spacing-md;
   left: $spacing-md;
   z-index: 1001;
@@ -22,6 +21,24 @@
      &.shifted {
       left: $spacing-md;
     }
+  }
+}
+.sidebar-toggle--floating {
+  position: fixed;
+  top: $spacing-lg;
+  left: $spacing-lg;
+  z-index: 1001;
+  background: $primary;
+  color: white;
+  padding: 10px 12px;
+  border-radius: $border-radius-sm;
+  box-shadow: $shadow-light;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &:hover {
+    background: $secondary;
   }
 }
 
@@ -46,7 +63,12 @@
   .sidebar-brand {
     padding: 0 $spacing-lg $spacing-xxl;
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-
+    &__header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: $spacing-sm;
+    }
     h2 {
       font-size: 24px;
       letter-spacing: 2px;
@@ -56,6 +78,25 @@
       color: rgba(255, 255, 255, 0.7);
       font-size: 14px;
       margin-top: $spacing-xs;
+    }
+  }
+
+  .sidebar-toggle {
+    // no longer fixed!
+    background: transparent;
+    border: none;
+    color: white;
+    font-size: 18px;
+    padding: 6px 8px;
+    border-radius: $border-radius-sm;
+    cursor: pointer;
+    transition: background $transition-fast;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.15);
     }
   }
 
@@ -120,10 +161,12 @@
 
   &.closed {
     margin-left: 0;
+    padding-top: 70px;
   }
 
   @include tablet-down {
     margin-left: 0;
     padding: $spacing-lg;
+    padding-top: 70px;
   }
 }

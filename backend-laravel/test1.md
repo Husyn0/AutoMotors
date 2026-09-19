@@ -127,6 +127,57 @@ curl -H "Accept-Language: en" http://127.0.0.1:8000/api/settings
 
 ```
 
+# image uploading
+```bash
+# served via controller
+ curl -I "http://127.0.0.1:8000/api/files/products/arch1-XCh1oYSa.png"
+```
+```bash
+# served via symlink
+curl -I "http://127.0.0.1:8000/storage/products/arch1-XCh1oYSa.png"
+```
+## Upload:
+```bash
+TOKEN=... # from login
+curl -X POST http://127.0.0.1:8000/api/uploads/products \
+  -H "Authorization: Bearer $TOKEN" \
+  -H "Accept: application/json" \
+  -F "file=@/path/to/battery.jpg"
+```
+```bash
+# upload (needs token)
+curl -X POST http://127.0.0.1:8000/api/uploads/products \
+  -H "Authorization: Bearer $TOKEN" \
+  -F "file=@/tmp/test.jpg" \
+  -H "Accept: application/json"
+```
+```bash
+# bad folder → 422
+curl -i -X POST http://127.0.0.1:8000/api/uploads/hackers \
+  -H "Authorization: Bearer $TOKEN" \
+  -H "Accept: application/json" \
+  -F "file=@/home/hkali/Desktop/VioletPro/wallpaper/arch1.png"
+```
+```bash
+# try an encoded traversal that survives routing:
+# %2e%2e = ".."  — still can't contain a raw slash without breaking the route match,
+# so a route-level failure is expected. But if it DID reach the controller,
+# your basename() + whitelist would still block it.
+curl -i -X DELETE "http://127.0.0.1:8000/api/uploads/products/..%2F..%2Fetc%2Fpasswd" \
+  -H "Authorization: Bearer $TOKEN" \
+  -H "Accept: application/json"
+```
+
+```bash
+curl -X DELETE http://127.0.0.1:8000/api/uploads/products/battery-9f3a2b1c.jpg \
+  -H "Authorization: Bearer $TOKEN" \
+  -H "Accept: application/json"
+```
+
+
+
+
+
 # Protected Routes (JWT Required)  
 ### save the token from login:
 ```bash

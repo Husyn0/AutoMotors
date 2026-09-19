@@ -4,11 +4,12 @@
 namespace App\Models;
 
 use App\Traits\Translatable;
+use App\Traits\HasImageUrl;
 use Illuminate\Database\Eloquent\Model;
 
 class Product extends Model
 {
-    use Translatable;
+    use Translatable, HasImageUrl;
     protected $fillable = [
         'name',
         'category_id',

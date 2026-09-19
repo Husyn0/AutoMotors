@@ -8,6 +8,7 @@ use App\Http\Controllers\Api\TruckTypeController;
 use App\Http\Controllers\Api\ProjectController;
 use App\Http\Controllers\Api\SettingController;
 use App\Http\Controllers\Api\CategoryController;
+use App\Http\Controllers\Api\UploadController;
 
 /*
 |--------------------------------------------------------------------------
@@ -30,6 +31,19 @@ Route::get('/truck-types/{id}',[TruckTypeController::class,'show']);
 Route::get('/projects',       [ProjectController::class,   'index']);
 Route::get('/projects/{id}',  [ProjectController::class,   'show']);
 Route::get('/settings',       [SettingController::class,   'index']);
+
+/*
+|--------------------------------------------------------------------------
+| File serving (public)
+|--------------------------------------------------------------------------
+| Symlink path is preferred:  GET /storage/{folder}/{file}
+| Fallback / auth-friendly:   GET /api/files/{folder}/{file}
+*/
+
+
+Route::get('/files/{folder}/{file}', [UploadController::class, 'show'])
+    ->whereIn('folder', App\Http\Controllers\Api\UploadController::ALLOWED_FOLDERS)
+    ->where('file', '[^/]+'); // before it was '.*' — see note below
 
 /*
 |--------------------------------------------------------------------------
@@ -68,4 +82,19 @@ Route::middleware('auth:api')->group(function () {
 
     // Settings
     Route::put('/settings', [SettingController::class, 'update']);
+
+    /*
+    |--------------------------------------------------------------------------
+    | File uploads (protected)
+    |--------------------------------------------------------------------------
+    // */
+    // Route::post  ('/uploads/{folder}',        [UploadController::class, 'store']);
+    // Route::delete('/uploads/{folder}/{file}', [UploadController::class, 'destroy']);
+
+    Route::post  ('/uploads/{folder}',        [UploadController::class, 'store'])
+        ->whereIn('folder', \App\Http\Controllers\Api\UploadController::ALLOWED_FOLDERS);
+
+    Route::delete('/uploads/{folder}/{file}', [UploadController::class, 'destroy'])
+        ->whereIn('folder', \App\Http\Controllers\Api\UploadController::ALLOWED_FOLDERS)
+        ->where('file', '[^/]+'); // single segment only — no traversal, no nested dirs    
 });

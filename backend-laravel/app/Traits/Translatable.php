@@ -55,6 +55,13 @@ trait Translatable
                     : $related->toArray();
             }
         }
+        // Auto-expose image URLs for any raw path columns the model declares.
+        if (method_exists($this, 'imageColumns') && method_exists($this, 'imageUrlFor')) {
+            foreach ($this->imageColumns() as $col) {
+                $raw = $data[$col] ?? $this->getAttribute($col);
+                $data[$col . '_url'] = $this->imageUrlFor($raw);
+            }
+        }
 
         return $data;
     }

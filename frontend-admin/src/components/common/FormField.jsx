@@ -1,18 +1,20 @@
 // src/components/common/FormField.jsx
 import React from 'react';
+import ImageUploadField from './ImageUploadField';
 
 /**
  * @param {Object} props
- * @param {string} props.type - 'text' | 'number' | 'textarea' | 'select' | 'url' | 'email'
+ * @param {string} props.type - 'text' | 'number' | 'textarea' | 'select' | 'url' | 'email' | 'image-upload'
  * @param {string} props.name
  * @param {string} props.placeholder
  * @param {*} props.value
  * @param {(name: string, value: any) => void} props.onChange
  * @param {boolean} [props.required]
  * @param {boolean} [props.fullWidth]
- * @param {Array<{value: string, label: string, emoji?: string}>} [props.options] - for select
- * @param {string} [props.selectPlaceholder] - for select
- * @param {boolean} [props.emoji] - render options as emoji + label
+ * @param {Array} [props.options]        - for select
+ * @param {string} [props.selectPlaceholder]
+ * @param {boolean} [props.emoji]
+ * @param {string} [props.folder]        - for image-upload
  */
 const FormField = ({
   type = 'text',
@@ -25,7 +27,20 @@ const FormField = ({
   options = [],
   selectPlaceholder = 'Select...',
   emoji = false,
+  folder,
 }) => {
+  if (type === 'image-upload') {
+    return (
+      <ImageUploadField
+        name={name}
+        value={value}
+        onChange={onChange}
+        folder={folder}
+        fullWidth={fullWidth}
+      />
+    );
+  }
+
   const commonProps = {
     name,
     value: value ?? '',
@@ -35,13 +50,14 @@ const FormField = ({
     className: fullWidth ? 'full-width' : '',
   };
 
-  if (type === 'textarea') {
-    return <textarea {...commonProps} />;
-  }
+  if (type === 'textarea') return <textarea {...commonProps} />;
 
   if (type === 'select') {
     return (
-      <select {...commonProps} className={`${commonProps.className} ${emoji ? 'emoji-select' : ''}`.trim()}>
+      <select
+        {...commonProps}
+        className={`${commonProps.className} ${emoji ? 'emoji-select' : ''}`.trim()}
+      >
         <option value="">{selectPlaceholder}</option>
         {options.map((opt) => (
           <option key={opt.value} value={opt.value}>

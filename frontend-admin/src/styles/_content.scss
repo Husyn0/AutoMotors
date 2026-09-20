@@ -344,4 +344,134 @@
 
     }
   }
+
+  /* ── Table thumbnails ───────────────────────────────────── */
+  .thumb-cell {
+    width: 64px;
+    text-align: center;
+  }
+
+  .table-thumb {
+    width: 44px;
+    height: 44px;
+    object-fit: cover;
+    border-radius: $border-radius-sm;
+    border: 1px solid #e5e7eb;
+    background: #f8f9fa;
+    display: inline-block;
+    vertical-align: middle;
+  }
+
+  /* ── Image upload field ─────────────────────────────────── */
+  .image-upload {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-sm;
+
+    &.full-width { grid-column: 1 / -1; }
+
+    &__dropzone {
+      position: relative;
+      min-height: 160px;
+      border: 2px dashed $input-border-color;
+      border-radius: $border-radius-sm;
+      background: #fafbfc;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: border-color $transition-fast, background $transition-fast;
+      overflow: hidden;
+
+      &:hover,
+      &:focus-visible {
+        border-color: $primary;
+        background: #f0f4f8;
+        outline: none;
+      }
+    }
+
+    &__preview {
+      max-width: 100%;
+      max-height: 220px;
+      object-fit: contain;
+      display: block;
+    }
+
+    &__placeholder {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      color: #999;
+      font-size: 13px;
+
+      svg { font-size: 28px; }
+    }
+
+    &__overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.45);
+      color: white;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      font-size: 14px;
+    }
+
+    &__spinner {
+      animation: spin 1s linear infinite;
+      font-size: 22px;
+    }
+
+    &__actions {
+      display: flex;
+      gap: $spacing-sm;
+      flex-wrap: wrap;
+    }
+
+    &__btn {
+      @include button-base;
+      background: #f0f0f0;
+      color: $dark;
+      padding: 8px 14px;
+      font-size: 13px;
+
+      &:hover:not(:disabled) { background: #e0e0e0; }
+
+      &--danger {
+        background: #ffe5e5;
+        color: $danger;
+        &:hover:not(:disabled) { background: #ffcdd2; }
+      }
+
+      &:disabled { opacity: 0.5; cursor: not-allowed; }
+    }
+
+    &__path {
+      @include input-base;
+      font-size: 12px;
+      color: #666;
+      font-family: monospace;
+      width: 100%;
+    }
+
+    &__error {
+      color: $danger;
+      font-size: 12px;
+    }
+
+    &--error &__dropzone {
+      border-color: $danger;
+      background: #fff5f5;
+    }
+  }
+
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+
 }

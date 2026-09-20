@@ -16,7 +16,6 @@ Preconditions:
 
 ```bash
 BASE="http://127.0.0.1:8000/api"
-ROOT="http://127.0.0.1:8000"
 IMG="/home/hkali/Desktop/VioletPro/wallpaper/arch1.png"
 ```
 
@@ -80,7 +79,7 @@ curl -i -X POST "$BASE/uploads/products" \
 ### 1.3 Symlink serve check
 
 ```bash
-curl -I "$ROOT/storage/$IMG_PATH"
+curl -I "$BASE/storage/$IMG_PATH"
 ```
 
 ### 1.4 Controller serve check
@@ -170,7 +169,7 @@ curl -i "$BASE/files/products/..%2F..%2Fetc%2Fpasswd" \
 ### 3.1 Serve existing file via symlink
 
 ```bash
-curl -I "$ROOT/storage/$IMG_PATH"
+curl -I "$BASE/storage/$IMG_PATH"
 ```
 
 ### 3.2 Serve existing file via controller
@@ -189,7 +188,7 @@ curl -i "$BASE/files/products/does-not-exist.png" \
 ### 3.4 Non-existent file → 404 (symlink)
 
 ```bash
-curl -I "$ROOT/storage/products/does-not-exist.png"
+curl -I "$BASE/storage/products/does-not-exist.png"
 ```
 
 ### 3.5 Invalid folder on stream route → 404
@@ -217,7 +216,7 @@ curl -i -X DELETE "$BASE/uploads/products/$(basename $TMP_PATH)" \
 ### 4.2 Verify deleted file is gone
 
 ```bash
-curl -I "$ROOT/storage/$TMP_PATH"
+curl -I "$BASE/storage/$TMP_PATH"
 ```
 
 ### 4.3 Delete again → 404
@@ -269,7 +268,7 @@ curl -s "$BASE/products/$PID" | python3 -m json.tool
 ### 5.3 Verify product image URL serves
 
 ```bash
-curl -I "$ROOT/storage/$PIMG"
+curl -I "$BASE/storage/$PIMG"
 ```
 
 ### 5.4 Update product image
@@ -336,7 +335,7 @@ curl -i -X DELETE "$BASE/products/$PID" \
   -H "Authorization: Bearer $TOKEN" \
   -H "Accept: application/json"
 
-curl -I "$ROOT/storage/$PIMG2"
+curl -I "$BASE/storage/$PIMG2"
 ```
 
 ---
@@ -391,7 +390,7 @@ curl -s -X PUT "$BASE/categories/$CID" \
 ### 6.5 Verify updated category image serves
 
 ```bash
-curl -I "$ROOT/storage/$CIMG2"
+curl -I "$BASE/storage/$CIMG2"
 ```
 
 ### 6.6 Delete category
@@ -450,7 +449,7 @@ curl -s -X PUT "$BASE/projects/$PRID" \
 ### 7.4 Verify updated project image serves
 
 ```bash
-curl -I "$ROOT/storage/$PRIMG2"
+curl -I "$BASE/storage/$PRIMG2"
 ```
 
 ### 7.5 Delete project
@@ -530,7 +529,7 @@ URL=$(curl -s -X POST "$BASE/uploads/products" \
         -H "Authorization: Bearer $TOKEN" \
         -F "file=@$IMG" | grep -o '"url":"[^"]*"' | cut -d'"' -f4)
 
-curl -s "$ROOT/storage/$TEST" -o /tmp/via-symlink.png
+curl -s "$BASE/storage/$TEST" -o /tmp/via-symlink.png
 curl -s "$BASE/files/$TEST"  -o /tmp/via-controller.png
 curl -s "$URL"               -o /tmp/via-url.png
 

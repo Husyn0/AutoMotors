@@ -196,8 +196,14 @@ export const useCrud = (api, initialFormData, options = {}) => {
     const q = search.trim().toLowerCase();
     if (!q) return items;
     return items.filter((item) =>
-      Object.values(item).some((val) => {
+      Object.values(item).some(([key, val]) => {
         if (val === null || val === undefined) return false;
+
+        // Nested category: search on its name only
+        if (key === 'category' && typeof val === 'object') {
+          return String(val.name || '').toLowerCase().includes(q);
+        }
+
         if (typeof val === 'object') return false; // skip translations blobs
         return String(val).toLowerCase().includes(q);
       })
@@ -208,12 +214,21 @@ export const useCrud = (api, initialFormData, options = {}) => {
   const sortedItems = useMemo(() => {
     if (!sort.key || !sort.direction) return filteredItems;
     const dir = sort.direction === 'asc' ? 1 : -1;
+
     return [...filteredItems].sort((a, b) => {
-      const av = a[sort.key];
-      const bv = b[sort.key];
+      let av = a[sort.key];
+      let bv = b[sort.key];
+
+      // Nested category: sort by its name, not the object itself
+      if (sort.key === 'category') {
+        av = av?.name ?? '';
+        bv = bv?.name ?? '';
+      }
+
       if (av == null && bv == null) return 0;
       if (av == null) return 1;
       if (bv == null) return -1;
+
       if (typeof av === 'number' && typeof bv === 'number') {
         return (av - bv) * dir;
       }

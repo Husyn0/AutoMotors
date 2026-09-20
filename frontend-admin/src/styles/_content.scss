@@ -336,6 +336,12 @@
         &.type-badge--srv { @include type-badge(srv); }
         &.type-badge--adv { @include type-badge(adv); }
       }
+
+      .muted {
+        color: #999;
+        font-style: italic;
+      }
+
     }
   }
 }

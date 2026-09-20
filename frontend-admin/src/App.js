@@ -12,6 +12,7 @@ import Layout from './components/Layout';
 import { AuthProvider } from './context/AuthContext';
 import PrivateRoute from './components/PrivateRoute';
 import Users from './pages/Users';
+import Categories from './pages/Categories';
 import './styles/main.scss';
 
 function App() {
@@ -24,6 +25,7 @@ function App() {
             <Route element={<Layout />}>
               <Route index element={<Navigate to="/dashboard" />} />
               <Route path="dashboard" element={<Dashboard />} />
+              <Route path="categories" element={<Categories />} />
               <Route path="products" element={<Products />} />
               <Route path="services" element={<Services />} />
               <Route path="truck-types" element={<TruckTypes />} />

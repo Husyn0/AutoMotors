@@ -7,7 +7,7 @@ const initialFormData = { title: '', description: '', image: '' };
 
 const fields = [
   { name: 'title', type: 'text', placeholder: 'Project Title', required: true },
-  { name: 'image', type: 'text', placeholder: 'Image URL or Emoji' },
+  { name: 'image', type: 'file', placeholder: 'Image URL or Emoji' },
   {
     name: 'description',
     type: 'textarea',

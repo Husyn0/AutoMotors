@@ -27,7 +27,7 @@ const fields = [
     ],
   },
   { name: 'price', type: 'number', placeholder: 'Price', required: true },
-  { name: 'image', type: 'text', placeholder: 'Image URL' },
+  { name: 'image', type: 'file', placeholder: 'Image URL' },
   {
     name: 'short_description',
     type: 'textarea',

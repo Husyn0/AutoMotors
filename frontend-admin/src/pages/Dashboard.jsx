@@ -152,6 +152,7 @@ const Dashboard = () => {
         <div className="chart-card">
           <h3>Quick Links</h3>
           <div className="quick-links">
+            <Link to="/categories" className="quick-link">🏷️ Categories</Link>
             <Link to="/products"    className="quick-link">📦 Products</Link>
             <Link to="/services"    className="quick-link">🔧 Services</Link>
             <Link to="/truck-types" className="quick-link">🚛 Truck Types</Link>

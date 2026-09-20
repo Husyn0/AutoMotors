@@ -10,7 +10,8 @@ import {
   FaSignOutAlt,
   FaBars,
   FaCogs,
-  FaUsers
+  FaUsers,
+  FaTags
 } from 'react-icons/fa';
 import { useAuth } from '../context/AuthContext';
 
@@ -21,6 +22,7 @@ const Layout = () => {
 
   const navItems = [
     { path: '/dashboard', label: 'Dashboard', icon: <FaHome /> },
+    { path: '/categories',  label: 'Categories',  icon: <FaTags /> },
     { path: '/products', label: 'Products', icon: <FaBox /> },
     { path: '/services', label: 'Services', icon: <FaCog /> },
     { path: '/truck-types', label: 'Truck Types', icon: <FaTruck /> },

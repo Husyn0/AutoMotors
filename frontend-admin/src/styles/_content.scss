@@ -331,6 +331,11 @@
           }
         }
       }
+
+      .type-badge {
+        &.type-badge--srv { @include type-badge(srv); }
+        &.type-badge--adv { @include type-badge(adv); }
+      }
     }
   }
 }

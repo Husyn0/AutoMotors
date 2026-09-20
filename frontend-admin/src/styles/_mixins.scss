@@ -152,3 +152,10 @@
     @include badge(nth($colors, 1), nth($colors, 2));
   }
 }
+
+@mixin type-badge($type) {
+  $colors: map-get($type-colors, $type);
+  @if $colors {
+    @include badge(nth($colors, 1), nth($colors, 2));
+  }
+}

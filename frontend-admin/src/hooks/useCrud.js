@@ -7,7 +7,7 @@ const DEFAULT_PAGE_SIZE = 10;
  * Fields that should NOT be duplicated into translations.
  * These are language-agnostic (images, prices, categories, icons...).
  */
-const NON_TRANSLATABLE_FIELDS = new Set(['price', 'category', 'image', 'icon']);
+const NON_TRANSLATABLE_FIELDS = new Set(['price', 'category', 'image', 'icon','type']);
 
 export const useCrud = (api, initialFormData, options = {}) => {
   const { initialPageSize = DEFAULT_PAGE_SIZE } = options;

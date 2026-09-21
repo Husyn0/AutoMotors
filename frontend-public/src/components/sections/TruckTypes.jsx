@@ -1,12 +1,12 @@
 // src/components/sections/TruckTypes.jsx
 import React, { useContext, useState, useRef, useEffect } from 'react';
-import { LanguageContext } from '../../App';
+import { useLanguage } from '../../context/LanguageContext';
 import { truckTypesData } from '../../api/data';
 import { getTruckTypes } from '../../api/endpoints';    // API
 import { useApi } from '../../hooks/useApi';
 
 const TruckTypes = () => {
-  const { language, t } = useContext(LanguageContext);
+  const { language, t } =  useLanguage();
   const { data, loading } = useApi(getTruckTypes, [], truckTypesData[language]);
 
   const truckTypes = Array.isArray(data)

@@ -1,9 +1,9 @@
 // src/components/common/LanguageToggle.jsx
 import React, { useContext } from 'react';
-import { LanguageContext } from '../../App';
+import { useLanguage } from '../../context/LanguageContext'
 
 const LanguageToggle = () => {
-  const { language, setLanguage } = useContext(LanguageContext);
+  const { language, setLanguage } =useLanguage();
 
   const toggleLanguage = (lang) => {
     setLanguage(lang);

@@ -1,13 +1,13 @@
 // src/components/common/Navbar.jsx
 import React, { useState, useContext, useEffect } from 'react';
-import { LanguageContext } from '../../App';
+import { useLanguage } from '../../context/LanguageContext'
 import LanguageToggle from './LanguageToggle';
 import logo from '../../assets/output/logo1.ico';
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [activeSection, setActiveSection] = useState('home');
-  const { t } = useContext(LanguageContext);
+  const { t } = useLanguage();
 
   const navItems = [
     { id: 'home', label: t.nav.home },

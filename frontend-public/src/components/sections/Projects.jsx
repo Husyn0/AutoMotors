@@ -1,12 +1,12 @@
 // src/components/sections/Projects.jsx
 import React, { useContext, useState, useRef, useEffect } from 'react';
-import { LanguageContext } from '../../App';
+import { useLanguage } from '../../context/LanguageContext';
 import { projectsData } from '../../api/data';
 import { getProjects } from '../../api/endpoints';
 import { useApi } from '../../hooks/useApi';
 
 const Projects = () => {
-  const { language, t } = useContext(LanguageContext);
+  const { language, t } = useLanguage();
   const { data, loading } = useApi(getProjects, [], projectsData[language]);
 
   const projects = Array.isArray(data)

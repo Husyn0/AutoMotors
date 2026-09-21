@@ -1,6 +1,6 @@
 // src/hooks/useApi.js
 import { useState, useEffect, useContext } from 'react';
-import { LanguageContext } from '../App';
+import { useLanguage } from '../context/LanguageContext';
 
 /**
  * Generic data-fetching hook that re-fetches when language changes.
@@ -9,7 +9,7 @@ import { LanguageContext } from '../App';
  * @param {*} fallback - static fallback data (used if API fails)
  */
 export const useApi = (fetcher, deps = [], fallback = null) => {
-  const { language } = useContext(LanguageContext);
+  const { language } =  useLanguage();
   const [data, setData] = useState(fallback);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);

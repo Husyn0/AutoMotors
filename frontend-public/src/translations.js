@@ -23,11 +23,7 @@ export const translations = {
       title: 'Nos Produits',
       subtitle: 'Des produits de qualité pour votre véhicule',
       categories: {
-        all: 'Tous',
-        batteries: 'Batteries',
-        lubricants: 'Lubrifiants',
-        tires: 'Pneus',
-        spareParts: 'Pièces Détachées'
+        all: 'Tous'
       }
     },
         truckTypes: {

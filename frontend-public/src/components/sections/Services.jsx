@@ -1,12 +1,12 @@
 // src/components/sections/Services.jsx
 import React, { useContext } from 'react';
-import { LanguageContext } from '../../App';
+import { useLanguage } from '../../context/LanguageContext'
 import { servicesData } from '../../api/data';
 import { getServices } from '../../api/endpoints';
 import { useApi } from '../../hooks/useApi';
 
 const Services = () => {
-  const { language, t } = useContext(LanguageContext);
+  const { language, t } = useLanguage();
   const fallback = servicesData[language];
 
   const { data, loading } = useApi(getServices, [], {

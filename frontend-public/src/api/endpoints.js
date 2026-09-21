@@ -1,6 +1,13 @@
 // src/api/endpoints.js
 import apiClient from './client';
 
+// ---------- CATEGORIES ----------
+export const getCategories = (lang) =>
+  apiClient.get('/categories', { params: lang ? { lang } : {} });
+
+export const getCategory = (id, lang) =>
+  apiClient.get(`/categories/${id}`, { params: lang ? { lang } : {} });
+
 // ---------- PRODUCTS ----------
 export const getProducts = (lang) =>
   apiClient.get('/products', { params: lang ? { lang } : {} });

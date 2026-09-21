@@ -1,170 +1,133 @@
 // src/components/sections/Products.jsx
-import React, { useContext, useState, useRef, useEffect } from 'react';
-import { LanguageContext } from '../../App';
+import React, { useState, useRef, useEffect } from 'react';
+import { useLanguage } from '../../context/LanguageContext';
+import { useCategories } from '../../context/CategoriesContext';
 import { productsData } from '../../api/data';
-import { getProducts } from '../../api/endpoints';    // API
+import { getProducts } from '../../api/endpoints';
 import { useApi } from '../../hooks/useApi';
 
 const Products = () => {
-  const { language, t } = useContext(LanguageContext);
-    // Fetch from API, fall back to static data on error
+  const { language, t } = useLanguage();
+  const { categories, loading: catsLoading } = useCategories();
+
   const { data, loading, error } = useApi(
     getProducts,
     [],
     productsData[language]
   );
 
-  // Normalize: handle { data: [...] } or plain array
-  const products = Array.isArray(data) ? data : data?.data || productsData[language];
+  const products = Array.isArray(data)
+    ? data
+    : data?.data || productsData[language];
+
   const [activeCategory, setActiveCategory] = useState('all');
   const [isAutoScrolling, setIsAutoScrolling] = useState(true);
   const scrollContainerRef = useRef(null);
   const autoScrollInterval = useRef(null);
 
-  const categories = {
-    all: t.products.categories.all,
-    batteries: t.products.categories.batteries,
-    lubricants: t.products.categories.lubricants,
-    tires: t.products.categories.tires,
-    spareParts: t.products.categories.spareParts
-  };
+  // Build tabs: ["all", ...dbCategories]
+  const categoryTabs = [
+    { slug: 'all', name: t.products.categories.all },
+    ...categories.map((c) => ({ slug: c.slug, name: c.name })),
+  ];
 
-  // Filter products based on category
-  const filteredProducts = activeCategory === 'all' 
-    ? products 
-    : products.filter(product => product.category === activeCategory);
+  // Filter: match by nested category.slug, category_id, or legacy string
+  const filteredProducts =
+    activeCategory === 'all'
+      ? products
+      : products.filter((p) => {
+          const slug =
+            p.category?.slug ??
+            p.category_slug ??
+            (typeof p.category === 'string' ? p.category : null);
+          if (slug) return slug === activeCategory;
+          const catId = p.category_id ?? p.category?.id;
+          const match = categories.find((c) => c.slug === activeCategory);
+          return match && catId === match.id;
+        });
 
-
-  // Auto-scroll function
+  // --- auto-scroll logic unchanged from your version ---
   const startAutoScroll = () => {
-    if (autoScrollInterval.current) {
-      clearInterval(autoScrollInterval.current);
-    }
-    
+    if (autoScrollInterval.current) clearInterval(autoScrollInterval.current);
     autoScrollInterval.current = setInterval(() => {
       if (scrollContainerRef.current && isAutoScrolling) {
-        const container = scrollContainerRef.current;
-        const scrollAmount = 300; // Scroll 300px at a time
-        
-        // Check if we're at the end
-        if (container.scrollLeft + container.clientWidth >= container.scrollWidth - 10) {
-          // Reset to start
-          container.scrollTo({
-            left: 0,
-            behavior: 'smooth'
-          });
+        const c = scrollContainerRef.current;
+        if (c.scrollLeft + c.clientWidth >= c.scrollWidth - 10) {
+          c.scrollTo({ left: 0, behavior: 'smooth' });
         } else {
-          // Scroll forward
-          container.scrollBy({
-            left: scrollAmount,
-            behavior: 'smooth'
-          });
+          c.scrollBy({ left: 300, behavior: 'smooth' });
         }
       }
-    }, 3000); // Scroll every 3 seconds
+    }, 3000);
   };
 
-  // Stop auto-scroll
   const stopAutoScroll = () => {
-    if (autoScrollInterval.current) {
-      clearInterval(autoScrollInterval.current);
-      autoScrollInterval.current = null;
-    }
+    if (autoScrollInterval.current) clearInterval(autoScrollInterval.current);
+    autoScrollInterval.current = null;
     setIsAutoScrolling(false);
   };
 
-  // Resume auto-scroll
   const resumeAutoScroll = () => {
     setIsAutoScrolling(true);
     startAutoScroll();
   };
 
-  // Handle manual scroll
   const handleManualScroll = (direction) => {
     stopAutoScroll();
     if (scrollContainerRef.current) {
-      const container = scrollContainerRef.current;
-      const scrollAmount = 400;
-      container.scrollBy({
-        left: direction === 'left' ? -scrollAmount : scrollAmount,
-        behavior: 'smooth'
+      scrollContainerRef.current.scrollBy({
+        left: direction === 'left' ? -400 : 400,
+        behavior: 'smooth',
       });
     }
-    // Resume auto-scroll after 5 seconds of inactivity
-    setTimeout(() => {
-      if (!isAutoScrolling) {
-        resumeAutoScroll();
-      }
-    }, 5000);
+    setTimeout(() => { if (!isAutoScrolling) resumeAutoScroll(); }, 5000);
   };
 
-  // Handle category filter change
-  const handleCategoryChange = (category) => {
-    setActiveCategory(category);
-    // Reset scroll position
-    if (scrollContainerRef.current) {
-      scrollContainerRef.current.scrollTo({
-        left: 0,
-        behavior: 'smooth'
-      });
-    }
-    // Restart auto-scroll
+  const handleCategoryChange = (slug) => {
+    setActiveCategory(slug);
+    scrollContainerRef.current?.scrollTo({ left: 0, behavior: 'smooth' });
     stopAutoScroll();
-    setTimeout(() => resumeAutoScroll(), 1000);
+    setTimeout(resumeAutoScroll, 1000);
   };
 
-  // Initialize auto-scroll
-  useEffect(() => {
-    startAutoScroll();
-    
-    // Cleanup interval on unmount
-    return () => {
-      if (autoScrollInterval.current) {
-        clearInterval(autoScrollInterval.current);
-      }
-    };
-  }, []);
+  useEffect(() => { startAutoScroll(); return () => clearInterval(autoScrollInterval.current); }, []);
+  useEffect(() => { stopAutoScroll(); setTimeout(resumeAutoScroll, 1000); }, [activeCategory]);
 
-  // Restart auto-scroll when filtered products change
-  useEffect(() => {
-    stopAutoScroll();
-    setTimeout(() => resumeAutoScroll(), 1000);
-  }, [activeCategory]);
+  if (loading || catsLoading) return <div className="loader">Loading products…</div>;
 
+  // Helper to get a display label for a product's category chip
+  const labelForProduct = (product) => {
+    const slug =
+      product.category?.slug ??
+      (typeof product.category === 'string' ? product.category : null);
+    const found = categories.find((c) => c.slug === slug);
+    return found?.name || product.category?.name || slug || '';
+  };
 
-  if (loading) return <div className="loader">Loading products…</div>;
-  
   return (
     <section id="products" className="products">
       <div className="container">
         <h2 className="section-title">{t.products.title}</h2>
         <p className="section-subtitle">{t.products.subtitle}</p>
 
-        {/* Category Navigation */}
+        {/* Dynamic category tabs */}
         <div className="category-nav">
-          {Object.entries(categories).map(([key, label]) => (
+          {categoryTabs.map(({ slug, name }) => (
             <button
-              key={key}
-              className={`category-btn ${activeCategory === key ? 'active' : ''}`}
-              onClick={() => handleCategoryChange(key)}
+              key={slug}
+              className={`category-btn ${activeCategory === slug ? 'active' : ''}`}
+              onClick={() => handleCategoryChange(slug)}
             >
-              {label}
-              {activeCategory === key && <span className="active-indicator"></span>}
+              {name}
+              {activeCategory === slug && <span className="active-indicator" />}
             </button>
           ))}
         </div>
 
-        {/* Products Container */}
         <div className="products-scroll-wrapper">
-          <button 
-            className="scroll-btn scroll-left"
-            onClick={() => handleManualScroll('left')}
-            aria-label="Scroll left"
-          >
-            ‹
-          </button>
+          <button className="scroll-btn scroll-left" onClick={() => handleManualScroll('left')} aria-label="Scroll left">‹</button>
 
-          <div 
+          <div
             className="products-scroll-container"
             ref={scrollContainerRef}
             onMouseEnter={stopAutoScroll}
@@ -176,38 +139,35 @@ const Products = () => {
               {filteredProducts.map((product) => (
                 <div key={product.id} className="product-card">
                   <div className="product-image">
-                    {product.image ? (
-                      <img src={product.image} alt={product.name} />
+                    {product.image_url || product.image ? (
+                      <img
+                        src={product.image_url || product.image}
+                        alt={product.name}
+                        loading="lazy"
+                      />
                     ) : (
                       <div className="product-placeholder">📦</div>
                     )}
                   </div>
-                  <div className="product-category">
-                    {categories[product.category]}
-                  </div>
+                  <div className="product-category">{labelForProduct(product)}</div>
                   <h3>{product.name}</h3>
-                  <p className="product-description">{product.shortDescription}</p>
+                  <p className="product-description">{product.short_description}</p>
                   <div className="product-footer">
                     <span className="product-price">{product.price}</span>
-                    {/* <button className="product-btn">+</button> */}
                   </div>
                 </div>
               ))}
+              {filteredProducts.length === 0 && (
+                <p className="empty-state">Aucun produit dans cette catégorie.</p>
+              )}
             </div>
           </div>
 
-          <button 
-            className="scroll-btn scroll-right"
-            onClick={() => handleManualScroll('right')}
-            aria-label="Scroll right"
-          >
-            ›
-          </button>
+          <button className="scroll-btn scroll-right" onClick={() => handleManualScroll('right')} aria-label="Scroll right">›</button>
         </div>
 
-        {/* Auto-scroll indicator */}
         <div className="scroll-indicator">
-          <span className={`scroll-dot ${isAutoScrolling ? 'active' : ''}`}></span>
+          <span className={`scroll-dot ${isAutoScrolling ? 'active' : ''}`} />
           <span className="scroll-text">
             {isAutoScrolling ? 'Défilement automatique' : 'Défilement manuel'}
           </span>

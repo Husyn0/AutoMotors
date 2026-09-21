@@ -1,6 +1,7 @@
 // src/components/common/Footer.jsx
 import React, { useContext } from 'react';
-import { LanguageContext } from '../../App';
+import { useLanguage } from '../../context/LanguageContext';
+
 import { getSettings } from '../../api/endpoints';
 import { useApi } from '../../hooks/useApi';
 
@@ -12,7 +13,8 @@ import { BsFillPhoneVibrateFill } from "react-icons/bs";
 import { IoIosMailOpen } from "react-icons/io";
 
 const Footer = () => {
-  const { t } = useContext(LanguageContext);
+
+  const { t } = useLanguage();
   const currentYear = new Date().getFullYear();
   const { data: settings } = useApi(getSettings, [], null);
 

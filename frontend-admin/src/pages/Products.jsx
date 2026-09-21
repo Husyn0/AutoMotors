@@ -1,7 +1,8 @@
 // src/pages/Products.jsx
-import React from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import CrudPage from '../components/common/CrudPage';
 import productsApi from '../api/productsApi';
+import categoriesApi from '../api/categoriesApi';
 import uploadsApi from '../api/uploadsApi';
 
 const initialFormData = {
@@ -12,7 +13,11 @@ const initialFormData = {
   image: '',
 };
 
-const fields = [
+/**
+ * Build the field list dynamically so the category <select>
+ * reflects the live list returned by GET /api/categories.
+ */
+const buildFields = (categories) => [
   { name: 'name', type: 'text', placeholder: 'Product Name', required: true },
   {
     name: 'category_id',
@@ -20,13 +25,11 @@ const fields = [
     placeholder: 'Select Category',
     required: true,
     selectPlaceholder: 'Select Category',
-    options: [
-      { value: '1', label: 'Batteries Auto' },
-      { value: '2', label: 'Lubrifiants' },
-      { value: '3', label: 'Pneus' },
-      { value: '4', label: 'Pièces détachées' },
-      { value: '6', label: 'Accessoires' },
-    ],
+    options: categories.map((c) => ({
+      value: String(c.id),
+      label: c.name,
+      emoji: c.icon || undefined, // CrudForm renders `${emoji}  ${label}` when set
+    })),
   },
   { name: 'price', type: 'number', placeholder: 'Price', required: true },
   {
@@ -77,16 +80,38 @@ const columns = [
   { key: 'short_description', label: 'Description', className: 'description-cell' },
 ];
 
-const Products = () => (
-  <CrudPage
-    title="Products Management"
-    entityName="Product"
-    entityNamePlural="product"
-    api={productsApi}
-    initialFormData={initialFormData}
-    fields={fields}
-    columns={columns}
-  />
-);
+const Products = () => {
+  const [categories, setCategories] = useState([]);
+  const [categoriesLoading, setCategoriesLoading] = useState(true);
+
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        const res = await categoriesApi.list();
+        if (!cancelled) setCategories(res.data || []);
+      } catch (err) {
+        console.error('Failed to load categories:', err);
+      } finally {
+        if (!cancelled) setCategoriesLoading(false);
+      }
+    })();
+    return () => { cancelled = true; };
+  }, []);
+
+  const fields = useMemo(() => buildFields(categories), [categories]);
+
+  return (
+    <CrudPage
+      title="Products Management"
+      entityName="Product"
+      entityNamePlural="product"
+      api={productsApi}
+      initialFormData={initialFormData}
+      fields={fields}
+      columns={columns}
+    />
+  );
+};
 
 export default Products;

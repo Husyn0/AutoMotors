@@ -1,0 +1,18 @@
+                  
+                  
+┌────────────────┐
+│ 1 Code Finding │
+└────────────────┘
+                                         
+  [36m[22m[24m  backend-laravel/.npmrc[0m
+    ❯❱ package_managers.npm.npm-missing-minimum-release-age.npm-missing-minimum-release-age
+          [31m[1m[24m❰❰ Blocking ❱❱[0m
+          This .npmrc does not set a minimum release age or sets it too low. Newly published packages can be
+          malicious or unstable. Add `min-release-age = 7` to wait 7 days before resolving newly published  
+          package versions. Added in: v11.10 Reference: https://github.blog/changelog/2026-02-18-npm-bulk-  
+          trusted-publishing-config-and-script-security-now-generally-available/                            
+          Details: https://sg.run/GRo1z                                                                     
+                                                                                                            
+            1┆ ignore-scripts=true
+            2┆ audit=true
+

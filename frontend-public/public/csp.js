@@ -1,5 +1,4 @@
 // public/csp.js
-// Injects an environment-aware Content-Security-Policy before the app boots.
 (function () {
   var host = window.location.hostname;
 
@@ -8,30 +7,33 @@
     host === '127.0.0.1' ||
     host === '0.0.0.0' ||
     host.endsWith('.local') ||
-    /^192\.168\./.test(host); // local network testing
+    /^192\.168\./.test(host);
 
   // ---- Configure your real backend here for production ----
-  var PROD_API_ORIGIN = 'https://api.automotors.ci'; // <-- change me
+  var PROD_API_ORIGIN = 'https://api.automotors.ci';
+
+  // Local backend origins (both spellings — the dev server may be
+  // reached either way, and the backend may emit either one in image_url)
+  var LOCAL_API_ORIGINS = [
+    'http://localhost:8000',
+    'http://127.0.0.1:8000',
+  ].join(' ');
 
   var connectSrc = isLocal
-    ? [
-        "'self'",
-        'http://localhost:8000',
-        'http://127.0.0.1:8000',
-        'ws://localhost:3000',      // CRA HMR websocket
-        'ws://127.0.0.1:3000',
-      ].join(' ')
+    ? ["'self'", LOCAL_API_ORIGINS,
+       'ws://localhost:3000', 'ws://127.0.0.1:3000'].join(' ')
     : ["'self'", PROD_API_ORIGIN].join(' ');
 
   var scriptSrc = isLocal
-    ? "'self' 'unsafe-inline' 'unsafe-eval'"  // required by CRA HMR
-    : "'self'";                                // no unsafe-* in prod
+    ? "'self' 'unsafe-inline' 'unsafe-eval'"
+    : "'self'";
 
-  var styleSrc = "'self' 'unsafe-inline'";     // SCSS/CSS modules need this
+  var styleSrc = "'self' 'unsafe-inline'";
 
+  // ✅ Allow images from the API origin in BOTH environments.
   var imgSrc = isLocal
-    ? "'self' data: blob:"
-    : "'self' data: blob: https:";
+    ? ["'self'", 'data:', 'blob:', LOCAL_API_ORIGINS].join(' ')
+    : ["'self'", 'data:', 'blob:', 'https:', PROD_API_ORIGIN].join(' ');
 
   var policy = [
     "default-src 'self'",

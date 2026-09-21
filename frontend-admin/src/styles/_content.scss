@@ -295,10 +295,14 @@
       }
 
       .category-badge {
-        &.batteries { @include category-badge(batteries); }
-        &.lubricants { @include category-badge(lubricants); }
-        &.tires { @include category-badge(tires); }
-        &.spareParts { @include category-badge(spareParts); }
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        padding: $spacing-xs 10px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 500;
+        white-space: nowrap;
       }
 
       .actions-cell {

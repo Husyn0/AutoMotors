@@ -1,6 +1,7 @@
 // src/pages/Products.jsx
 import React, { useEffect, useMemo, useState } from 'react';
 import CrudPage from '../components/common/CrudPage';
+import { getCategoryColors } from '../utils/categoryColors';
 import productsApi from '../api/productsApi';
 import categoriesApi from '../api/categoriesApi';
 import uploadsApi from '../api/uploadsApi';
@@ -68,8 +69,9 @@ const columns = [
     render: (p) => {
       const cat = p.category;
       if (!cat) return <span className="muted">—</span>;
+      const style = getCategoryColors(cat.slug);
       return (
-        <span className={`category-badge ${cat.slug || ''}`}>
+        <span className="category-badge" style={style}>
           {cat.icon ? `${cat.icon} ` : ''}
           {cat.name}
         </span>

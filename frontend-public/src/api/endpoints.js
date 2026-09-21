@@ -15,9 +15,17 @@ export const getProducts = (lang) =>
 export const getProduct = (id, lang) =>
   apiClient.get(`/products/${id}`, { params: lang ? { lang } : {} });
 
+
 // ---------- SERVICES ----------
+// full list (mixed srv + adv)
 export const getServices = (lang) =>
   apiClient.get('/services', { params: lang ? { lang } : {} });
+
+// filtered by type — 'srv' or 'adv'
+export const getServicesByType = (type, lang) =>
+  apiClient.get('/services', {
+    params: { type, ...(lang ? { lang } : {}) },
+  });
 
 export const getService = (id, lang) =>
   apiClient.get(`/services/${id}`, { params: lang ? { lang } : {} });

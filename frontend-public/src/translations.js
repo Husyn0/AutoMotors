@@ -17,7 +17,8 @@ export const translations = {
     services: {
       title: 'Nos Services',
       subtitle: 'Des solutions complètes pour vos besoins automobiles',
-      advantagesTitle: 'Nos principaux avantages'
+      listTitle: 'Nos services',
+      advantagesTitle: 'Nos principaux avantages',
     },
     products: {
       title: 'Nos Produits',
@@ -66,7 +67,8 @@ export const translations = {
     services: {
       title: 'Our Services',
       subtitle: 'Complete solutions for your automotive needs',
-      advantagesTitle: 'Our main advantages'
+      listTitle: 'Our services',
+      advantagesTitle: 'Our main advantages',
     },
     products: {
       title: 'Our Products',

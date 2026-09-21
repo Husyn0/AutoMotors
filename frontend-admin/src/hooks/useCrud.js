@@ -195,19 +195,28 @@ export const useCrud = (api, initialFormData, options = {}) => {
   const filteredItems = useMemo(() => {
     const q = search.trim().toLowerCase();
     if (!q) return items;
-    return items.filter((item) =>
-      Object.values(item).some(([key, val]) => {
-        if (val === null || val === undefined) return false;
 
-        // Nested category: search on its name only
+    return items.filter((item) => {
+      if (!item || typeof item !== 'object') return false;
+
+      for (const key of Object.keys(item)) {
+        const val = item[key];
+        if (val === null || val === undefined) continue;
+
+        // Nested category → match on its name
         if (key === 'category' && typeof val === 'object') {
-          return String(val.name || '').toLowerCase().includes(q);
+          if (String(val.name || '').toLowerCase().includes(q)) return true;
+          continue;
         }
 
-        if (typeof val === 'object') return false; // skip translations blobs
-        return String(val).toLowerCase().includes(q);
-      })
-    );
+        // Skip other object blobs (translations, etc.)
+        if (typeof val === 'object') continue;
+
+        if (String(val).toLowerCase().includes(q)) return true;
+      }
+
+      return false;
+    });
   }, [items, search]);
 
   // ── Derived: sorted ────────────────────────────────────────────

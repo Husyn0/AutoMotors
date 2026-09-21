@@ -20,10 +20,13 @@
     text-align: center;
     margin-bottom: $spacing-xxl;
 
-    h1 {
-      color: $primary;
-      font-size: 28px;
-      letter-spacing: 2px;
+    .login-logo {
+      display: block;
+      margin: 0 auto 10px;      // center + small gap before "Admin Panel"
+      max-width: 180px;         // adjust to taste; keeps very large logos in check
+      width: 100%;
+      height: auto;
+      object-fit: contain;
     }
 
     h2 {

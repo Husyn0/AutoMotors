@@ -31,7 +31,11 @@ const Login = () => {
       <div className="login-container">
         <div className="login-box">
           <div className="login-header">
-            <h1>AUTOMOTORS</h1>
+            <img
+              src="/logo.png"
+              alt="AUTOMOTORS"
+              className="login-logo"
+            />
             <h2>Admin Panel</h2>
           </div>
 

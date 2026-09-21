@@ -4,7 +4,6 @@
   background: $light-color;
   overflow: hidden;
 
-  // Scroll wrapper (no side buttons anymore)
   .projects-scroll-wrapper {
     position: relative;
     display: block;
@@ -17,7 +16,6 @@
     }
   }
 
-  // Scroll container
   .projects-scroll-container {
     width: 100%;
     overflow-x: auto;
@@ -34,7 +32,6 @@
     &:active { cursor: grabbing; }
   }
 
-  // Horizontal track of cards
   .projects-track {
     display: grid;
     grid-auto-flow: column;
@@ -54,7 +51,6 @@
     }
   }
 
-  // Card
   .project-card {
     background: $white;
     padding: 2rem;
@@ -66,6 +62,7 @@
     flex-direction: column;
     justify-content: flex-start;
     min-height: 220px;
+    cursor: pointer;
 
     &:hover {
       border-color: $primary-color;
@@ -73,12 +70,45 @@
         drop-shadow(0 0 6px rgba($primary-color, 0.7))
         drop-shadow(0 0 18px rgba($primary-color, 0.35));
       transform: translateY(-5px);
-    } 
+    }
+
+    &:focus-visible {
+      outline: 2px solid $secondary-color;
+      outline-offset: 3px;
+    }
 
     .project-image {
-      font-size: 4rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 140px;
       margin-bottom: 1rem;
-      line-height: 1;
+      border-radius: 8px;
+      overflow: hidden;
+      background: $light-color;
+
+      img {
+        width: 100%;
+        height: 140px;
+        object-fit: cover;
+        display: block;
+        transition: transform 0.3s ease;
+      }
+
+      &:hover img {
+        transform: scale(1.04);
+      }
+
+      .project-emoji {
+        font-size: 4rem;
+        line-height: 1;
+      }
+
+      &.is-fallback::before {
+        content: '🖼️';
+        font-size: 3rem;
+        opacity: 0.4;
+      }
     }
 
     h3 {
@@ -98,11 +128,14 @@
       padding: 1.5rem;
       min-height: 180px;
 
-      .project-image { font-size: 3rem; }
+      .project-image {
+        min-height: 110px;
+        img { height: 110px; }
+        .project-emoji { font-size: 3rem; }
+      }
     }
   }
 
-  // ✅ Pagination dots
   .projects-dots {
     display: flex;
     justify-content: center;
@@ -138,30 +171,12 @@
     }
   }
 }
-// ===== Project card: pointer + hover =====
-.project-card {
-  cursor: pointer;
-
-  &:focus-visible {
-    outline: 2px solid $secondary-color;
-    outline-offset: 3px;
-  }
-
-  // make emoji-images behave like images too
-  .project-image img {
-    max-width: 100%;
-    max-height: 120px;
-    object-fit: contain;
-    display: block;
-    margin: 0 auto;
-  }
-}
 
 // ===== Lightbox / modal =====
 .project-modal-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(11, 26, 47, 0.75);   // dark navy translucent
+  background: rgba(11, 26, 47, 0.75);
   backdrop-filter: blur(6px);
   display: flex;
   align-items: center;
@@ -203,6 +218,12 @@
     object-fit: contain;
     border-radius: 8px;
     display: block;
+  }
+
+  &.is-fallback::before {
+    content: '🖼️';
+    font-size: 6rem;
+    opacity: 0.4;
   }
 
   .project-modal-emoji {
@@ -266,5 +287,5 @@
 
 @keyframes modalPop {
   from { opacity: 0; transform: translateY(20px) scale(0.96); }
-  to   { opacity: 1; transform: translateY(0)    scale(1); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
 }

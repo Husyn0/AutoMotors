@@ -1,9 +1,10 @@
 // src/components/sections/Projects.jsx
-import React, { useContext, useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { useLanguage } from '../../context/LanguageContext';
 import { projectsData } from '../../api/data';
 import { getProjects } from '../../api/endpoints';
 import { useApi } from '../../hooks/useApi';
+import { resolveImage } from '../../api/media';
 
 const Projects = () => {
   const { language, t } = useLanguage();
@@ -17,16 +18,7 @@ const Projects = () => {
   const autoScrollInterval = useRef(null);
   const [isAutoScrolling, setIsAutoScrolling] = useState(true);
   const [activeIndex, setActiveIndex] = useState(0);
-
-  // 🆕 Modal state
   const [selectedProject, setSelectedProject] = useState(null);
-
-  // ---- Helpers ----
-  const isImageUrl = (value) =>
-    typeof value === 'string' &&
-    (value.startsWith('/') ||
-      value.startsWith('http') ||
-      /\.(png|jpe?g|gif|webp|svg|avif)$/i.test(value));
 
   const totalPages = projects.length;
 
@@ -87,7 +79,6 @@ const Projects = () => {
     };
   }, [isAutoScrolling, activeIndex]);
 
-  // 🆕 Esc closes the modal + lock body scroll while open
   useEffect(() => {
     if (!selectedProject) return;
     const onKey = (e) => e.key === 'Escape' && setSelectedProject(null);
@@ -119,36 +110,48 @@ const Projects = () => {
             onTouchEnd={() => setTimeout(resumeAutoScroll, 3000)}
           >
             <div className="projects-track">
-              {projects.map((project) => (
-                <div
-                  key={project.id}
-                  className="project-card"
-                  onClick={() => setSelectedProject(project)}
-                  role="button"
-                  tabIndex={0}
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter' || e.key === ' ') {
-                      e.preventDefault();
-                      setSelectedProject(project);
-                    }
-                  }}
-                >
-                  <div className="project-image">
-                    {isImageUrl(project.image) ? (
-                      <img src={project.image} alt={project.title} />
-                    ) : (
-                      project.image
-                    )}
+              {projects.map((project) => {
+                const imgSrc = resolveImage(project);
+                return (
+                  <div
+                    key={project.id}
+                    className="project-card"
+                    onClick={() => setSelectedProject(project)}
+                    role="button"
+                    tabIndex={0}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        setSelectedProject(project);
+                      }
+                    }}
+                  >
+                    <div className="project-image">
+                      {imgSrc ? (
+                        <img
+                          src={imgSrc}
+                          alt={project.title}
+                          loading="lazy"
+                          onError={(e) => {
+                            e.currentTarget.style.display = 'none';
+                            e.currentTarget.parentElement?.classList.add('is-fallback');
+                          }}
+                        />
+                      ) : (
+                        <span className="project-emoji">
+                          {project.image || '🖼️'}
+                        </span>
+                      )}
+                    </div>
+                    <h3>{project.title}</h3>
+                    <p>{project.description}</p>
                   </div>
-                  <h3>{project.title}</h3>
-                  <p>{project.description}</p>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </div>
         </div>
 
-        {/* Pagination dots */}
         <div className="projects-dots" role="tablist" aria-label="Project pagination">
           {projects.map((project, index) => (
             <button
@@ -168,7 +171,6 @@ const Projects = () => {
         </div>
       </div>
 
-      {/* 🆕 Lightbox / modal */}
       {selectedProject && (
         <div
           className="project-modal-overlay"
@@ -179,7 +181,7 @@ const Projects = () => {
         >
           <div
             className="project-modal"
-            onClick={(e) => e.stopPropagation()} // don't close when clicking the content
+            onClick={(e) => e.stopPropagation()}
           >
             <button
               className="project-modal-close"
@@ -190,11 +192,23 @@ const Projects = () => {
             </button>
 
             <div className="project-modal-media">
-              {isImageUrl(selectedProject.image) ? (
-                <img src={selectedProject.image} alt={selectedProject.title} />
-              ) : (
-                <span className="project-modal-emoji">{selectedProject.image}</span>
-              )}
+              {(() => {
+                const src = resolveImage(selectedProject);
+                return src ? (
+                  <img
+                    src={src}
+                    alt={selectedProject.title}
+                    onError={(e) => {
+                      e.currentTarget.style.display = 'none';
+                      e.currentTarget.parentElement?.classList.add('is-fallback');
+                    }}
+                  />
+                ) : (
+                  <span className="project-modal-emoji">
+                    {selectedProject.image || '🖼️'}
+                  </span>
+                );
+              })()}
             </div>
 
             <div className="project-modal-info">

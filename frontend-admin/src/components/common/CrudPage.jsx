@@ -14,8 +14,9 @@ const CrudPage = ({
   fields,
   columns,
   initialPageSize = 10,
-  searchable = true, // default on
-  sortable = true,   // default on
+  searchable = true,   // default on
+  sortable = true,     // default on
+  translatable = true, // show the FR ⇄ EN table toggle
 }) => {
   const {
     pagedItems,
@@ -29,10 +30,13 @@ const CrudPage = ({
     handleDelete,
     closeForm,
     toggleForm,
-    // translations
+    // form translations
     activeLocale,
     setActiveLocale,
     isTranslatable,
+    // table translations
+    tableLocale,
+    setTableLocale,
     // search + sort
     search,
     handleSearch,
@@ -64,6 +68,9 @@ const CrudPage = ({
         onAdd={toggleForm}
         addLabel={`Add ${entityName}`}
         isFormOpen={isFormOpen}
+        showLocaleToggle={translatable}
+        tableLocale={tableLocale}
+        onLocaleChange={setTableLocale}
       />
 
       <div

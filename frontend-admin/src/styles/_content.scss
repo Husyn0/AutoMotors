@@ -10,6 +10,12 @@
       color: $dark;
       font-size: 24px;
     }
+    &__actions {
+      display: flex;
+      align-items: center;
+      gap: $spacing-md;
+      flex-wrap: wrap;
+    }
 
     .btn-add {
       @include button-success;
@@ -22,6 +28,40 @@
           background: darken($danger, 10%);
         }
       }
+    }
+  }
+
+  .locale-toggle{
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    border: 1px solid $input-border-color;
+    background: white;
+    border-radius: 999px;
+    cursor: pointer;
+    font-size: 14px;
+    line-height: 1;
+    transition: all $transition-fast;
+    &:hover {
+      border-color: $primary;
+      background: #f0f4f8;
+    }
+
+    &__flag {
+      opacity: 0.35;
+      filter: grayscale(60%);
+      transition: opacity $transition-fast, filter $transition-fast;
+
+      &.active {
+        opacity: 1;
+        filter: none;
+      }
+    }
+
+    &__arrow {
+      color: #999;
+      font-size: 12px;
     }
   }
 

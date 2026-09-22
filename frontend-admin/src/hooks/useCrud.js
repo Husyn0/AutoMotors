@@ -1,5 +1,6 @@
 // src/hooks/useCrud.js
 import { useState, useEffect, useCallback, useMemo } from 'react';
+import { getLocale } from '../api/api';
 
 const DEFAULT_PAGE_SIZE = 10;
 
@@ -7,7 +8,16 @@ const DEFAULT_PAGE_SIZE = 10;
  * Fields that should NOT be duplicated into translations.
  * These are language-agnostic (images, prices, categories, icons...).
  */
-const NON_TRANSLATABLE_FIELDS = new Set(['price', 'category','category_id', 'image', 'image_url', 'icon','slug','type']);
+const NON_TRANSLATABLE_FIELDS = new Set([
+  'price',
+  'category',
+  'category_id',
+  'image',
+  'image_url',
+  'icon',
+  'slug',
+  'type',
+]);
 
 export const useCrud = (api, initialFormData, options = {}) => {
   const { initialPageSize = DEFAULT_PAGE_SIZE } = options;
@@ -21,8 +31,11 @@ export const useCrud = (api, initialFormData, options = {}) => {
   // ── Form visibility ────────────────────────────────────────────
   const [isFormOpen, setIsFormOpen] = useState(false);
 
-  // ── Translation state ──────────────────────────────────────────
+  // ── Form translation state (tabs inside the form) ──────────────
   const [activeLocale, setActiveLocale] = useState('fr');
+
+  // ── Table locale (drives Accept-Language for list fetches) ─────
+  const [tableLocale, setTableLocale] = useState(getLocale());
 
   // ── Search + sort state ────────────────────────────────────────
   const [search, setSearch] = useState('');
@@ -36,6 +49,7 @@ export const useCrud = (api, initialFormData, options = {}) => {
   const fetchItems = useCallback(async () => {
     setLoading(true);
     try {
+      // api.js interceptor attaches `Accept-Language: <tableLocale>`.
       const response = await api.list();
       setItems(response.data);
       setError(null);
@@ -47,9 +61,10 @@ export const useCrud = (api, initialFormData, options = {}) => {
     }
   }, [api]);
 
+  // Refetch on mount AND whenever the table locale changes.
   useEffect(() => {
     fetchItems();
-  }, [fetchItems]);
+  }, [fetchItems, tableLocale]);
 
   const resetForm = useCallback(() => {
     setFormData(initialFormData);
@@ -287,10 +302,14 @@ export const useCrud = (api, initialFormData, options = {}) => {
     closeForm,
     toggleForm,
 
-    // translations
+    // form translations (tabs)
     activeLocale,
     setActiveLocale,
     isTranslatable: (fieldName) => !NON_TRANSLATABLE_FIELDS.has(fieldName),
+
+    // table translations (toggle)
+    tableLocale,
+    setTableLocale,
 
     // search + sort
     search,

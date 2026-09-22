@@ -11,6 +11,10 @@ use Illuminate\Support\Facades\Validator;
 use Tymon\JWTAuth\Facades\JWTAuth;
 use Tymon\JWTAuth\Exceptions\JWTException;
 
+use Illuminate\Support\Facades\RateLimiter;
+use Illuminate\Support\Str;
+use Illuminate\Validation\ValidationException;
+
 class AuthController extends Controller
 {
     public function register(Request $request)
@@ -40,33 +44,53 @@ class AuthController extends Controller
         ], 201);
     }
 
-    public function login(Request $request)
-    {
+    public function login(Request $request){
+        // ---- Rate limit FIRST, before any validation ----
+        $key = $this->throttleKey($request);
+
+        if (RateLimiter::tooManyAttempts($key, 5)) {
+            $seconds = RateLimiter::availableIn($key);
+
+            return response()->json([
+                'error' => 'Too many login attempts. Please try again later.',
+                'retry_after_seconds' => $seconds,
+            ], 429)->header('Retry-After', $seconds);
+        }
+
+        // ---- Then validate ----
         $validator = Validator::make($request->all(), [
-            'email' => 'required|email',
+            'email'    => 'required|email',
             'password' => 'required|string|min:6',
         ]);
 
         if ($validator->fails()) {
+            RateLimiter::hit($key, 300);   // malformed attempt also counts
             return response()->json(['errors' => $validator->errors()], 422);
         }
 
+        // ---- Then attempt ----
         $credentials = $request->only('email', 'password');
 
         try {
             if (!$token = JWTAuth::attempt($credentials)) {
-                return response()->json(['error' => 'Invalid credentials'], 401);
+                RateLimiter::hit($key, 300);
+                $remaining = RateLimiter::retriesLeft($key, 5);
+
+                return response()->json([
+                    'error' => 'Invalid credentials',
+                    'attempts_remaining' => $remaining,
+                ], 401);
             }
         } catch (JWTException $e) {
             return response()->json(['error' => 'Could not create token'], 500);
         }
 
-        $user = auth()->user();
+        RateLimiter::clear($key);
 
         return response()->json([
             'message' => 'Login successful',
-            'user' => $user,
-            'token' => $token,
+            'user'    => auth()->user(),
+            'token'   => $token,
         ]);
     }
 
@@ -94,4 +118,9 @@ class AuthController extends Controller
             return response()->json(['error' => 'Token refresh failed'], 401);
         }
     }
+    protected function throttleKey(Request $request): string
+    {
+        return 'login:' . Str::lower((string) $request->input('email')) . '|' . $request->ip();
+    }
+
 }

@@ -1,4 +1,17 @@
 # Auth
+
+## 0. Setup
+
+### 0.1 Export base URLs and image path
+
+```bash
+BASE="http://127.0.0.1:8000/api"
+```
+### 0.2 Clear any leftover limiter state (dev only)
+```bash
+php artisan cache:clear
+```
+
 ### Login
 ```bash
 curl -X POST http://127.0.0.1:8000/api/auth/login \
@@ -30,6 +43,37 @@ curl -X POST http://127.0.0.1:8000/api/auth/register \
 curl -X POST http://127.0.0.1:8000/api/auth/refresh \
   -H "Authorization: Bearer YOUR_TOKEN_HERE" \
   -H "Accept: application/json"
+```
+
+### Rate limiting
+#### Five wrong attempts 
+```bash
+for i in 1 2 3 4 5; do
+  curl -s -o /dev/null -w "%{http_code}\n" -X POST $BASE/auth/login \
+    -H "Content-Type: application/json" \
+    -H "Accept: application/json" \
+    -d '{"email":"admin@automotors.com","password":"WRONG123"}'
+done
+# expected: 401 401 401 401 401
+```
+```bash
+# Sixth wrong attempt — 429 + Retry-After
+curl -i -X POST $BASE/auth/login \
+  -H "Content-Type: application/json" \
+  -H "Accept: application/json" \
+  -d '{"email":"admin@automotors.com","password":"WRONG123"}'
+# expected: 429 + Retry-After header
+```
+
+### Correct password should ALSO be blocked while locked:
+```bash
+curl -i -X POST $BASE/auth/login \
+# Correct password while locked — MUST also be 429
+curl -i -X POST $BASE/auth/login \
+  -H "Content-Type: application/json" \
+  -H "Accept: application/json" \
+  -d '{"email":"admin@automotors.com","password":"password123"}'
+# expected: 429
 ```
 
 

@@ -1,5 +1,6 @@
 <?php
 // bootstrap/app.php
+
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -13,18 +14,18 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        // Append to the "api" middleware group
         $middleware->api(prepend: [
             \App\Http\Middleware\SetLocale::class,
         ]);
 
-        // If later you need aliases:
-        // $middleware->alias([
-        //     'admin' => \App\Http\Middleware\EnsureAdmin::class,
-        // ]);
+        // This registers the 'api' named limiter that we'll define
+        // in AppServiceProvider::boot(). Note: it does NOT need
+        // RateLimiter::for() here — that belongs in the provider.
+        $middleware->throttleApi('api');
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         $exceptions->shouldRenderJsonWhen(
             fn (Request $request) => $request->is('api/*') || $request->expectsJson(),
         );
-    })->create();
+    })
+    ->create();

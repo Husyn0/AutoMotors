@@ -2,7 +2,7 @@
 // Container widths
 .container {
   width: 100%;
-  max-width: 1200px;
+  max-width: clamp(1200px, 92vw, 1800px);
   margin: 0 auto;
   padding: 0 2rem;
 

@@ -25,6 +25,24 @@
   }
 
   &-brand {
+    .footer-logo {
+      width: 80px;
+      height: auto;
+      margin-bottom: 0.75rem;
+      display: block;
+      filter: drop-shadow(0 0 5px rgb(255, 255, 255));
+      transition: $transition;
+
+      &:hover {
+        filter: drop-shadow(0 0 12px rgba($secondary-color, 1));
+        transform: scale(1.05);
+      }
+
+      @media (max-width: $mobile) {
+        width: 65px;
+        margin: 0 auto 0.75rem;
+      }
+    }
     h3 {
       font-size: 1.8rem;
       margin-bottom: 0.5rem;

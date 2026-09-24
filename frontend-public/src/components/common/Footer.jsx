@@ -1,6 +1,7 @@
 // src/components/common/Footer.jsx
 import React, { useContext } from 'react';
 import { useLanguage } from '../../context/LanguageContext';
+import logo from '../../assets/output/logo1.ico';  // 👈 ADD THIS
 
 import { getSettings } from '../../api/endpoints';
 import { useApi } from '../../hooks/useApi';
@@ -29,6 +30,12 @@ const Footer = () => {
           {/* Company Info */}
           <div className="footer-section">
             <div className="footer-brand">
+              {/* 👇 ADD THIS LOGO BLOCK */}
+              <img 
+                src={logo} 
+                alt="AUTOMOTORS" 
+                className="footer-logo"
+              />
               <h3>AUTOMOTORS</h3>
               <p>{t.footer.company}</p>
             </div>

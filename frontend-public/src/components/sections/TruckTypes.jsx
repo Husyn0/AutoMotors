@@ -130,9 +130,6 @@ const TruckTypes = () => {
                     </div>
                     <p className="truck-description">{type.description}</p>
                   </div>
-                  <div className="truck-badge">
-                    <span>{type.id === 1 ? '🚐' : '🚛'}</span>
-                  </div>
                 </div>
               ))}
             </div>

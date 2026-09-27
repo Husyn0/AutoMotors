@@ -6,23 +6,35 @@ use App\Http\Controllers\Controller;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use App\Http\Controllers\Api\Concerns\CachesResponses;
 
 class ProductController extends Controller
 {
+    use CachesResponses;
+
     public function index()
     {
-        return response()->json(
-            Product::all()->map(fn ($p) => $p->toTranslatedArray())
-        );
+        $data = $this->rememberList('products', function () {
+            return Product::all()
+                ->map(fn ($p) => $p->toTranslatedArray())
+                ->all();
+        });
+
+        return response()->json($data);
     }
 
     public function show($id)
     {
-        $product = Product::with('category')->find($id);
-        if (!$product) {
+        $data = $this->rememberShow('products', $id, function () use ($id) {
+            $product = Product::with('category')->find($id);
+            return $product ? $product->toTranslatedArray() : null;
+        });
+
+        if (!$data) {
             return response()->json(['error' => 'Product not found'], 404);
         }
-        return response()->json($product->toTranslatedArray());
+
+        return response()->json($data);
     }
 
     public function store(Request $request)
@@ -37,11 +49,15 @@ class ProductController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return response()->json(['errors: validator fail in products ' => $validator->errors()], 422);
+            return response()->json(['errors' => $validator->errors()], 422);
         }
 
         $product = Product::create($request->all());
         $product->load('category');
+
+        $this->invalidate('products');
+        $this->invalidate('categories');
+
         return response()->json($product->toTranslatedArray(), 201);
     }
 
@@ -78,6 +94,10 @@ class ProductController extends Controller
 
         $product->update($data);
         $product->load('category');
+
+        $this->invalidate('products');
+        $this->invalidate('categories');
+
         return response()->json($product->toTranslatedArray());
     }
 
@@ -88,6 +108,10 @@ class ProductController extends Controller
             return response()->json(['error' => 'Product not found'], 404);
         }
         $product->delete();
+
+        $this->invalidate('products');
+        $this->invalidate('categories');
+
         return response()->json(['message' => 'Product deleted']);
     }
 }

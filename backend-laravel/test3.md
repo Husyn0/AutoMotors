@@ -145,7 +145,7 @@ curl -s -o /dev/null -w "%{http_code}\n" -X POST "$BASE/uploads/products" \
 ```bash
 php artisan cache:clear
 
-for i in $(seq 1 70); do
+for i in $(seq 1 200); do
   curl -s -o /dev/null -w "%{http_code}\n" \
     "$BASE/products" -H "Accept: application/json"
 done | sort | uniq -c

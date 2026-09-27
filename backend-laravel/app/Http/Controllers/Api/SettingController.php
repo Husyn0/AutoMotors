@@ -5,29 +5,39 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Setting;
 use Illuminate\Http\Request;
+use App\Support\CacheKeys;
 
 class SettingController extends Controller
 {
     public function index()
     {
         $locale = app()->getLocale();
-        $settings = Setting::all()->groupBy('group');
-        $flatSettings = [];
 
-        foreach ($settings as $group => $items) {
-            foreach ($items as $item) {
-                $key = $item->key;
+        $data = cache()->remember(
+            CacheKeys::settings($locale),
+            CacheKeys::TTL_SETTINGS,
+            function () use ($locale) {
+                $settings     = Setting::all()->groupBy('group');
+                $flatSettings = [];
 
-                if ($locale === 'en' && str_ends_with($key, '_en')) {
-                    $baseKey = substr($key, 0, -3);
-                    $flatSettings[$baseKey] = $item->value;
-                } elseif (!str_ends_with($key, '_en')) {
-                    $flatSettings[$key] = $item->value;
+                foreach ($settings as $group => $items) {
+                    foreach ($items as $item) {
+                        $key = $item->key;
+
+                        if ($locale === 'en' && str_ends_with($key, '_en')) {
+                            $baseKey = substr($key, 0, -3);
+                            $flatSettings[$baseKey] = $item->value;
+                        } elseif (!str_ends_with($key, '_en')) {
+                            $flatSettings[$key] = $item->value;
+                        }
+                    }
                 }
-            }
-        }
 
-        return response()->json($flatSettings);
+                return $flatSettings;
+            }
+        );
+
+        return response()->json($data);
     }
 
     public function update(Request $request)
@@ -40,9 +50,16 @@ class SettingController extends Controller
         ];
 
         $data = $request->only($allowed);
+
         foreach ($request->all() as $key => $value) {
             Setting::set($key, $value);
         }
+
+        // Invalidate every supported locale, not just hard-coded ones
+        foreach (config('app.available_locales', ['fr', 'en']) as $loc) {
+            cache()->forget(CacheKeys::settings($loc));
+        }
+
         return response()->json(['message' => 'Settings updated successfully']);
     }
 }

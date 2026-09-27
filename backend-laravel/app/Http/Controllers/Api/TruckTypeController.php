@@ -6,31 +6,44 @@ use App\Http\Controllers\Controller;
 use App\Models\TruckType;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use App\Http\Controllers\Api\Concerns\CachesResponses;
 
 class TruckTypeController extends Controller
 {
+    use CachesResponses;
+
     public function index()
     {
-        return response()->json(
-            TruckType::all()->map(fn ($t) => $t->toTranslatedArray())
-        );
+        $data = $this->rememberList('truck_types', function () {
+            return TruckType::all()
+                ->map(fn ($t) => $t->toTranslatedArray())
+                ->all();
+        });
+
+        return response()->json($data);
     }
 
     public function show($id)
     {
-        $truckType = TruckType::find($id);
-        if (!$truckType) {
+        // Was 'projects' by mistake — collides with ProjectController's cache
+        $data = $this->rememberShow('truck_types', $id, function () use ($id) {
+            $truckType = TruckType::find($id);
+            return $truckType ? $truckType->toTranslatedArray() : null;
+        });
+
+        if (!$data) {
             return response()->json(['error' => 'Truck type not found'], 404);
         }
-        return response()->json($truckType->toTranslatedArray());
+
+        return response()->json($data);
     }
 
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'name'        => 'required|string|max:255',
-            'models'      => 'required|string|max:255',
-            'description' => 'required|string',
+            'name'                        => 'required|string|max:255',
+            'models'                      => 'required|string|max:255',
+            'description'                 => 'required|string',
             'translations.en.name'        => 'sometimes|string|max:255',
             'translations.en.description' => 'sometimes|string',
         ]);
@@ -40,6 +53,9 @@ class TruckTypeController extends Controller
         }
 
         $truckType = TruckType::create($request->all());
+
+        $this->invalidate('truck_types');
+
         return response()->json($truckType->toTranslatedArray(), 201);
     }
 
@@ -51,9 +67,9 @@ class TruckTypeController extends Controller
         }
 
         $validator = Validator::make($request->all(), [
-            'name'        => 'sometimes|required|string|max:255',
-            'models'      => 'sometimes|required|string|max:255',
-            'description' => 'sometimes|required|string',
+            'name'                        => 'sometimes|required|string|max:255',
+            'models'                      => 'sometimes|required|string|max:255',
+            'description'                 => 'sometimes|required|string',
             'translations.en.name'        => 'sometimes|string|max:255',
             'translations.en.description' => 'sometimes|string',
         ]);
@@ -61,6 +77,7 @@ class TruckTypeController extends Controller
         if ($validator->fails()) {
             return response()->json(['errors' => $validator->errors()], 422);
         }
+
         $data = $request->all();
 
         // Deep-merge translations so partial updates don't wipe other keys
@@ -72,7 +89,11 @@ class TruckTypeController extends Controller
             $data['translations'] = $existing;
         }
 
-        $truckType->update($request->all());
+        // Was $request->all() — this dropped the merged translations
+        $truckType->update($data);
+
+        $this->invalidate('truck_types');
+
         return response()->json($truckType->toTranslatedArray());
     }
 
@@ -83,6 +104,9 @@ class TruckTypeController extends Controller
             return response()->json(['error' => 'Truck type not found'], 404);
         }
         $truckType->delete();
+
+        $this->invalidate('truck_types');
+
         return response()->json(['message' => 'Truck type deleted']);
     }
 }

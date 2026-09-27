@@ -7,40 +7,49 @@ use App\Models\Category;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
+use App\Http\Controllers\Api\Concerns\CachesResponses;
 
 class CategoryController extends Controller
 {
+    use CachesResponses;
+
     public function index()
     {
-        return response()->json(
-            Category::withCount('products')
+        $data = $this->rememberList('categories', function () {
+            return Category::withCount('products')
                 ->get()
                 ->map(fn ($c) => array_merge(
                     $c->toTranslatedArray(),
                     ['products_count' => $c->products_count]
                 ))
-        );
+                ->all();
+        });
+
+        return response()->json($data);
     }
 
     public function show($id)
     {
-        $category = Category::with('products')->find($id);
-        if (!$category) {
-            return response()->json(['error' => 'Category not found'], 404);
-        }
-        return response()->json($category->toTranslatedArray());
+        $data = $this->rememberShow('categories', $id, function () use ($id) {
+            $category = Category::with('products')->find($id);
+            return $category ? $category->toTranslatedArray() : null;
+        });
+
+        return $data
+            ? response()->json($data)
+            : response()->json(['error' => 'Category not found'], 404);
     }
 
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'name'                          => 'required|string|max:255',
-            'slug'                          => 'sometimes|string|max:255|unique:categories,slug',
-            'icon'                          => 'sometimes|nullable|string|max:255',
-            'image'                         => 'sometimes|nullable|string|max:255',
-            'description'                   => 'sometimes|nullable|string',
-            'translations.en.name'          => 'sometimes|string|max:255',
-            'translations.en.description'   => 'sometimes|string',
+            'name'                        => 'required|string|max:255',
+            'slug'                        => 'sometimes|string|max:255|unique:categories,slug',
+            'icon'                        => 'sometimes|nullable|string|max:255',
+            'image'                       => 'sometimes|nullable|string|max:255',
+            'description'                 => 'sometimes|nullable|string',
+            'translations.en.name'        => 'sometimes|string|max:255',
+            'translations.en.description' => 'sometimes|string',
         ]);
 
         if ($validator->fails()) {
@@ -53,6 +62,10 @@ class CategoryController extends Controller
         }
 
         $category = Category::create($data);
+
+        $this->invalidate('categories');
+        $this->invalidate('products');
+
         return response()->json($category->toTranslatedArray(), 201);
     }
 
@@ -64,13 +77,13 @@ class CategoryController extends Controller
         }
 
         $validator = Validator::make($request->all(), [
-            'name'                          => 'sometimes|required|string|max:255',
-            'slug'                          => 'sometimes|string|max:255|unique:categories,slug,' . $id,
-            'icon'                          => 'sometimes|nullable|string|max:255',
-            'image'                         => 'sometimes|nullable|string|max:255',
-            'description'                   => 'sometimes|nullable|string',
-            'translations.en.name'          => 'sometimes|string|max:255',
-            'translations.en.description'   => 'sometimes|string',
+            'name'                        => 'sometimes|required|string|max:255',
+            'slug'                        => 'sometimes|string|max:255|unique:categories,slug,' . $id,
+            'icon'                        => 'sometimes|nullable|string|max:255',
+            'image'                       => 'sometimes|nullable|string|max:255',
+            'description'                 => 'sometimes|nullable|string',
+            'translations.en.name'        => 'sometimes|string|max:255',
+            'translations.en.description' => 'sometimes|string',
         ]);
 
         if ($validator->fails()) {
@@ -89,6 +102,10 @@ class CategoryController extends Controller
         }
 
         $category->update($data);
+
+        $this->invalidate('categories');
+        $this->invalidate('products');
+
         return response()->json($category->toTranslatedArray());
     }
 
@@ -99,7 +116,7 @@ class CategoryController extends Controller
             return response()->json(['error' => 'Category not found'], 404);
         }
 
-        // Optional: block deletion if products still reference it
+        // Block deletion if products still reference it
         if ($category->products()->exists()) {
             return response()->json([
                 'error' => 'Cannot delete category with existing products',
@@ -107,6 +124,10 @@ class CategoryController extends Controller
         }
 
         $category->delete();
+
+        $this->invalidate('categories');
+        $this->invalidate('products');
+
         return response()->json(['message' => 'Category deleted']);
     }
 }

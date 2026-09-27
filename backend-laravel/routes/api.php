@@ -63,7 +63,8 @@ Route::get('/projects/{id}',  [ProjectController::class,   'show']);
 Route::middleware('auth:api')->group(function () {
     // Auth
     Route::post('/auth/logout', [AuthController::class, 'logout']);
-    Route::get('/auth/me',      [AuthController::class, 'me']);
+    Route::get('/auth/me',      [AuthController::class, 'me'])
+        ->middleware('throttle:api-authed');
 
     Route::middleware('throttle:api-writes')->group(function () {
         // Categories

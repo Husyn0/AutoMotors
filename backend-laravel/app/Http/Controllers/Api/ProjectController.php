@@ -6,30 +6,42 @@ use App\Http\Controllers\Controller;
 use App\Models\Project;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use App\Http\Controllers\Api\Concerns\CachesResponses;
 
 class ProjectController extends Controller
 {
+    use CachesResponses;
+
     public function index()
     {
-        return response()->json(
-            Project::all()->map(fn ($p) => $p->toTranslatedArray())
-        );
+        $data = $this->rememberList('projects', function () {
+            return Project::all()
+                ->map(fn ($p) => $p->toTranslatedArray())
+                ->all();
+        });
+
+        return response()->json($data);
     }
 
     public function show($id)
     {
-        $project = Project::find($id);
-        if (!$project) {
+        $data = $this->rememberShow('projects', $id, function () use ($id) {
+            $project = Project::find($id);
+            return $project ? $project->toTranslatedArray() : null;
+        });
+
+        if (!$data) {
             return response()->json(['error' => 'Project not found'], 404);
         }
-        return response()->json($project->toTranslatedArray());
+
+        return response()->json($data);
     }
 
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'title'       => 'required|string|max:255',
-            'description' => 'required|string',
+            'title'                       => 'required|string|max:255',
+            'description'                 => 'required|string',
             'translations.en.title'       => 'sometimes|string|max:255',
             'translations.en.description' => 'sometimes|string',
         ]);
@@ -39,6 +51,9 @@ class ProjectController extends Controller
         }
 
         $project = Project::create($request->all());
+
+        $this->invalidate('projects');
+
         return response()->json($project->toTranslatedArray(), 201);
     }
 
@@ -50,8 +65,8 @@ class ProjectController extends Controller
         }
 
         $validator = Validator::make($request->all(), [
-            'title'       => 'sometimes|required|string|max:255',
-            'description' => 'sometimes|required|string',
+            'title'                       => 'sometimes|required|string|max:255',
+            'description'                 => 'sometimes|required|string',
             'translations.en.title'       => 'sometimes|string|max:255',
             'translations.en.description' => 'sometimes|string',
         ]);
@@ -59,6 +74,7 @@ class ProjectController extends Controller
         if ($validator->fails()) {
             return response()->json(['errors' => $validator->errors()], 422);
         }
+
         $data = $request->all();
 
         // Deep-merge translations so partial updates don't wipe other keys
@@ -70,7 +86,11 @@ class ProjectController extends Controller
             $data['translations'] = $existing;
         }
 
-        $project->update($request->all());
+        // Was $request->all() — this dropped the merged translations
+        $project->update($data);
+
+        $this->invalidate('projects');
+
         return response()->json($project->toTranslatedArray());
     }
 
@@ -81,6 +101,9 @@ class ProjectController extends Controller
             return response()->json(['error' => 'Project not found'], 404);
         }
         $project->delete();
+
+        $this->invalidate('projects');
+
         return response()->json(['message' => 'Project deleted']);
     }
 }

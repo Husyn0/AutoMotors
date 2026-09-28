@@ -1,0 +1,1125 @@
+{
+	"id": "900c345c-7d70-4323-b7a9-2c826e43e547",
+	"name": "test4 — Cache Verification Suite",
+	"timestamp": "2026-09-27T20:02:17.799Z",
+	"collection_id": "50446717-144375e1-ddb1-4be6-b6c9-b27864c21234",
+	"folder_id": 0,
+	"environment_id": "0",
+	"totalPass": 7,
+	"delay": 0,
+	"persist": true,
+	"status": "finished",
+	"startedAt": "2026-09-27T20:02:15.119Z",
+	"totalFail": 1,
+	"results": [
+		{
+			"id": "c2d33aa2-82f8-4c63-b499-909020f198d2",
+			"name": "0.1 Confirm cache store (tinker)",
+			"url": "http://127.0.0.1:8000/api/../tinker",
+			"time": 8,
+			"responseCode": {
+				"code": 404,
+				"name": "Not Found"
+			},
+			"tests": {},
+			"testPassFailCounts": {},
+			"times": [
+				8
+			],
+			"allTests": [
+				{}
+			]
+		},
+		{
+			"id": "3a50f085-9d1d-46b8-8f54-5d5afc222b3f",
+			"name": "0.2 Login and store token",
+			"url": "http://127.0.0.1:8000/api/auth/login",
+			"time": 221,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"token present": true
+			},
+			"testPassFailCounts": {
+				"token present": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				221
+			],
+			"allTests": [
+				{
+					"token present": true
+				}
+			]
+		},
+		{
+			"id": "db9f300d-6934-471e-a13b-1dd7f82526fc",
+			"name": "0.3 Helper — list cache keys (tinker)",
+			"url": "http://127.0.0.1:8000/api/../tinker",
+			"time": 7,
+			"responseCode": {
+				"code": 404,
+				"name": "Not Found"
+			},
+			"tests": {},
+			"testPassFailCounts": {},
+			"times": [
+				7
+			],
+			"allTests": [
+				{}
+			]
+		},
+		{
+			"id": "4d5506a4-4a38-42f9-80d8-9b81ad230e80",
+			"name": "0.4 Helper — reset_all (tinker)",
+			"url": "http://127.0.0.1:8000/api/../tinker",
+			"time": 9,
+			"responseCode": {
+				"code": 404,
+				"name": "Not Found"
+			},
+			"tests": {},
+			"testPassFailCounts": {},
+			"times": [
+				9
+			],
+			"allTests": [
+				{}
+			]
+		},
+		{
+			"id": "e6f05bc0-ca4e-4b5d-976d-8e1b90d4910e",
+			"name": "1.1 One GET /products creates cache entries",
+			"url": "http://127.0.0.1:8000/api/products",
+			"time": 38,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {},
+			"testPassFailCounts": {},
+			"times": [
+				38
+			],
+			"allTests": [
+				{}
+			]
+		},
+		{
+			"id": "25c8b16c-1f98-4f1e-9ff7-e582e8cde0c7",
+			"name": "1.2 Second call faster",
+			"url": "http://127.0.0.1:8000/api/products",
+			"time": 18,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {},
+			"testPassFailCounts": {},
+			"times": [
+				18
+			],
+			"allTests": [
+				{}
+			]
+		},
+		{
+			"id": "5a9d3aa4-4e56-402f-be18-d0c5beabb521",
+			"name": "1.3 Response body identical on cache hit",
+			"url": "http://127.0.0.1:8000/api/products",
+			"time": 18,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"response body present": true
+			},
+			"testPassFailCounts": {
+				"response body present": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				18
+			],
+			"allTests": [
+				{
+					"response body present": true
+				}
+			]
+		},
+		{
+			"id": "28778d95-8704-425d-8377-e56cfd4aecc4",
+			"name": "2.1 FR list",
+			"url": "http://127.0.0.1:8000/api/products",
+			"time": 16,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {},
+			"testPassFailCounts": {},
+			"times": [
+				16
+			],
+			"allTests": [
+				{}
+			]
+		},
+		{
+			"id": "31e78fe4-ca81-4bb3-928b-49c270bb325b",
+			"name": "2.2 EN list",
+			"url": "http://127.0.0.1:8000/api/products",
+			"time": 37,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {},
+			"testPassFailCounts": {},
+			"times": [
+				37
+			],
+			"allTests": [
+				{}
+			]
+		},
+		{
+			"id": "9845ac03-9989-4fe1-bb5c-56e6d3778ab4",
+			"name": "2.3 ?lang=en matches Accept-Language: en",
+			"url": "http://127.0.0.1:8000/api/products?lang=en",
+			"time": 20,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {},
+			"testPassFailCounts": {},
+			"times": [
+				20
+			],
+			"allTests": [
+				{}
+			]
+		},
+		{
+			"id": "348a7afd-c7f4-4df1-b626-b6acfa9748c9",
+			"name": "3.1 Warm list cache",
+			"url": "http://127.0.0.1:8000/api/products",
+			"time": 17,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {},
+			"testPassFailCounts": {},
+			"times": [
+				17
+			],
+			"allTests": [
+				{}
+			]
+		},
+		{
+			"id": "0c14454d-bb30-4a29-80ad-e0696fbc1c34",
+			"name": "3.1b POST new product (busts version)",
+			"url": "http://127.0.0.1:8000/api/products",
+			"time": 39,
+			"responseCode": {
+				"code": 201,
+				"name": "Created"
+			},
+			"tests": {},
+			"testPassFailCounts": {},
+			"times": [
+				39
+			],
+			"allTests": [
+				{}
+			]
+		},
+		{
+			"id": "1a614bfd-093a-444f-9b79-f2922589226b",
+			"name": "3.3 Post-write GET returns fresh data",
+			"url": "http://127.0.0.1:8000/api/products",
+			"time": 34,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {},
+			"testPassFailCounts": {},
+			"times": [
+				34
+			],
+			"allTests": [
+				{}
+			]
+		},
+		{
+			"id": "e4d0cfaa-5a51-4515-b9f3-72208a58dee0",
+			"name": "3.4 Update invalidates (PUT /products/2)",
+			"url": "http://127.0.0.1:8000/api/products/2",
+			"time": 41,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {},
+			"testPassFailCounts": {},
+			"times": [
+				41
+			],
+			"allTests": [
+				{}
+			]
+		},
+		{
+			"id": "655b8d39-ad21-480a-bf5c-cc9de3df3330",
+			"name": "3.4b GET /products/2 reflects new price",
+			"url": "http://127.0.0.1:8000/api/products/2",
+			"time": 27,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {},
+			"testPassFailCounts": {},
+			"times": [
+				27
+			],
+			"allTests": [
+				{}
+			]
+		},
+		{
+			"id": "f2e929d9-e834-4303-8e7c-b980264cc5f3",
+			"name": "3.5 Destroy invalidates",
+			"url": "http://127.0.0.1:8000/api/products/999",
+			"time": 23,
+			"responseCode": {
+				"code": 404,
+				"name": "Not Found"
+			},
+			"tests": {},
+			"testPassFailCounts": {},
+			"times": [
+				23
+			],
+			"allTests": [
+				{}
+			]
+		},
+		{
+			"id": "ea76f08c-3cb9-4b20-b8ba-e9daf3678917",
+			"name": "4.1 Edit category 1 → busts products + categories",
+			"url": "http://127.0.0.1:8000/api/categories/1",
+			"time": 34,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {},
+			"testPassFailCounts": {},
+			"times": [
+				34
+			],
+			"allTests": [
+				{}
+			]
+		},
+		{
+			"id": "e0cca498-5ea0-4274-9492-4f881322c746",
+			"name": "4.2 Edit product → busts categories (count)",
+			"url": "http://127.0.0.1:8000/api/products",
+			"time": 40,
+			"responseCode": {
+				"code": 201,
+				"name": "Created"
+			},
+			"tests": {},
+			"testPassFailCounts": {},
+			"times": [
+				40
+			],
+			"allTests": [
+				{}
+			]
+		},
+		{
+			"id": "2a546d90-6bdd-4752-8359-f0f7d64ec839",
+			"name": "4.3 Edit service must NOT touch products",
+			"url": "http://127.0.0.1:8000/api/services",
+			"time": 36,
+			"responseCode": {
+				"code": 201,
+				"name": "Created"
+			},
+			"tests": {},
+			"testPassFailCounts": {},
+			"times": [
+				36
+			],
+			"allTests": [
+				{}
+			]
+		},
+		{
+			"id": "87288f72-3e3c-4aa0-96c5-9da46df835a1",
+			"name": "5.1 Different IDs → different keys",
+			"url": "http://127.0.0.1:8000/api/products/2",
+			"time": 23,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {},
+			"testPassFailCounts": {},
+			"times": [
+				23
+			],
+			"allTests": [
+				{}
+			]
+		},
+		{
+			"id": "12057829-b776-4e3f-9bfe-dc09bcd18396",
+			"name": "5.1b /products/3",
+			"url": "http://127.0.0.1:8000/api/products/3",
+			"time": 22,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {},
+			"testPassFailCounts": {},
+			"times": [
+				22
+			],
+			"allTests": [
+				{}
+			]
+		},
+		{
+			"id": "d14704ec-4e33-4b4d-8cf3-81f9ae63b0da",
+			"name": "5.1c /products/4",
+			"url": "http://127.0.0.1:8000/api/products/4",
+			"time": 25,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {},
+			"testPassFailCounts": {},
+			"times": [
+				25
+			],
+			"allTests": [
+				{}
+			]
+		},
+		{
+			"id": "837a7271-4430-4a74-9753-31c591e87a31",
+			"name": "5.2a /truck-types/2",
+			"url": "http://127.0.0.1:8000/api/truck-types/2",
+			"time": 27,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {},
+			"testPassFailCounts": {},
+			"times": [
+				27
+			],
+			"allTests": [
+				{}
+			]
+		},
+		{
+			"id": "c03502fd-c52c-4ea0-89f2-7de9543d4f0f",
+			"name": "5.2b /projects/2",
+			"url": "http://127.0.0.1:8000/api/projects/2",
+			"time": 23,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {},
+			"testPassFailCounts": {},
+			"times": [
+				23
+			],
+			"allTests": [
+				{}
+			]
+		},
+		{
+			"id": "a163e3ab-5053-49b7-b4fe-ad03762cdb2c",
+			"name": "5.3 Body for /truck-types/2 shape check",
+			"url": "http://127.0.0.1:8000/api/truck-types/2",
+			"time": 16,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"has models field": true,
+				"no leaked project title": true
+			},
+			"testPassFailCounts": {
+				"has models field": {
+					"pass": 1,
+					"fail": 0
+				},
+				"no leaked project title": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				16
+			],
+			"allTests": [
+				{
+					"has models field": true,
+					"no leaked project title": true
+				}
+			]
+		},
+		{
+			"id": "9be1f6a3-a04d-48e7-9a7f-fa5f97bcf80d",
+			"name": "6.1 List",
+			"url": "http://127.0.0.1:8000/api/products",
+			"time": 35,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {},
+			"testPassFailCounts": {},
+			"times": [
+				35
+			],
+			"allTests": [
+				{}
+			]
+		},
+		{
+			"id": "d860789a-d48f-4657-b08e-15d5ab1b667d",
+			"name": "6.1b Show /products/2",
+			"url": "http://127.0.0.1:8000/api/products/2",
+			"time": 17,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {},
+			"testPassFailCounts": {},
+			"times": [
+				17
+			],
+			"allTests": [
+				{}
+			]
+		},
+		{
+			"id": "95372420-706a-4c16-9b9a-521a73167cef",
+			"name": "6.2 Edit product 2 invalidates both",
+			"url": "http://127.0.0.1:8000/api/products/2",
+			"time": 44,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {},
+			"testPassFailCounts": {},
+			"times": [
+				44
+			],
+			"allTests": [
+				{}
+			]
+		},
+		{
+			"id": "f37eee73-81fc-45fa-a36d-aabeaaa10d63",
+			"name": "6.2b GET /products/2 reflects 88.88",
+			"url": "http://127.0.0.1:8000/api/products/2",
+			"time": 23,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {},
+			"testPassFailCounts": {},
+			"times": [
+				23
+			],
+			"allTests": [
+				{}
+			]
+		},
+		{
+			"id": "73e441eb-8aaa-49d3-9f78-a43f2d00d97f",
+			"name": "7.1a Settings FR",
+			"url": "http://127.0.0.1:8000/api/settings",
+			"time": 17,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {},
+			"testPassFailCounts": {},
+			"times": [
+				17
+			],
+			"allTests": [
+				{}
+			]
+		},
+		{
+			"id": "b7e7b02d-548c-473b-a2af-b8539e495894",
+			"name": "7.1b Settings EN",
+			"url": "http://127.0.0.1:8000/api/settings",
+			"time": 16,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {},
+			"testPassFailCounts": {},
+			"times": [
+				16
+			],
+			"allTests": [
+				{}
+			]
+		},
+		{
+			"id": "cc04a317-dee1-487e-a151-1e14c1f656df",
+			"name": "7.2 Update settings busts both locales",
+			"url": "http://127.0.0.1:8000/api/settings",
+			"time": 35,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {},
+			"testPassFailCounts": {},
+			"times": [
+				35
+			],
+			"allTests": [
+				{}
+			]
+		},
+		{
+			"id": "ad904574-17d9-4b1a-9602-f819525693c8",
+			"name": "7.3 Fresh GET reflects new value",
+			"url": "http://127.0.0.1:8000/api/settings",
+			"time": 28,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"company_name is CACHE-TEST-CO": false
+			},
+			"testPassFailCounts": {
+				"company_name is CACHE-TEST-CO": {
+					"pass": 0,
+					"fail": 1
+				}
+			},
+			"times": [
+				28
+			],
+			"allTests": [
+				{
+					"company_name is CACHE-TEST-CO": false
+				}
+			]
+		},
+		{
+			"id": "518348f3-a937-4ab7-ba72-cef0faf3c8bb",
+			"name": "8.1a /services (all)",
+			"url": "http://127.0.0.1:8000/api/services",
+			"time": 18,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {},
+			"testPassFailCounts": {},
+			"times": [
+				18
+			],
+			"allTests": [
+				{}
+			]
+		},
+		{
+			"id": "8c4e0472-0f90-41a1-aca5-84a8eff2e55a",
+			"name": "8.1b /services?type=srv",
+			"url": "http://127.0.0.1:8000/api/services?type=srv",
+			"time": 18,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {},
+			"testPassFailCounts": {},
+			"times": [
+				18
+			],
+			"allTests": [
+				{}
+			]
+		},
+		{
+			"id": "664e4253-8386-46f5-a524-657cefc683b1",
+			"name": "8.1c /services?type=adv",
+			"url": "http://127.0.0.1:8000/api/services?type=adv",
+			"time": 21,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {},
+			"testPassFailCounts": {},
+			"times": [
+				21
+			],
+			"allTests": [
+				{}
+			]
+		},
+		{
+			"id": "dd87e016-2c25-4f54-9a73-6457ea431f61",
+			"name": "8.3 Write to service busts every filter bucket",
+			"url": "http://127.0.0.1:8000/api/services",
+			"time": 42,
+			"responseCode": {
+				"code": 201,
+				"name": "Created"
+			},
+			"tests": {},
+			"testPassFailCounts": {},
+			"times": [
+				42
+			],
+			"allTests": [
+				{}
+			]
+		},
+		{
+			"id": "a2abbd65-7d50-4a21-aee5-48e265988b45",
+			"name": "8.4 Invalid type → 422",
+			"url": "http://127.0.0.1:8000/api/services?type=bogus",
+			"time": 19,
+			"responseCode": {
+				"code": 422,
+				"name": "Unprocessable Content"
+			},
+			"tests": {
+				"status is 422": true
+			},
+			"testPassFailCounts": {
+				"status is 422": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				19
+			],
+			"allTests": [
+				{
+					"status is 422": true
+				}
+			]
+		},
+		{
+			"id": "06c434bf-365a-4328-be9a-b926e5a6b564",
+			"name": "9.1 POST creates a fresh id",
+			"url": "http://127.0.0.1:8000/api/products",
+			"time": 44,
+			"responseCode": {
+				"code": 201,
+				"name": "Created"
+			},
+			"tests": {},
+			"testPassFailCounts": {},
+			"times": [
+				44
+			],
+			"allTests": [
+				{}
+			]
+		},
+		{
+			"id": "51db94b1-16a1-4ee9-bd06-04992d78e840",
+			"name": "9.2 401/403 must not populate cache",
+			"url": "http://127.0.0.1:8000/api/products",
+			"time": 9,
+			"responseCode": {
+				"code": 401,
+				"name": "Unauthorized"
+			},
+			"tests": {},
+			"testPassFailCounts": {},
+			"times": [
+				9
+			],
+			"allTests": [
+				{}
+			]
+		},
+		{
+			"id": "9bfd42e1-bb1a-4488-b34d-7dd5092dbc36",
+			"name": "10.1 List keys TTL ≈ 300s",
+			"url": "http://127.0.0.1:8000/api/../tinker",
+			"time": 9,
+			"responseCode": {
+				"code": 404,
+				"name": "Not Found"
+			},
+			"tests": {},
+			"testPassFailCounts": {},
+			"times": [
+				9
+			],
+			"allTests": [
+				{}
+			]
+		},
+		{
+			"id": "2745b965-d5ee-4628-8e5a-ef9085465db7",
+			"name": "10.2 Settings TTL ≈ 3600s",
+			"url": "http://127.0.0.1:8000/api/../tinker",
+			"time": 9,
+			"responseCode": {
+				"code": 404,
+				"name": "Not Found"
+			},
+			"tests": {},
+			"testPassFailCounts": {},
+			"times": [
+				9
+			],
+			"allTests": [
+				{}
+			]
+		},
+		{
+			"id": "e0e454d3-e2ca-4550-bbea-b2627bdc6ef6",
+			"name": "11.1 Missing resource not cached as 404",
+			"url": "http://127.0.0.1:8000/api/products/999999",
+			"time": 23,
+			"responseCode": {
+				"code": 404,
+				"name": "Not Found"
+			},
+			"tests": {
+				"status is 404": true
+			},
+			"testPassFailCounts": {
+				"status is 404": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				23
+			],
+			"allTests": [
+				{
+					"status is 404": true
+				}
+			]
+		},
+		{
+			"id": "4b71266d-0d4c-4449-9426-09bacebeebe7",
+			"name": "12.1 Ten parallel GETs",
+			"url": "http://127.0.0.1:8000/api/products",
+			"time": 37,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {},
+			"testPassFailCounts": {},
+			"times": [
+				37
+			],
+			"allTests": [
+				{}
+			]
+		},
+		{
+			"id": "a43638bd-98f2-4e08-8b13-7877c3dff25f",
+			"name": "12.2 One write during burst",
+			"url": "http://127.0.0.1:8000/api/products",
+			"time": 40,
+			"responseCode": {
+				"code": 201,
+				"name": "Created"
+			},
+			"tests": {},
+			"testPassFailCounts": {},
+			"times": [
+				40
+			],
+			"allTests": [
+				{}
+			]
+		},
+		{
+			"id": "661a1a18-78f3-47cc-8a5e-3975d3debba1",
+			"name": "13.1 Warm several resources",
+			"url": "http://127.0.0.1:8000/api/products",
+			"time": 35,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {},
+			"testPassFailCounts": {},
+			"times": [
+				35
+			],
+			"allTests": [
+				{}
+			]
+		},
+		{
+			"id": "99ef33c1-9082-4a84-b6a4-84eac620c5e0",
+			"name": "13.2 Corrupt version value handled",
+			"url": "http://127.0.0.1:8000/api/products",
+			"time": 18,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"status is 200 even with corrupt version": true
+			},
+			"testPassFailCounts": {
+				"status is 200 even with corrupt version": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				18
+			],
+			"allTests": [
+				{
+					"status is 200 even with corrupt version": true
+				}
+			]
+		}
+	],
+	"count": 1,
+	"totalTime": 1376,
+	"collection": {
+		"requests": [
+			{
+				"id": "c2d33aa2-82f8-4c63-b499-909020f198d2",
+				"method": "GET"
+			},
+			{
+				"id": "3a50f085-9d1d-46b8-8f54-5d5afc222b3f",
+				"method": "POST"
+			},
+			{
+				"id": "db9f300d-6934-471e-a13b-1dd7f82526fc",
+				"method": "GET"
+			},
+			{
+				"id": "4d5506a4-4a38-42f9-80d8-9b81ad230e80",
+				"method": "GET"
+			},
+			{
+				"id": "e6f05bc0-ca4e-4b5d-976d-8e1b90d4910e",
+				"method": "GET"
+			},
+			{
+				"id": "25c8b16c-1f98-4f1e-9ff7-e582e8cde0c7",
+				"method": "GET"
+			},
+			{
+				"id": "5a9d3aa4-4e56-402f-be18-d0c5beabb521",
+				"method": "GET"
+			},
+			{
+				"id": "28778d95-8704-425d-8377-e56cfd4aecc4",
+				"method": "GET"
+			},
+			{
+				"id": "31e78fe4-ca81-4bb3-928b-49c270bb325b",
+				"method": "GET"
+			},
+			{
+				"id": "9845ac03-9989-4fe1-bb5c-56e6d3778ab4",
+				"method": "GET"
+			},
+			{
+				"id": "348a7afd-c7f4-4df1-b626-b6acfa9748c9",
+				"method": "GET"
+			},
+			{
+				"id": "0c14454d-bb30-4a29-80ad-e0696fbc1c34",
+				"method": "POST"
+			},
+			{
+				"id": "1a614bfd-093a-444f-9b79-f2922589226b",
+				"method": "GET"
+			},
+			{
+				"id": "e4d0cfaa-5a51-4515-b9f3-72208a58dee0",
+				"method": "PUT"
+			},
+			{
+				"id": "655b8d39-ad21-480a-bf5c-cc9de3df3330",
+				"method": "GET"
+			},
+			{
+				"id": "f2e929d9-e834-4303-8e7c-b980264cc5f3",
+				"method": "DELETE"
+			},
+			{
+				"id": "ea76f08c-3cb9-4b20-b8ba-e9daf3678917",
+				"method": "PUT"
+			},
+			{
+				"id": "e0cca498-5ea0-4274-9492-4f881322c746",
+				"method": "POST"
+			},
+			{
+				"id": "2a546d90-6bdd-4752-8359-f0f7d64ec839",
+				"method": "POST"
+			},
+			{
+				"id": "87288f72-3e3c-4aa0-96c5-9da46df835a1",
+				"method": "GET"
+			},
+			{
+				"id": "12057829-b776-4e3f-9bfe-dc09bcd18396",
+				"method": "GET"
+			},
+			{
+				"id": "d14704ec-4e33-4b4d-8cf3-81f9ae63b0da",
+				"method": "GET"
+			},
+			{
+				"id": "837a7271-4430-4a74-9753-31c591e87a31",
+				"method": "GET"
+			},
+			{
+				"id": "c03502fd-c52c-4ea0-89f2-7de9543d4f0f",
+				"method": "GET"
+			},
+			{
+				"id": "a163e3ab-5053-49b7-b4fe-ad03762cdb2c",
+				"method": "GET"
+			},
+			{
+				"id": "9be1f6a3-a04d-48e7-9a7f-fa5f97bcf80d",
+				"method": "GET"
+			},
+			{
+				"id": "d860789a-d48f-4657-b08e-15d5ab1b667d",
+				"method": "GET"
+			},
+			{
+				"id": "95372420-706a-4c16-9b9a-521a73167cef",
+				"method": "PUT"
+			},
+			{
+				"id": "f37eee73-81fc-45fa-a36d-aabeaaa10d63",
+				"method": "GET"
+			},
+			{
+				"id": "73e441eb-8aaa-49d3-9f78-a43f2d00d97f",
+				"method": "GET"
+			},
+			{
+				"id": "b7e7b02d-548c-473b-a2af-b8539e495894",
+				"method": "GET"
+			},
+			{
+				"id": "cc04a317-dee1-487e-a151-1e14c1f656df",
+				"method": "PUT"
+			},
+			{
+				"id": "ad904574-17d9-4b1a-9602-f819525693c8",
+				"method": "GET"
+			},
+			{
+				"id": "518348f3-a937-4ab7-ba72-cef0faf3c8bb",
+				"method": "GET"
+			},
+			{
+				"id": "8c4e0472-0f90-41a1-aca5-84a8eff2e55a",
+				"method": "GET"
+			},
+			{
+				"id": "664e4253-8386-46f5-a524-657cefc683b1",
+				"method": "GET"
+			},
+			{
+				"id": "dd87e016-2c25-4f54-9a73-6457ea431f61",
+				"method": "POST"
+			},
+			{
+				"id": "a2abbd65-7d50-4a21-aee5-48e265988b45",
+				"method": "GET"
+			},
+			{
+				"id": "06c434bf-365a-4328-be9a-b926e5a6b564",
+				"method": "POST"
+			},
+			{
+				"id": "51db94b1-16a1-4ee9-bd06-04992d78e840",
+				"method": "POST"
+			},
+			{
+				"id": "9bfd42e1-bb1a-4488-b34d-7dd5092dbc36",
+				"method": "GET"
+			},
+			{
+				"id": "2745b965-d5ee-4628-8e5a-ef9085465db7",
+				"method": "GET"
+			},
+			{
+				"id": "e0e454d3-e2ca-4550-bbea-b2627bdc6ef6",
+				"method": "GET"
+			},
+			{
+				"id": "4b71266d-0d4c-4449-9426-09bacebeebe7",
+				"method": "GET"
+			},
+			{
+				"id": "a43638bd-98f2-4e08-8b13-7877c3dff25f",
+				"method": "POST"
+			},
+			{
+				"id": "661a1a18-78f3-47cc-8a5e-3975d3debba1",
+				"method": "GET"
+			},
+			{
+				"id": "99ef33c1-9082-4a84-b6a4-84eac620c5e0",
+				"method": "GET"
+			}
+		]
+	}
+}

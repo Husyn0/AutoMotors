@@ -1,0 +1,653 @@
+{
+	"id": "2f4908f9-9f79-42af-a679-174b1a8fe718",
+	"name": "test3 — Rate Limiter Suite",
+	"timestamp": "2026-09-27T20:01:28.074Z",
+	"collection_id": "50446717-61f097b7-7c33-44fc-8a93-39f4843f8105",
+	"folder_id": 0,
+	"environment_id": "0",
+	"totalPass": 2,
+	"delay": 0,
+	"persist": true,
+	"status": "finished",
+	"startedAt": "2026-09-27T20:01:25.519Z",
+	"totalFail": 8,
+	"results": [
+		{
+			"id": "3cdd47bd-0870-48bd-a5f6-3326081fbf00",
+			"name": "0.1 Export base URL",
+			"url": "http://127.0.0.1:8000/api/",
+			"time": 9,
+			"responseCode": {
+				"code": 404,
+				"name": "Not Found"
+			},
+			"tests": {},
+			"testPassFailCounts": {},
+			"times": [
+				9
+			],
+			"allTests": [
+				{}
+			]
+		},
+		{
+			"id": "46a273c7-5e91-420e-a991-4a3b2ccebd49",
+			"name": "0.2 Login and store token",
+			"url": "http://127.0.0.1:8000/api/auth/login",
+			"time": 219,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"token present": true
+			},
+			"testPassFailCounts": {
+				"token present": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				219
+			],
+			"allTests": [
+				{
+					"token present": true
+				}
+			]
+		},
+		{
+			"id": "6a8ccd3d-50c5-42e1-8b55-3e5fcb2ddd44",
+			"name": "0.3 Confirm cache store (tinker)",
+			"url": "http://127.0.0.1:8000/api/../tinker",
+			"time": 7,
+			"responseCode": {
+				"code": 404,
+				"name": "Not Found"
+			},
+			"tests": {},
+			"testPassFailCounts": {},
+			"times": [
+				7
+			],
+			"allTests": [
+				{}
+			]
+		},
+		{
+			"id": "0db3731e-1855-4b40-a578-0b806cef37cb",
+			"name": "1.1 Hammer GET /products 130×",
+			"url": "http://127.0.0.1:8000/api/products",
+			"time": 18,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {},
+			"testPassFailCounts": {},
+			"times": [
+				18
+			],
+			"allTests": [
+				{}
+			]
+		},
+		{
+			"id": "1d502cc1-7558-41ee-a944-0b2b3a3c325f",
+			"name": "1.2 Confirm 429 shape and headers",
+			"url": "http://127.0.0.1:8000/api/products",
+			"time": 17,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"status is 429": false,
+				"Retry-After header present": false
+			},
+			"testPassFailCounts": {
+				"status is 429": {
+					"pass": 0,
+					"fail": 1
+				},
+				"Retry-After header present": {
+					"pass": 0,
+					"fail": 1
+				}
+			},
+			"times": [
+				17
+			],
+			"allTests": [
+				{
+					"status is 429": false,
+					"Retry-After header present": false
+				}
+			]
+		},
+		{
+			"id": "3c91d667-8104-43bc-898e-cdc8e456da20",
+			"name": "1.3 Recovery after 60s",
+			"url": "http://127.0.0.1:8000/api/products",
+			"time": 15,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"status is 200 after window": true
+			},
+			"testPassFailCounts": {
+				"status is 200 after window": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				15
+			],
+			"allTests": [
+				{
+					"status is 200 after window": true
+				}
+			]
+		},
+		{
+			"id": "90fbe388-85d9-42f9-a304-a5aed8d94e5f",
+			"name": "1.4 Per-IP independence (optional)",
+			"url": "http://127.0.0.1:8000/api/products",
+			"time": 17,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {},
+			"testPassFailCounts": {},
+			"times": [
+				17
+			],
+			"allTests": [
+				{}
+			]
+		},
+		{
+			"id": "745aa962-11e7-44d0-bcef-98845ccb5450",
+			"name": "2.1 Authenticated bucket — hammer /auth/me 320×",
+			"url": "http://127.0.0.1:8000/api/auth/me",
+			"time": 36,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {},
+			"testPassFailCounts": {},
+			"times": [
+				36
+			],
+			"allTests": [
+				{}
+			]
+		},
+		{
+			"id": "bbbc2ee0-0a54-4d31-961b-ec8d0f56c02a",
+			"name": "2.2 Anonymous fallback — 30/min per IP",
+			"url": "http://127.0.0.1:8000/api/auth/me",
+			"time": 10,
+			"responseCode": {
+				"code": 401,
+				"name": "Unauthorized"
+			},
+			"tests": {},
+			"testPassFailCounts": {},
+			"times": [
+				10
+			],
+			"allTests": [
+				{}
+			]
+		},
+		{
+			"id": "fe6da35b-0a90-48b9-ac6b-d8dbceffec28",
+			"name": "3.1 Twenty-five PUT /products/2",
+			"url": "http://127.0.0.1:8000/api/products/2",
+			"time": 57,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {},
+			"testPassFailCounts": {},
+			"times": [
+				57
+			],
+			"allTests": [
+				{}
+			]
+		},
+		{
+			"id": "403a8901-6e22-47ef-8605-ae8c929e344d",
+			"name": "3.2 Confirm Retry-After + JSON body",
+			"url": "http://127.0.0.1:8000/api/products/2",
+			"time": 41,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"status is 429": false,
+				"Retry-After header present": false
+			},
+			"testPassFailCounts": {
+				"status is 429": {
+					"pass": 0,
+					"fail": 1
+				},
+				"Retry-After header present": {
+					"pass": 0,
+					"fail": 1
+				}
+			},
+			"times": [
+				41
+			],
+			"allTests": [
+				{
+					"status is 429": false,
+					"Retry-After header present": false
+				}
+			]
+		},
+		{
+			"id": "6c10acfb-2568-43f6-884e-0e286762db36",
+			"name": "3.3 Recovery after 60s",
+			"url": "http://127.0.0.1:8000/api/products/2",
+			"time": 39,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {},
+			"testPassFailCounts": {},
+			"times": [
+				39
+			],
+			"allTests": [
+				{}
+			]
+		},
+		{
+			"id": "70eae518-9491-424b-bc36-304ddd093aba",
+			"name": "4.1 Fifteen uploads",
+			"url": "http://127.0.0.1:8000/api/uploads/products",
+			"time": 40,
+			"responseCode": {
+				"code": 422,
+				"name": "Unprocessable Content"
+			},
+			"tests": {},
+			"testPassFailCounts": {},
+			"times": [
+				40
+			],
+			"allTests": [
+				{}
+			]
+		},
+		{
+			"id": "017c563b-70d1-49e2-bef4-aa6f6ad674c3",
+			"name": "4.2 Confirm 429 body and headers",
+			"url": "http://127.0.0.1:8000/api/uploads/products",
+			"time": 25,
+			"responseCode": {
+				"code": 422,
+				"name": "Unprocessable Content"
+			},
+			"tests": {
+				"status is 429": false
+			},
+			"testPassFailCounts": {
+				"status is 429": {
+					"pass": 0,
+					"fail": 1
+				}
+			},
+			"times": [
+				25
+			],
+			"allTests": [
+				{
+					"status is 429": false
+				}
+			]
+		},
+		{
+			"id": "b478905a-12cc-4242-b83b-19ad7c5c2750",
+			"name": "4.3 Recovery after 60s",
+			"url": "http://127.0.0.1:8000/api/uploads/products",
+			"time": 26,
+			"responseCode": {
+				"code": 422,
+				"name": "Unprocessable Content"
+			},
+			"tests": {},
+			"testPassFailCounts": {},
+			"times": [
+				26
+			],
+			"allTests": [
+				{}
+			]
+		},
+		{
+			"id": "821e9bed-6b5e-4488-9a8c-9ca306484ae4",
+			"name": "5.1 Seventy hits on api-anon route",
+			"url": "http://127.0.0.1:8000/api/products",
+			"time": 45,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {},
+			"testPassFailCounts": {},
+			"times": [
+				45
+			],
+			"allTests": [
+				{}
+			]
+		},
+		{
+			"id": "f39fd0e8-03bc-47ac-87ea-f527e3c52494",
+			"name": "6.1 Five wrong attempts → 5×401",
+			"url": "http://127.0.0.1:8000/api/auth/login",
+			"time": 229,
+			"responseCode": {
+				"code": 401,
+				"name": "Unauthorized"
+			},
+			"tests": {},
+			"testPassFailCounts": {},
+			"times": [
+				229
+			],
+			"allTests": [
+				{}
+			]
+		},
+		{
+			"id": "d2605875-0958-4647-93f0-aa889636e95c",
+			"name": "6.2 Sixth attempt → 429 with Retry-After",
+			"url": "http://127.0.0.1:8000/api/auth/login",
+			"time": 219,
+			"responseCode": {
+				"code": 401,
+				"name": "Unauthorized"
+			},
+			"tests": {
+				"status is 429": false,
+				"Retry-After header present": false
+			},
+			"testPassFailCounts": {
+				"status is 429": {
+					"pass": 0,
+					"fail": 1
+				},
+				"Retry-After header present": {
+					"pass": 0,
+					"fail": 1
+				}
+			},
+			"times": [
+				219
+			],
+			"allTests": [
+				{
+					"status is 429": false,
+					"Retry-After header present": false
+				}
+			]
+		},
+		{
+			"id": "96f8486d-7dca-47ca-a48b-95e8ea510840",
+			"name": "6.3 Correct password while locked → 429",
+			"url": "http://127.0.0.1:8000/api/auth/login",
+			"time": 226,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"status is 429": false
+			},
+			"testPassFailCounts": {
+				"status is 429": {
+					"pass": 0,
+					"fail": 1
+				}
+			},
+			"times": [
+				226
+			],
+			"allTests": [
+				{
+					"status is 429": false
+				}
+			]
+		},
+		{
+			"id": "654c7239-ce82-4a67-81d8-62827beaf7fd",
+			"name": "6.4 Email-rotation from same IP",
+			"url": "http://127.0.0.1:8000/api/auth/login",
+			"time": 35,
+			"responseCode": {
+				"code": 401,
+				"name": "Unauthorized"
+			},
+			"tests": {},
+			"testPassFailCounts": {},
+			"times": [
+				35
+			],
+			"allTests": [
+				{}
+			]
+		},
+		{
+			"id": "4d71f2c3-cb92-42f9-adc2-3dc6b2de4362",
+			"name": "6.5 Reset login limiter (dev only)",
+			"url": "http://127.0.0.1:8000/api/../tinker",
+			"time": 8,
+			"responseCode": {
+				"code": 404,
+				"name": "Not Found"
+			},
+			"tests": {},
+			"testPassFailCounts": {},
+			"times": [
+				8
+			],
+			"allTests": [
+				{}
+			]
+		},
+		{
+			"id": "d54e4941-5a96-46df-96e9-eb67085fd506",
+			"name": "7.1 Sixty parallel requests",
+			"url": "http://127.0.0.1:8000/api/products",
+			"time": 27,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {},
+			"testPassFailCounts": {},
+			"times": [
+				27
+			],
+			"allTests": [
+				{}
+			]
+		},
+		{
+			"id": "6674f8ca-0dca-457b-a910-9541f41c97f3",
+			"name": "7.2 One hundred fifty parallel",
+			"url": "http://127.0.0.1:8000/api/products",
+			"time": 24,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {},
+			"testPassFailCounts": {},
+			"times": [
+				24
+			],
+			"allTests": [
+				{}
+			]
+		},
+		{
+			"id": "bd8a947c-bc2c-42b9-a55d-ecd49f1d153d",
+			"name": "8.1 Trip write limit and inspect cache",
+			"url": "http://127.0.0.1:8000/api/products/2",
+			"time": 45,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {},
+			"testPassFailCounts": {},
+			"times": [
+				45
+			],
+			"allTests": [
+				{}
+			]
+		},
+		{
+			"id": "7b8b0a34-c948-45ca-9f5d-89cec9a031ed",
+			"name": "9.1 Clear all limiters",
+			"url": "http://127.0.0.1:8000/api/../tinker",
+			"time": 16,
+			"responseCode": {
+				"code": 404,
+				"name": "Not Found"
+			},
+			"tests": {},
+			"testPassFailCounts": {},
+			"times": [
+				16
+			],
+			"allTests": [
+				{}
+			]
+		}
+	],
+	"count": 1,
+	"totalTime": 1450,
+	"collection": {
+		"requests": [
+			{
+				"id": "3cdd47bd-0870-48bd-a5f6-3326081fbf00",
+				"method": "GET"
+			},
+			{
+				"id": "46a273c7-5e91-420e-a991-4a3b2ccebd49",
+				"method": "POST"
+			},
+			{
+				"id": "6a8ccd3d-50c5-42e1-8b55-3e5fcb2ddd44",
+				"method": "GET"
+			},
+			{
+				"id": "0db3731e-1855-4b40-a578-0b806cef37cb",
+				"method": "GET"
+			},
+			{
+				"id": "1d502cc1-7558-41ee-a944-0b2b3a3c325f",
+				"method": "GET"
+			},
+			{
+				"id": "3c91d667-8104-43bc-898e-cdc8e456da20",
+				"method": "GET"
+			},
+			{
+				"id": "90fbe388-85d9-42f9-a304-a5aed8d94e5f",
+				"method": "GET"
+			},
+			{
+				"id": "745aa962-11e7-44d0-bcef-98845ccb5450",
+				"method": "GET"
+			},
+			{
+				"id": "bbbc2ee0-0a54-4d31-961b-ec8d0f56c02a",
+				"method": "GET"
+			},
+			{
+				"id": "fe6da35b-0a90-48b9-ac6b-d8dbceffec28",
+				"method": "PUT"
+			},
+			{
+				"id": "403a8901-6e22-47ef-8605-ae8c929e344d",
+				"method": "PUT"
+			},
+			{
+				"id": "6c10acfb-2568-43f6-884e-0e286762db36",
+				"method": "PUT"
+			},
+			{
+				"id": "70eae518-9491-424b-bc36-304ddd093aba",
+				"method": "POST"
+			},
+			{
+				"id": "017c563b-70d1-49e2-bef4-aa6f6ad674c3",
+				"method": "POST"
+			},
+			{
+				"id": "b478905a-12cc-4242-b83b-19ad7c5c2750",
+				"method": "POST"
+			},
+			{
+				"id": "821e9bed-6b5e-4488-9a8c-9ca306484ae4",
+				"method": "GET"
+			},
+			{
+				"id": "f39fd0e8-03bc-47ac-87ea-f527e3c52494",
+				"method": "POST"
+			},
+			{
+				"id": "d2605875-0958-4647-93f0-aa889636e95c",
+				"method": "POST"
+			},
+			{
+				"id": "96f8486d-7dca-47ca-a48b-95e8ea510840",
+				"method": "POST"
+			},
+			{
+				"id": "654c7239-ce82-4a67-81d8-62827beaf7fd",
+				"method": "POST"
+			},
+			{
+				"id": "4d71f2c3-cb92-42f9-adc2-3dc6b2de4362",
+				"method": "GET"
+			},
+			{
+				"id": "d54e4941-5a96-46df-96e9-eb67085fd506",
+				"method": "GET"
+			},
+			{
+				"id": "6674f8ca-0dca-457b-a910-9541f41c97f3",
+				"method": "GET"
+			},
+			{
+				"id": "bd8a947c-bc2c-42b9-a55d-ecd49f1d153d",
+				"method": "PUT"
+			},
+			{
+				"id": "7b8b0a34-c948-45ca-9f5d-89cec9a031ed",
+				"method": "GET"
+			}
+		]
+	}
+}

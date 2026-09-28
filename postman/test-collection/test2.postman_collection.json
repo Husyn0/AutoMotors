@@ -1,0 +1,1510 @@
+{
+  "info": {
+    "name": "test2 — Image / Upload Test Suite",
+    "description": "Equivalent Postman collection for test2.md — uploads, serve, delete, model-image relations, consistency, regression, disk state.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "BASE", "value": "http://127.0.0.1:8000/api" },
+    { "key": "TOKEN", "value": "" },
+    { "key": "IMG", "value": "/home/hkali/Desktop/VioletPro/wallpaper/arch1.png" },
+    { "key": "IMG_PATH", "value": "" },
+    { "key": "PIMG", "value": "" },
+    { "key": "PIMG2", "value": "" },
+    { "key": "CIMG", "value": "" },
+    { "key": "CIMG2", "value": "" },
+    { "key": "CIMG3", "value": "" },
+    { "key": "PRIMG", "value": "" },
+    { "key": "PRIMG2", "value": "" },
+    { "key": "PIMG3", "value": "" },
+    { "key": "TMP_PATH", "value": "" },
+    { "key": "PID", "value": "10" },
+    { "key": "CID", "value": "" },
+    { "key": "PRID", "value": "" },
+    { "key": "PID3", "value": "" }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "const token = pm.collectionVariables.get('TOKEN');",
+          "if (!token) {",
+          "  pm.sendRequest({",
+          "    url: pm.collectionVariables.get('BASE') + '/auth/login',",
+          "    method: 'POST',",
+          "    header: { 'Content-Type': 'application/json', 'Accept': 'application/json' },",
+          "    body: { mode: 'raw', raw: JSON.stringify({ email: 'admin@automotors.com', password: 'password123' }) }",
+          "  }, (err, res) => {",
+          "    if (!err && res.code === 200) {",
+          "      pm.collectionVariables.set('TOKEN', res.json().token);",
+          "    }",
+          "  });",
+          "}"
+        ]
+      }
+    }
+  ],
+  "item": [
+    {
+      "name": "0. Setup",
+      "item": [
+        {
+          "name": "0.1 Export base URL and image path",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{BASE}}", "host": ["{{BASE}}"], "path": [] }
+          },
+          "response": []
+        },
+        {
+          "name": "0.2 Login — fresh token",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const j = pm.response.json();",
+                  "if (j.token) { pm.collectionVariables.set('TOKEN', j.token); }",
+                  "pm.test('token present', () => pm.expect(j.token).to.be.a('string'));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"email\":\"admin@automotors.com\",\"password\":\"password123\"}"
+            },
+            "url": { "raw": "{{BASE}}/auth/login", "host": ["{{BASE}}"], "path": ["auth", "login"] }
+          },
+          "response": []
+        },
+        {
+          "name": "0.3 Upload helper — sanity first upload",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const j = pm.response.json();",
+                  "if (j.path) { pm.collectionVariables.set('IMG_PATH', j.path); }",
+                  "pm.test('path present', () => pm.expect(j.path).to.be.a('string'));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{TOKEN}}" },
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                { "key": "file", "type": "file", "src": "{{IMG}}" }
+              ]
+            },
+            "url": { "raw": "{{BASE}}/uploads/products", "host": ["{{BASE}}"], "path": ["uploads", "products"] }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "1. Upload — success cases",
+      "item": [
+        {
+          "name": "1.1a Upload products",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{TOKEN}}" },
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [{ "key": "file", "type": "file", "src": "{{IMG}}" }]
+            },
+            "url": { "raw": "{{BASE}}/uploads/products", "host": ["{{BASE}}"], "path": ["uploads", "products"] }
+          },
+          "response": []
+        },
+        {
+          "name": "1.1b Upload categories",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{TOKEN}}" },
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [{ "key": "file", "type": "file", "src": "{{IMG}}" }]
+            },
+            "url": { "raw": "{{BASE}}/uploads/categories", "host": ["{{BASE}}"], "path": ["uploads", "categories"] }
+          },
+          "response": []
+        },
+        {
+          "name": "1.1c Upload services",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{TOKEN}}" },
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [{ "key": "file", "type": "file", "src": "{{IMG}}" }]
+            },
+            "url": { "raw": "{{BASE}}/uploads/services", "host": ["{{BASE}}"], "path": ["uploads", "services"] }
+          },
+          "response": []
+        },
+        {
+          "name": "1.1d Upload truck-types",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{TOKEN}}" },
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [{ "key": "file", "type": "file", "src": "{{IMG}}" }]
+            },
+            "url": { "raw": "{{BASE}}/uploads/truck-types", "host": ["{{BASE}}"], "path": ["uploads", "truck-types"] }
+          },
+          "response": []
+        },
+        {
+          "name": "1.1e Upload projects",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{TOKEN}}" },
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [{ "key": "file", "type": "file", "src": "{{IMG}}" }]
+            },
+            "url": { "raw": "{{BASE}}/uploads/projects", "host": ["{{BASE}}"], "path": ["uploads", "projects"] }
+          },
+          "response": []
+        },
+        {
+          "name": "1.1f Upload settings",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{TOKEN}}" },
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [{ "key": "file", "type": "file", "src": "{{IMG}}" }]
+            },
+            "url": { "raw": "{{BASE}}/uploads/settings", "host": ["{{BASE}}"], "path": ["uploads", "settings"] }
+          },
+          "response": []
+        },
+        {
+          "name": "1.2 Upload with explicit Accept header",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{TOKEN}}" },
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [{ "key": "file", "type": "file", "src": "{{IMG}}" }]
+            },
+            "url": { "raw": "{{BASE}}/uploads/products", "host": ["{{BASE}}"], "path": ["uploads", "products"] }
+          },
+          "response": []
+        },
+        {
+          "name": "1.3 Symlink serve check",
+          "request": {
+            "method": "HEAD",
+            "header": [],
+            "url": {
+              "raw": "{{BASE}}/storage/{{IMG_PATH}}",
+              "host": ["{{BASE}}"],
+              "path": ["storage", "{{IMG_PATH}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "1.4 Controller serve check",
+          "request": {
+            "method": "HEAD",
+            "header": [],
+            "url": {
+              "raw": "{{BASE}}/files/{{IMG_PATH}}",
+              "host": ["{{BASE}}"],
+              "path": ["files", "{{IMG_PATH}}"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "2. Upload — failure cases",
+      "item": [
+        {
+          "name": "2.1 Upload without auth → 401",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status is 401', () => pm.response.to.have.status(401));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "body": {
+              "mode": "formdata",
+              "formdata": [{ "key": "file", "type": "file", "src": "{{IMG}}" }]
+            },
+            "url": { "raw": "{{BASE}}/uploads/products", "host": ["{{BASE}}"], "path": ["uploads", "products"] }
+          },
+          "response": []
+        },
+        {
+          "name": "2.2 Upload to invalid folder → 422",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status is 422', () => pm.response.to.have.status(422));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{TOKEN}}" },
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [{ "key": "file", "type": "file", "src": "{{IMG}}" }]
+            },
+            "url": { "raw": "{{BASE}}/uploads/hackers", "host": ["{{BASE}}"], "path": ["uploads", "hackers"] }
+          },
+          "response": []
+        },
+        {
+          "name": "2.3 Upload with missing file → 422",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status is 422', () => pm.response.to.have.status(422));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{TOKEN}}" },
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "body": { "mode": "raw", "raw": "" },
+            "url": { "raw": "{{BASE}}/uploads/products", "host": ["{{BASE}}"], "path": ["uploads", "products"] }
+          },
+          "response": []
+        },
+        {
+          "name": "2.4 Upload disallowed MIME (.php) → 422",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status is 422', () => pm.response.to.have.status(422));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{TOKEN}}" },
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [{ "key": "file", "type": "file", "src": "/tmp/shell.php" }]
+            },
+            "url": { "raw": "{{BASE}}/uploads/products", "host": ["{{BASE}}"], "path": ["uploads", "products"] }
+          },
+          "response": []
+        },
+        {
+          "name": "2.5 Upload oversize → 422",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status is 422', () => pm.response.to.have.status(422));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{TOKEN}}" },
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [{ "key": "file", "type": "file", "src": "/tmp/big.png" }]
+            },
+            "url": { "raw": "{{BASE}}/uploads/products", "host": ["{{BASE}}"], "path": ["uploads", "products"] }
+          },
+          "response": []
+        },
+        {
+          "name": "2.6a Traversal in folder segment (POST)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{TOKEN}}" },
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [{ "key": "file", "type": "file", "src": "{{IMG}}" }]
+            },
+            "url": {
+              "raw": "{{BASE}}/uploads/..%2Fpublic",
+              "host": ["{{BASE}}"],
+              "path": ["uploads", "..%2Fpublic"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "2.6b Traversal in file segment (DELETE) → 404",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{TOKEN}}" },
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "url": {
+              "raw": "{{BASE}}/uploads/products/..%2F..%2Fetc%2Fpasswd",
+              "host": ["{{BASE}}"],
+              "path": ["uploads", "products", "..%2F..%2Fetc%2Fpasswd"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "2.6c Traversal on stream route (GET) → 404",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": {
+              "raw": "{{BASE}}/files/products/..%2F..%2Fetc%2Fpasswd",
+              "host": ["{{BASE}}"],
+              "path": ["files", "products", "..%2F..%2Fetc%2Fpasswd"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "3. Serve",
+      "item": [
+        {
+          "name": "3.1 Serve existing file via symlink",
+          "request": {
+            "method": "HEAD",
+            "header": [],
+            "url": {
+              "raw": "{{BASE}}/storage/{{IMG_PATH}}",
+              "host": ["{{BASE}}"],
+              "path": ["storage", "{{IMG_PATH}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "3.2 Serve existing file via controller",
+          "request": {
+            "method": "HEAD",
+            "header": [],
+            "url": {
+              "raw": "{{BASE}}/files/{{IMG_PATH}}",
+              "host": ["{{BASE}}"],
+              "path": ["files", "{{IMG_PATH}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "3.3 Non-existent file → 404 (controller)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status is 404', () => pm.response.to.have.status(404));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": {
+              "raw": "{{BASE}}/files/products/does-not-exist.png",
+              "host": ["{{BASE}}"],
+              "path": ["files", "products", "does-not-exist.png"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "3.4 Non-existent file → 404 (symlink)",
+          "request": {
+            "method": "HEAD",
+            "header": [],
+            "url": {
+              "raw": "{{BASE}}/storage/products/does-not-exist.png",
+              "host": ["{{BASE}}"],
+              "path": ["storage", "products", "does-not-exist.png"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "3.5 Invalid folder on stream route → 404",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status is 404', () => pm.response.to.have.status(404));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": {
+              "raw": "{{BASE}}/files/hackers/anything.png",
+              "host": ["{{BASE}}"],
+              "path": ["files", "hackers", "anything.png"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "4. Delete",
+      "item": [
+        {
+          "name": "4.1 Upload throwaway then delete",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const j = pm.response.json();",
+                  "if (j.path) { pm.collectionVariables.set('TMP_PATH', j.path); }",
+                  "pm.test('path present', () => pm.expect(j.path).to.be.a('string'));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{TOKEN}}" },
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [{ "key": "file", "type": "file", "src": "{{IMG}}" }]
+            },
+            "url": { "raw": "{{BASE}}/uploads/products", "host": ["{{BASE}}"], "path": ["uploads", "products"] }
+          },
+          "response": []
+        },
+        {
+          "name": "4.1b Delete the throwaway file",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{TOKEN}}" },
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "url": {
+              "raw": "{{BASE}}/uploads/products/{{TMP_PATH}}",
+              "host": ["{{BASE}}"],
+              "path": ["uploads", "products", "{{TMP_PATH}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "4.2 Verify deleted file is gone",
+          "request": {
+            "method": "HEAD",
+            "header": [],
+            "url": {
+              "raw": "{{BASE}}/storage/{{TMP_PATH}}",
+              "host": ["{{BASE}}"],
+              "path": ["storage", "{{TMP_PATH}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "4.3 Delete again → 404",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status is 404', () => pm.response.to.have.status(404));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{TOKEN}}" },
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "url": {
+              "raw": "{{BASE}}/uploads/products/{{TMP_PATH}}",
+              "host": ["{{BASE}}"],
+              "path": ["uploads", "products", "{{TMP_PATH}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "4.4 Delete without auth → 401",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status is 401', () => pm.response.to.have.status(401));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": {
+              "raw": "{{BASE}}/uploads/products/whatever.png",
+              "host": ["{{BASE}}"],
+              "path": ["uploads", "products", "whatever.png"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "5. Product ↔ Image",
+      "item": [
+        {
+          "name": "5.1 Upload image + create product",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const j = pm.response.json();",
+                  "if (j.path) { pm.collectionVariables.set('PIMG', j.path); }",
+                  "pm.test('path present', () => pm.expect(j.path).to.be.a('string'));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{TOKEN}}" },
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [{ "key": "file", "type": "file", "src": "{{IMG}}" }]
+            },
+            "url": { "raw": "{{BASE}}/uploads/products", "host": ["{{BASE}}"], "path": ["uploads", "products"] }
+          },
+          "response": []
+        },
+        {
+          "name": "5.1b Create product with image",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{TOKEN}}" },
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Batterie Image Test\",\n  \"category_id\": 1,\n  \"price\": 99.99,\n  \"short_description\": \"Test avec image\",\n  \"image\": \"{{PIMG}}\",\n  \"translations\": { \"en\": { \"name\": \"Image Test Battery\" } }\n}"
+            },
+            "url": { "raw": "{{BASE}}/products", "host": ["{{BASE}}"], "path": ["products"] }
+          },
+          "response": []
+        },
+        {
+          "name": "5.2 GET product by id",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": { "raw": "{{BASE}}/products/{{PID}}", "host": ["{{BASE}}"], "path": ["products", "{{PID}}"] }
+          },
+          "response": []
+        },
+        {
+          "name": "5.3 Verify product image URL serves",
+          "request": {
+            "method": "HEAD",
+            "header": [],
+            "url": {
+              "raw": "{{BASE}}/storage/{{PIMG}}",
+              "host": ["{{BASE}}"],
+              "path": ["storage", "{{PIMG}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "5.4 Update product image — upload new",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const j = pm.response.json();",
+                  "if (j.path) { pm.collectionVariables.set('PIMG2', j.path); }"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{TOKEN}}" },
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [{ "key": "file", "type": "file", "src": "{{IMG}}" }]
+            },
+            "url": { "raw": "{{BASE}}/uploads/products", "host": ["{{BASE}}"], "path": ["uploads", "products"] }
+          },
+          "response": []
+        },
+        {
+          "name": "5.4b PUT product with new image",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{TOKEN}}" },
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "body": { "mode": "raw", "raw": "{\"image\": \"{{PIMG2}}\"}" },
+            "url": { "raw": "{{BASE}}/products/{{PID}}", "host": ["{{BASE}}"], "path": ["products", "{{PID}}"] }
+          },
+          "response": []
+        },
+        {
+          "name": "5.5 Locale-independent image_url check (en)",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Accept-Language", "value": "en" },
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "url": { "raw": "{{BASE}}/products/{{PID}}", "host": ["{{BASE}}"], "path": ["products", "{{PID}}"] }
+          },
+          "response": []
+        },
+        {
+          "name": "5.5b Locale-independent image_url check (fr)",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Accept-Language", "value": "fr" },
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "url": { "raw": "{{BASE}}/products/{{PID}}", "host": ["{{BASE}}"], "path": ["products", "{{PID}}"] }
+          },
+          "response": []
+        },
+        {
+          "name": "5.6 Legacy path passthrough",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{TOKEN}}" },
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "body": { "mode": "raw", "raw": "{\"image\": \"/images/battery1.jpg\"}" },
+            "url": { "raw": "{{BASE}}/products/{{PID}}", "host": ["{{BASE}}"], "path": ["products", "{{PID}}"] }
+          },
+          "response": []
+        },
+        {
+          "name": "5.7 Absolute URL passthrough",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{TOKEN}}" },
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "body": { "mode": "raw", "raw": "{\"image\": \"https://cdn.example.com/foo.png\"}" },
+            "url": { "raw": "{{BASE}}/products/{{PID}}", "host": ["{{BASE}}"], "path": ["products", "{{PID}}"] }
+          },
+          "response": []
+        },
+        {
+          "name": "5.8 Null image",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{TOKEN}}" },
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "body": { "mode": "raw", "raw": "{\"image\": null}" },
+            "url": { "raw": "{{BASE}}/products/{{PID}}", "host": ["{{BASE}}"], "path": ["products", "{{PID}}"] }
+          },
+          "response": []
+        },
+        {
+          "name": "5.9a Restore image",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{TOKEN}}" },
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "body": { "mode": "raw", "raw": "{\"image\": \"{{PIMG2}}\"}" },
+            "url": { "raw": "{{BASE}}/products/{{PID}}", "host": ["{{BASE}}"], "path": ["products", "{{PID}}"] }
+          },
+          "response": []
+        },
+        {
+          "name": "5.9b Delete product",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{TOKEN}}" },
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "url": { "raw": "{{BASE}}/products/{{PID}}", "host": ["{{BASE}}"], "path": ["products", "{{PID}}"] }
+          },
+          "response": []
+        },
+        {
+          "name": "5.9c File remains after delete",
+          "request": {
+            "method": "HEAD",
+            "header": [],
+            "url": {
+              "raw": "{{BASE}}/storage/{{PIMG2}}",
+              "host": ["{{BASE}}"],
+              "path": ["storage", "{{PIMG2}}"]
+            },
+            "description": "Documented gap: file is NOT auto-deleted."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "6. Category ↔ Image",
+      "item": [
+        {
+          "name": "6.1 Upload + create category with image",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const j = pm.response.json();",
+                  "if (j.path) { pm.collectionVariables.set('CIMG', j.path); }"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{TOKEN}}" },
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [{ "key": "file", "type": "file", "src": "{{IMG}}" }]
+            },
+            "url": { "raw": "{{BASE}}/uploads/categories", "host": ["{{BASE}}"], "path": ["uploads", "categories"] }
+          },
+          "response": []
+        },
+        {
+          "name": "6.1b Create category",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{TOKEN}}" },
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Cat avec image\",\n  \"icon\": \"🧪\",\n  \"image\": \"{{CIMG}}\",\n  \"translations\": { \"en\": { \"name\": \"Cat with image\" } }\n}"
+            },
+            "url": { "raw": "{{BASE}}/categories", "host": ["{{BASE}}"], "path": ["categories"] }
+          },
+          "response": []
+        },
+        {
+          "name": "6.2 GET categories list",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": { "raw": "{{BASE}}/categories", "host": ["{{BASE}}"], "path": ["categories"] }
+          },
+          "response": []
+        },
+        {
+          "name": "6.3 GET single category",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": { "raw": "{{BASE}}/categories/{{CID}}", "host": ["{{BASE}}"], "path": ["categories", "{{CID}}"] }
+          },
+          "response": []
+        },
+        {
+          "name": "6.4 Update category image — upload new",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const j = pm.response.json();",
+                  "if (j.path) { pm.collectionVariables.set('CIMG2', j.path); }"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{TOKEN}}" },
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [{ "key": "file", "type": "file", "src": "{{IMG}}" }]
+            },
+            "url": { "raw": "{{BASE}}/uploads/categories", "host": ["{{BASE}}"], "path": ["uploads", "categories"] }
+          },
+          "response": []
+        },
+        {
+          "name": "6.4b PUT category with new image",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{TOKEN}}" },
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "body": { "mode": "raw", "raw": "{\"image\": \"{{CIMG2}}\"}" },
+            "url": { "raw": "{{BASE}}/categories/{{CID}}", "host": ["{{BASE}}"], "path": ["categories", "{{CID}}"] }
+          },
+          "response": []
+        },
+        {
+          "name": "6.5 Verify updated category image serves",
+          "request": {
+            "method": "HEAD",
+            "header": [],
+            "url": {
+              "raw": "{{BASE}}/storage/{{CIMG2}}",
+              "host": ["{{BASE}}"],
+              "path": ["storage", "{{CIMG2}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "6.6 Delete category",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{TOKEN}}" },
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "url": { "raw": "{{BASE}}/categories/{{CID}}", "host": ["{{BASE}}"], "path": ["categories", "{{CID}}"] }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "7. Project ↔ Image",
+      "item": [
+        {
+          "name": "7.1 Upload + create project with image",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const j = pm.response.json();",
+                  "if (j.path) { pm.collectionVariables.set('PRIMG', j.path); }"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{TOKEN}}" },
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [{ "key": "file", "type": "file", "src": "{{IMG}}" }]
+            },
+            "url": { "raw": "{{BASE}}/uploads/projects", "host": ["{{BASE}}"], "path": ["uploads", "projects"] }
+          },
+          "response": []
+        },
+        {
+          "name": "7.1b Create project",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{TOKEN}}" },
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Projet Image\",\n  \"description\": \"Avec image\",\n  \"image\": \"{{PRIMG}}\",\n  \"translations\": { \"en\": { \"title\": \"Image Project\" } }\n}"
+            },
+            "url": { "raw": "{{BASE}}/projects", "host": ["{{BASE}}"], "path": ["projects"] }
+          },
+          "response": []
+        },
+        {
+          "name": "7.2 GET projects list",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": { "raw": "{{BASE}}/projects", "host": ["{{BASE}}"], "path": ["projects"] }
+          },
+          "response": []
+        },
+        {
+          "name": "7.2b GET single project",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": { "raw": "{{BASE}}/projects/{{PRID}}", "host": ["{{BASE}}"], "path": ["projects", "{{PRID}}"] }
+          },
+          "response": []
+        },
+        {
+          "name": "7.3 Update project image — upload new",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const j = pm.response.json();",
+                  "if (j.path) { pm.collectionVariables.set('PRIMG2', j.path); }"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{TOKEN}}" },
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [{ "key": "file", "type": "file", "src": "{{IMG}}" }]
+            },
+            "url": { "raw": "{{BASE}}/uploads/projects", "host": ["{{BASE}}"], "path": ["uploads", "projects"] }
+          },
+          "response": []
+        },
+        {
+          "name": "7.3b PUT project with new image",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{TOKEN}}" },
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "body": { "mode": "raw", "raw": "{\"image\": \"{{PRIMG2}}\"}" },
+            "url": { "raw": "{{BASE}}/projects/{{PRID}}", "host": ["{{BASE}}"], "path": ["projects", "{{PRID}}"] }
+          },
+          "response": []
+        },
+        {
+          "name": "7.4 Verify updated project image serves",
+          "request": {
+            "method": "HEAD",
+            "header": [],
+            "url": {
+              "raw": "{{BASE}}/storage/{{PRIMG2}}",
+              "host": ["{{BASE}}"],
+              "path": ["storage", "{{PRIMG2}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "7.5 Delete project",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{TOKEN}}" },
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "url": { "raw": "{{BASE}}/projects/{{PRID}}", "host": ["{{BASE}}"], "path": ["projects", "{{PRID}}"] }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "8. Product → Category relation",
+      "item": [
+        {
+          "name": "8.1 Attach image to category 1",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const j = pm.response.json();",
+                  "if (j.path) { pm.collectionVariables.set('CIMG3', j.path); }"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{TOKEN}}" },
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [{ "key": "file", "type": "file", "src": "{{IMG}}" }]
+            },
+            "url": { "raw": "{{BASE}}/uploads/categories", "host": ["{{BASE}}"], "path": ["uploads", "categories"] }
+          },
+          "response": []
+        },
+        {
+          "name": "8.1b PUT category 1 with image",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{TOKEN}}" },
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "body": { "mode": "raw", "raw": "{\"image\": \"{{CIMG3}}\"}" },
+            "url": { "raw": "{{BASE}}/categories/1", "host": ["{{BASE}}"], "path": ["categories", "1"] }
+          },
+          "response": []
+        },
+        {
+          "name": "8.2 Upload + create product in category 1",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const j = pm.response.json();",
+                  "if (j.path) { pm.collectionVariables.set('PIMG3', j.path); }",
+                  "if (j.id)   { pm.collectionVariables.set('PID3', j.id); }"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{TOKEN}}" },
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [{ "key": "file", "type": "file", "src": "{{IMG}}" }]
+            },
+            "url": { "raw": "{{BASE}}/uploads/products", "host": ["{{BASE}}"], "path": ["uploads", "products"] }
+          },
+          "response": []
+        },
+        {
+          "name": "8.2b Create product in category 1",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const j = pm.response.json();",
+                  "if (j.id) { pm.collectionVariables.set('PID3', j.id); }"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{TOKEN}}" },
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Relation Image Test\",\n  \"category_id\": 1,\n  \"price\": 12.34,\n  \"short_description\": \"Relation\",\n  \"image\": \"{{PIMG3}}\"\n}"
+            },
+            "url": { "raw": "{{BASE}}/products", "host": ["{{BASE}}"], "path": ["products"] }
+          },
+          "response": []
+        },
+        {
+          "name": "8.3 Fetch product — nested category has image_url",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": { "raw": "{{BASE}}/products/{{PID3}}", "host": ["{{BASE}}"], "path": ["products", "{{PID3}}"] }
+          },
+          "response": []
+        },
+        {
+          "name": "8.4 Same fetch in EN locale",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Accept-Language", "value": "en" },
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "url": { "raw": "{{BASE}}/products/{{PID3}}", "host": ["{{BASE}}"], "path": ["products", "{{PID3}}"] }
+          },
+          "response": []
+        },
+        {
+          "name": "8.5 Delete relation-test product",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{TOKEN}}" },
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "url": { "raw": "{{BASE}}/products/{{PID3}}", "host": ["{{BASE}}"], "path": ["products", "{{PID3}}"] }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "9. Consistency checks",
+      "item": [
+        {
+          "name": "9.1 Three access paths sha256 must match",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": { "raw": "{{BASE}}/products", "host": ["{{BASE}}"], "path": ["products"] },
+            "description": "Run in terminal with sha256sum after downloading via all 3 paths."
+          },
+          "response": []
+        },
+        {
+          "name": "9.2 Rapid uploads — unique names",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{TOKEN}}" },
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [{ "key": "file", "type": "file", "src": "{{IMG}}" }]
+            },
+            "url": { "raw": "{{BASE}}/uploads/products", "host": ["{{BASE}}"], "path": ["uploads", "products"] },
+            "description": "Run 5 iterations; collect paths; all must differ."
+          },
+          "response": []
+        },
+        {
+          "name": "9.3 Folder isolation",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{BASE}}/../tinker", "host": ["{{BASE}}"], "path": ["..", "tinker"] },
+            "description": "Run: ls -la storage/app/public/products/ storage/app/public/categories/"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "10. Regression — test1.md endpoints",
+      "item": [
+        {
+          "name": "10.1 Auth /auth/me",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{TOKEN}}" },
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "url": { "raw": "{{BASE}}/auth/me", "host": ["{{BASE}}"], "path": ["auth", "me"] }
+          },
+          "response": []
+        },
+        {
+          "name": "10.1b Auth /auth/refresh",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{TOKEN}}" },
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "url": { "raw": "{{BASE}}/auth/refresh", "host": ["{{BASE}}"], "path": ["auth", "refresh"] }
+          },
+          "response": []
+        },
+        {
+          "name": "10.2 Public reads — categories",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": { "raw": "{{BASE}}/categories", "host": ["{{BASE}}"], "path": ["categories"] }
+          },
+          "response": []
+        },
+        {
+          "name": "10.2b Public reads — products",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": { "raw": "{{BASE}}/products", "host": ["{{BASE}}"], "path": ["products"] }
+          },
+          "response": []
+        },
+        {
+          "name": "10.2c Public reads — services",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": { "raw": "{{BASE}}/services", "host": ["{{BASE}}"], "path": ["services"] }
+          },
+          "response": []
+        },
+        {
+          "name": "10.2d Public reads — services ?type=srv",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": {
+              "raw": "{{BASE}}/services?type=srv",
+              "host": ["{{BASE}}"],
+              "path": ["services"],
+              "query": [{ "key": "type", "value": "srv" }]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "10.2e Public reads — services ?type=adv",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": {
+              "raw": "{{BASE}}/services?type=adv",
+              "host": ["{{BASE}}"],
+              "path": ["services"],
+              "query": [{ "key": "type", "value": "adv" }]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "10.2f Public reads — truck-types",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": { "raw": "{{BASE}}/truck-types", "host": ["{{BASE}}"], "path": ["truck-types"] }
+          },
+          "response": []
+        },
+        {
+          "name": "10.2g Public reads — projects",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": { "raw": "{{BASE}}/projects", "host": ["{{BASE}}"], "path": ["projects"] }
+          },
+          "response": []
+        },
+        {
+          "name": "10.2h Public reads — settings",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": { "raw": "{{BASE}}/settings", "host": ["{{BASE}}"], "path": ["settings"] }
+          },
+          "response": []
+        },
+        {
+          "name": "10.2i Public reads — settings (en)",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Accept-Language", "value": "en" },
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "url": { "raw": "{{BASE}}/settings", "host": ["{{BASE}}"], "path": ["settings"] }
+          },
+          "response": []
+        },
+        {
+          "name": "10.3a Protected write — truck-types",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{TOKEN}}" },
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"name\":\"T\",\"models\":\"M\",\"description\":\"D\"}"
+            },
+            "url": { "raw": "{{BASE}}/truck-types", "host": ["{{BASE}}"], "path": ["truck-types"] }
+          },
+          "response": []
+        },
+        {
+          "name": "10.3b Protected write — services",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{TOKEN}}" },
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"title\":\"S\",\"type\":\"srv\",\"description\":\"D\"}"
+            },
+            "url": { "raw": "{{BASE}}/services", "host": ["{{BASE}}"], "path": ["services"] }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "11. Disk state inspection (tinker)",
+      "item": [
+        {
+          "name": "11.1 List all uploaded files",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{BASE}}/../tinker", "host": ["{{BASE}}"], "path": ["..", "tinker"] },
+            "description": "Run: find storage/app/public -type f | sort"
+          },
+          "response": []
+        },
+        {
+          "name": "11.2 Confirm symlink target",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{BASE}}/../tinker", "host": ["{{BASE}}"], "path": ["..", "tinker"] },
+            "description": "Run: ls -la public/storage"
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}

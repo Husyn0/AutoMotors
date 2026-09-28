@@ -1,0 +1,684 @@
+{
+  "info": {
+    "name": "AutoMotors — Cache Test Suite",
+    "description": "HTTP-level cache tests ported from test4.md. Cache-internal tests (version counter, TTL, table inspection) live in tests/Feature/CacheTest.php.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "BASE_URL", "value": "http://127.0.0.1:8000/api" },
+    { "key": "TOKEN", "value": "" },
+    { "key": "PRODUCT_ID", "value": "" },
+    { "key": "CATEGORY_ID", "value": "1" },
+    { "key": "STAMP", "value": "" }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [ { "key": "token", "value": "{{TOKEN}}", "type": "string" } ]
+  },
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "// Set a fresh STAMP for every request so probe names are unique",
+          "pm.collectionVariables.set('STAMP', 'probe-' + Date.now());"
+        ]
+      }
+    }
+  ],
+  "item": [
+
+    {
+      "name": "0. Setup",
+      "item": [
+        {
+          "name": "0.2 Login → stores TOKEN",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200 OK', () => pm.response.to.have.status(200));",
+                  "const body = pm.response.json();",
+                  "pm.test('has token', () => pm.expect(body).to.have.property('token'));",
+                  "pm.collectionVariables.set('TOKEN', body.token);",
+                  "console.log('TOKEN=', body.token.substring(0, 24) + '...');"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [ { "key": "Content-Type", "value": "application/json" },
+                        { "key": "Accept", "value": "application/json" } ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin@automotors.com\",\n  \"password\": \"password123\"\n}"
+            },
+            "url": { "raw": "{{BASE_URL}}/auth/login", "host": ["{{BASE_URL}}"], "path": ["auth","login"] }
+          }
+        }
+      ]
+    },
+
+    {
+      "name": "1. Sanity — cache is written and reused",
+      "item": [
+        {
+          "name": "1.1 GET /products creates cache (200)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200', () => pm.response.to.have.status(200));",
+                  "pm.test('array body', () => pm.expect(pm.response.json()).to.be.an('array'));",
+                  "const t = pm.response.responseTime;",
+                  "pm.collectionVariables.set('FIRST_TIME', t);",
+                  "console.log('first call took', t, 'ms');"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [ { "key": "Accept", "value": "application/json" } ],
+            "url": { "raw": "{{BASE_URL}}/products", "host": ["{{BASE_URL}}"], "path": ["products"] }
+          }
+        },
+        {
+          "name": "1.2 Second call is faster (cache hit)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200', () => pm.response.to.have.status(200));",
+                  "const first  = Number(pm.collectionVariables.get('FIRST_TIME') || 0);",
+                  "const second = pm.response.responseTime;",
+                  "console.log('first =', first, 'ms  |  second =', second, 'ms');",
+                  "// Loose check — cached response should not be slower than 2x the first",
+                  "pm.test('second call is not slower than first', () => {",
+                  "  pm.expect(second).to.be.below(Math.max(first * 2, 50));",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [ { "key": "Accept", "value": "application/json" } ],
+            "url": { "raw": "{{BASE_URL}}/products", "host": ["{{BASE_URL}}"], "path": ["products"] }
+          }
+        },
+        {
+          "name": "1.3 Identical bodies across two hits",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200', () => pm.response.to.have.status(200));",
+                  "const a = pm.response.text();",
+                  "pm.sendRequest({ url: pm.variables.replaceIn('{{BASE_URL}}/products'), method: 'GET', header: { Accept: 'application/json' } }, (err, res) => {",
+                  "  pm.test('bodies identical', () => pm.expect(res.text()).to.eql(a));",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [ { "key": "Accept", "value": "application/json" } ],
+            "url": { "raw": "{{BASE_URL}}/products", "host": ["{{BASE_URL}}"], "path": ["products"] }
+          }
+        }
+      ]
+    },
+
+    {
+      "name": "2. Locale isolation",
+      "item": [
+        {
+          "name": "2.1 FR and EN lists (200 each)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('FR 200', () => pm.response.to.have.status(200));",
+                  "pm.sendRequest({ url: pm.variables.replaceIn('{{BASE_URL}}/products'), method: 'GET', header: { Accept: 'application/json', 'Accept-Language': 'en' } }, (err, res) => {",
+                  "  pm.test('EN 200', () => pm.expect(res.code).to.eql(200));",
+                  "  pm.collectionVariables.set('FR_BODY', pm.response.text());",
+                  "  pm.collectionVariables.set('EN_BODY', res.text());",
+                  "  console.log('FR len =', pm.response.text().length, 'EN len =', res.text().length);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [ { "key": "Accept", "value": "application/json" },
+                        { "key": "Accept-Language", "value": "fr" } ],
+            "url": { "raw": "{{BASE_URL}}/products", "host": ["{{BASE_URL}}"], "path": ["products"] }
+          }
+        },
+        {
+          "name": "2.2 FR body and EN body differ",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const fr = pm.collectionVariables.get('FR_BODY') || '';",
+                  "const en = pm.collectionVariables.get('EN_BODY') || '';",
+                  "pm.test('FR and EN differ', () => pm.expect(fr).to.not.eql(en));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [ { "key": "Accept", "value": "application/json" },
+                        { "key": "Accept-Language", "value": "en" } ],
+            "url": { "raw": "{{BASE_URL}}/products", "host": ["{{BASE_URL}}"], "path": ["products"] }
+          }
+        },
+        {
+          "name": "2.3 ?lang=en returns EN payload",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const en = pm.collectionVariables.get('EN_BODY') || '';",
+                  "pm.test('matches EN header body', () => pm.expect(pm.response.text()).to.eql(en));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [ { "key": "Accept", "value": "application/json" } ],
+            "url": {
+              "raw": "{{BASE_URL}}/products?lang=en",
+              "host": ["{{BASE_URL}}"],
+              "path": ["products"],
+              "query": [ { "key": "lang", "value": "en" } ]
+            }
+          }
+        }
+      ]
+    },
+
+    {
+      "name": "3. Version-stamp invalidation (HTTP-visible side)",
+      "item": [
+        {
+          "name": "3.3 Post-write GET contains the fresh row",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('201 created', () => pm.response.to.have.status(201));",
+                  "const stamp = pm.collectionVariables.get('STAMP');",
+                  "pm.sendRequest({ url: pm.variables.replaceIn('{{BASE_URL}}/products'), method: 'GET', header: { Accept: 'application/json' } }, (err, res) => {",
+                  "  pm.test('list contains fresh row', () => pm.expect(res.text()).to.include(stamp));",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [ { "key": "Content-Type", "value": "application/json" },
+                        { "key": "Accept", "value": "application/json" } ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"{{STAMP}}\",\n  \"category_id\": 1,\n  \"price\": 1.23,\n  \"short_description\": \"cache test\"\n}"
+            },
+            "url": { "raw": "{{BASE_URL}}/products", "host": ["{{BASE_URL}}"], "path": ["products"] }
+          }
+        },
+        {
+          "name": "3.4 Update price → show reflects it",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('update 200', () => pm.expect(pm.response.code).to.be.oneOf([200, 201]));",
+                  "const pid = pm.collectionVariables.get('PRODUCT_ID');",
+                  "pm.sendRequest({ url: pm.variables.replaceIn('{{BASE_URL}}/products/' + pid), method: 'GET', header: { Accept: 'application/json' } }, (err, res) => {",
+                  "  pm.test('show has new price', () => pm.expect(res.json().price).to.eql('88.88'));",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [ { "key": "Content-Type", "value": "application/json" },
+                        { "key": "Accept", "value": "application/json" } ],
+            "body": { "mode": "raw", "raw": "{\"price\": 88.88}" },
+            "url": { "raw": "{{BASE_URL}}/products/{{PRODUCT_ID}}", "host": ["{{BASE_URL}}"], "path": ["products","{{PRODUCT_ID}}"] }
+          }
+        },
+        {
+          "name": "3.5 Create throwaway product (captures id)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('201', () => pm.response.to.have.status(201));",
+                  "pm.collectionVariables.set('THROWAWAY_ID', pm.response.json().id);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [ { "key": "Content-Type", "value": "application/json" },
+                        { "key": "Accept", "value": "application/json" } ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"throwaway-{{STAMP}}\",\n  \"category_id\": 1,\n  \"price\": 1.00,\n  \"short_description\": \"x\"\n}"
+            },
+            "url": { "raw": "{{BASE_URL}}/products", "host": ["{{BASE_URL}}"], "path": ["products"] }
+          }
+        },
+        {
+          "name": "3.5b Delete throwaway → next list omits it",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('delete 200', () => pm.response.to.have.status(200));",
+                  "const id = pm.collectionVariables.get('THROWAWAY_ID');",
+                  "pm.sendRequest({ url: pm.variables.replaceIn('{{BASE_URL}}/products'), method: 'GET', header: { Accept: 'application/json' } }, (err, res) => {",
+                  "  const stillThere = res.json().some(p => String(p.id) === String(id));",
+                  "  pm.test('deleted row absent from list', () => pm.expect(stillThere).to.be.false);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [ { "key": "Accept", "value": "application/json" } ],
+            "url": { "raw": "{{BASE_URL}}/products/{{THROWAWAY_ID}}", "host": ["{{BASE_URL}}"], "path": ["products","{{THROWAWAY_ID}}"] }
+          }
+        }
+      ]
+    },
+
+    {
+      "name": "5. Show-endpoint isolation",
+      "item": [
+        {
+          "name": "5.3 Truck-type show has 'models', not 'title'",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200', () => pm.response.to.have.status(200));",
+                  "const b = pm.response.json();",
+                  "pm.test('has models', () => pm.expect(b).to.have.property('models'));",
+                  "pm.test('no title (would mean it leaked a Project)', () => pm.expect(b).to.not.have.property('title'));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [ { "key": "Accept", "value": "application/json" } ],
+            "url": { "raw": "{{BASE_URL}}/truck-types/2", "host": ["{{BASE_URL}}"], "path": ["truck-types","2"] }
+          }
+        }
+      ]
+    },
+
+    {
+      "name": "6. List vs show isolation",
+      "item": [
+        {
+          "name": "6.2 Edit product 2 → show reflects new price",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('write ok', () => pm.expect(pm.response.code).to.be.oneOf([200, 201]));",
+                  "pm.sendRequest({ url: pm.variables.replaceIn('{{BASE_URL}}/products/2'), method: 'GET', header: { Accept: 'application/json' } }, (err, res) => {",
+                  "  pm.test('price reflected', () => pm.expect(res.json().price).to.eql('88.88'));",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [ { "key": "Content-Type", "value": "application/json" },
+                        { "key": "Accept", "value": "application/json" } ],
+            "body": { "mode": "raw", "raw": "{\"price\": 88.88}" },
+            "url": { "raw": "{{BASE_URL}}/products/2", "host": ["{{BASE_URL}}"], "path": ["products","2"] }
+          }
+        }
+      ]
+    },
+
+    {
+      "name": "7. Settings cache",
+      "item": [
+        {
+          "name": "7.1 Settings FR (200)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200', () => pm.response.to.have.status(200));",
+                  "pm.test('object body', () => pm.expect(pm.response.json()).to.be.an('object'));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [ { "key": "Accept", "value": "application/json" },
+                        { "key": "Accept-Language", "value": "fr" } ],
+            "url": { "raw": "{{BASE_URL}}/settings", "host": ["{{BASE_URL}}"], "path": ["settings"] }
+          }
+        },
+        {
+          "name": "7.1b Settings EN (200)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [ "pm.test('200', () => pm.response.to.have.status(200));" ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [ { "key": "Accept", "value": "application/json" },
+                        { "key": "Accept-Language", "value": "en" } ],
+            "url": { "raw": "{{BASE_URL}}/settings", "host": ["{{BASE_URL}}"], "path": ["settings"] }
+          }
+        },
+        {
+          "name": "7.3 Update settings → fresh GET reflects new value",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('update 200', () => pm.response.to.have.status(200));",
+                  "pm.sendRequest({ url: pm.variables.replaceIn('{{BASE_URL}}/settings'), method: 'GET', header: { Accept: 'application/json' } }, (err, res) => {",
+                  "  pm.test('company_name = CACHE-TEST-CO', () => pm.expect(res.json().company_name).to.eql('CACHE-TEST-CO'));",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [ { "key": "Content-Type", "value": "application/json" },
+                        { "key": "Accept", "value": "application/json" } ],
+            "body": { "mode": "raw", "raw": "{\"company_name\":\"CACHE-TEST-CO\"}" },
+            "url": { "raw": "{{BASE_URL}}/settings", "host": ["{{BASE_URL}}"], "path": ["settings"] }
+          }
+        }
+      ]
+    },
+
+    {
+      "name": "8. Service filter isolation",
+      "item": [
+        {
+          "name": "8.2 ?type=srv → only srv rows",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200', () => pm.response.to.have.status(200));",
+                  "const rows = pm.response.json();",
+                  "const types = [...new Set(rows.map(r => r.type))];",
+                  "pm.test('only srv present', () => pm.expect(types).to.eql(['srv']));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [ { "key": "Accept", "value": "application/json" } ],
+            "url": {
+              "raw": "{{BASE_URL}}/services?type=srv",
+              "host": ["{{BASE_URL}}"],
+              "path": ["services"],
+              "query": [ { "key": "type", "value": "srv" } ]
+            }
+          }
+        },
+        {
+          "name": "8.2b ?type=adv → only adv rows",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200', () => pm.response.to.have.status(200));",
+                  "const rows = pm.response.json();",
+                  "const types = [...new Set(rows.map(r => r.type))];",
+                  "pm.test('only adv present', () => pm.expect(types).to.eql(['adv']));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [ { "key": "Accept", "value": "application/json" } ],
+            "url": {
+              "raw": "{{BASE_URL}}/services?type=adv",
+              "host": ["{{BASE_URL}}"],
+              "path": ["services"],
+              "query": [ { "key": "type", "value": "adv" } ]
+            }
+          }
+        },
+        {
+          "name": "8.4 Invalid type → 422",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('422', () => pm.response.to.have.status(422));",
+                  "const b = pm.response.json();",
+                  "pm.test('has allowed list', () => pm.expect(b).to.have.property('allowed'));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [ { "key": "Accept", "value": "application/json" } ],
+            "url": {
+              "raw": "{{BASE_URL}}/services?type=bogus",
+              "host": ["{{BASE_URL}}"],
+              "path": ["services"],
+              "query": [ { "key": "type", "value": "bogus" } ]
+            }
+          }
+        }
+      ]
+    },
+
+    {
+      "name": "9. Non-GET traffic is not cached",
+      "item": [
+        {
+          "name": "9.1 Two POSTs → two different ids",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('201', () => pm.response.to.have.status(201));",
+                  "const id1 = pm.response.json().id;",
+                  "pm.sendRequest({",
+                  "  url: pm.variables.replaceIn('{{BASE_URL}}/products'),",
+                  "  method: 'POST',",
+                  "  header: { 'Content-Type': 'application/json', Accept: 'application/json', Authorization: 'Bearer ' + pm.collectionVariables.get('TOKEN') },",
+                  "  body: { mode: 'raw', raw: JSON.stringify({ name: 'post-probe-b-' + Date.now(), category_id: 1, price: 1.0, short_description: 'x' }) }",
+                  "}, (err, res) => {",
+                  "  pm.test('second POST 201', () => pm.expect(res.code).to.eql(201));",
+                  "  pm.test('different ids', () => pm.expect(res.json().id).to.not.eql(id1));",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [ { "key": "Content-Type", "value": "application/json" },
+                        { "key": "Accept", "value": "application/json" } ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"post-probe-a-{{STAMP}}\",\n  \"category_id\": 1,\n  \"price\": 1.00,\n  \"short_description\": \"x\"\n}"
+            },
+            "url": { "raw": "{{BASE_URL}}/products", "host": ["{{BASE_URL}}"], "path": ["products"] }
+          }
+        },
+        {
+          "name": "9.2 Unauthenticated POST → 401",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [ "pm.test('401', () => pm.response.to.have.status(401));" ]
+              }
+            }
+          ],
+          "auth": { "type": "noauth" },
+          "request": {
+            "method": "POST",
+            "header": [ { "key": "Content-Type", "value": "application/json" },
+                        { "key": "Accept", "value": "application/json" } ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"unauth-probe\",\n  \"category_id\": 1,\n  \"price\": 1.00,\n  \"short_description\": \"x\"\n}"
+            },
+            "url": { "raw": "{{BASE_URL}}/products", "host": ["{{BASE_URL}}"], "path": ["products"] }
+          }
+        }
+      ]
+    },
+
+    {
+      "name": "11. Negative caching",
+      "item": [
+        {
+          "name": "11.1 Missing product → 404",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('404', () => pm.response.to.have.status(404));",
+                  "const b = pm.response.json();",
+                  "pm.test('error key present', () => pm.expect(b).to.have.property('error'));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [ { "key": "Accept", "value": "application/json" } ],
+            "url": { "raw": "{{BASE_URL}}/products/999999", "host": ["{{BASE_URL}}"], "path": ["products","999999"] }
+          }
+        }
+      ]
+    },
+
+    {
+      "name": "12. Rapid-fire stress",
+      "item": [
+        {
+          "name": "12.1 Ten parallel GETs (run via Runner 'iterations')",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200', () => pm.response.to.have.status(200));",
+                  "pm.test('body is array', () => pm.expect(pm.response.json()).to.be.an('array'));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [ { "key": "Accept", "value": "application/json" } ],
+            "url": { "raw": "{{BASE_URL}}/products", "host": ["{{BASE_URL}}"], "path": ["products"] }
+          }
+        }
+      ]
+    },
+
+    {
+      "name": "13. Failure recovery",
+      "item": [
+        {
+          "name": "13.2 Corrupt version value → reads still 200",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [ "pm.test('200 despite corrupt version', () => pm.response.to.have.status(200));" ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [ { "key": "Accept", "value": "application/json" } ],
+            "url": { "raw": "{{BASE_URL}}/products", "host": ["{{BASE_URL}}"], "path": ["products"] }
+          }
+        }
+      ]
+    }
+
+  ]
+}

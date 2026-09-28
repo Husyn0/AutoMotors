@@ -1,0 +1,1283 @@
+{
+	"id": "42e9f487-e572-402d-9aaf-95c455484c1c",
+	"name": "test1 — Auth, Public Content, CRUD",
+	"timestamp": "2026-09-27T19:53:04.356Z",
+	"collection_id": "50446717-e5b88c8e-654a-4176-9fc1-c70403b83b45",
+	"folder_id": 0,
+	"environment_id": "0",
+	"totalPass": 2,
+	"delay": 0,
+	"persist": true,
+	"status": "finished",
+	"startedAt": "2026-09-27T19:53:01.003Z",
+	"totalFail": 4,
+	"results": [
+		{
+			"id": "fff352b6-aae2-447d-a500-1de22a4dbe04",
+			"name": "0.1 Export base URL",
+			"url": "http://127.0.0.1:8000/api/",
+			"time": 37,
+			"responseCode": {
+				"code": 404,
+				"name": "Not Found"
+			},
+			"tests": {},
+			"testPassFailCounts": {},
+			"times": [
+				37
+			],
+			"allTests": [
+				{}
+			]
+		},
+		{
+			"id": "51587cd9-9148-4b67-9ed5-1ba7e317b45f",
+			"name": "0.2 Clear limiter state (dev only)",
+			"url": "http://127.0.0.1:8000/api/../tinker",
+			"time": 8,
+			"responseCode": {
+				"code": 404,
+				"name": "Not Found"
+			},
+			"tests": {},
+			"testPassFailCounts": {},
+			"times": [
+				8
+			],
+			"allTests": [
+				{}
+			]
+		},
+		{
+			"id": "288426fb-11a1-4ab2-977d-fe0f6fea4082",
+			"name": "0.3 Login",
+			"url": "http://127.0.0.1:8000/api/auth/login",
+			"time": 219,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"token present": true
+			},
+			"testPassFailCounts": {
+				"token present": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				219
+			],
+			"allTests": [
+				{
+					"token present": true
+				}
+			]
+		},
+		{
+			"id": "444c7f31-9445-4f23-88df-4e2017ff67b5",
+			"name": "0.4 Register",
+			"url": "http://127.0.0.1:8000/api/auth/register",
+			"time": 30,
+			"responseCode": {
+				"code": 422,
+				"name": "Unprocessable Content"
+			},
+			"tests": {},
+			"testPassFailCounts": {},
+			"times": [
+				30
+			],
+			"allTests": [
+				{}
+			]
+		},
+		{
+			"id": "a271c3b8-1447-4fc8-b78a-f40fd1bf787f",
+			"name": "0.5 Refresh Token",
+			"url": "http://127.0.0.1:8000/api/auth/refresh",
+			"time": 40,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {},
+			"testPassFailCounts": {},
+			"times": [
+				40
+			],
+			"allTests": [
+				{}
+			]
+		},
+		{
+			"id": "960e4899-b202-4fd1-bc23-cad7817611ef",
+			"name": "0.6 Rate limiting — 5 wrong attempts",
+			"url": "http://127.0.0.1:8000/api/auth/login",
+			"time": 231,
+			"responseCode": {
+				"code": 401,
+				"name": "Unauthorized"
+			},
+			"tests": {},
+			"testPassFailCounts": {},
+			"times": [
+				231
+			],
+			"allTests": [
+				{}
+			]
+		},
+		{
+			"id": "bd1e7757-7afe-409f-825d-7c3f927c724b",
+			"name": "0.7 Sixth wrong attempt — 429",
+			"url": "http://127.0.0.1:8000/api/auth/login",
+			"time": 220,
+			"responseCode": {
+				"code": 401,
+				"name": "Unauthorized"
+			},
+			"tests": {
+				"status is 429": false,
+				"Retry-After present": false
+			},
+			"testPassFailCounts": {
+				"status is 429": {
+					"pass": 0,
+					"fail": 1
+				},
+				"Retry-After present": {
+					"pass": 0,
+					"fail": 1
+				}
+			},
+			"times": [
+				220
+			],
+			"allTests": [
+				{
+					"status is 429": false,
+					"Retry-After present": false
+				}
+			]
+		},
+		{
+			"id": "72379b3d-1914-4586-a0a2-26a4a122ff5c",
+			"name": "0.8 Correct password while locked — 429",
+			"url": "http://127.0.0.1:8000/api/auth/login",
+			"time": 227,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"status is 429": false
+			},
+			"testPassFailCounts": {
+				"status is 429": {
+					"pass": 0,
+					"fail": 1
+				}
+			},
+			"times": [
+				227
+			],
+			"allTests": [
+				{
+					"status is 429": false
+				}
+			]
+		},
+		{
+			"id": "26b48714-24dc-45d1-954e-fe10e17b5ea4",
+			"name": "1.1 Categories list",
+			"url": "http://127.0.0.1:8000/api/categories",
+			"time": 32,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {},
+			"testPassFailCounts": {},
+			"times": [
+				32
+			],
+			"allTests": [
+				{}
+			]
+		},
+		{
+			"id": "db411efa-3c7f-4e28-aa22-0178cea41fba",
+			"name": "1.2 Categories list (en)",
+			"url": "http://127.0.0.1:8000/api/categories",
+			"time": 24,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {},
+			"testPassFailCounts": {},
+			"times": [
+				24
+			],
+			"allTests": [
+				{}
+			]
+		},
+		{
+			"id": "a0458028-88fe-4d5b-8227-c639dfde6208",
+			"name": "1.3 Category show /categories/1",
+			"url": "http://127.0.0.1:8000/api/categories/1",
+			"time": 30,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {},
+			"testPassFailCounts": {},
+			"times": [
+				30
+			],
+			"allTests": [
+				{}
+			]
+		},
+		{
+			"id": "e00e53ec-2b36-437a-8b48-4c55f437c670",
+			"name": "1.4 Products list (default fr)",
+			"url": "http://127.0.0.1:8000/api/products",
+			"time": 38,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {},
+			"testPassFailCounts": {},
+			"times": [
+				38
+			],
+			"allTests": [
+				{}
+			]
+		},
+		{
+			"id": "4b5de9af-dc2a-49fd-b596-54ae8f508982",
+			"name": "1.5 Products list (en header)",
+			"url": "http://127.0.0.1:8000/api/products",
+			"time": 36,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {},
+			"testPassFailCounts": {},
+			"times": [
+				36
+			],
+			"allTests": [
+				{}
+			]
+		},
+		{
+			"id": "e5b249c2-18c8-4fce-90c8-0e1f314725ce",
+			"name": "1.6 Products list (?lang=en)",
+			"url": "http://127.0.0.1:8000/api/products?lang=en",
+			"time": 17,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {},
+			"testPassFailCounts": {},
+			"times": [
+				17
+			],
+			"allTests": [
+				{}
+			]
+		},
+		{
+			"id": "813d147a-ee01-417b-a897-f865d99272c9",
+			"name": "1.7 Product show /products/1",
+			"url": "http://127.0.0.1:8000/api/products/1",
+			"time": 21,
+			"responseCode": {
+				"code": 404,
+				"name": "Not Found"
+			},
+			"tests": {},
+			"testPassFailCounts": {},
+			"times": [
+				21
+			],
+			"allTests": [
+				{}
+			]
+		},
+		{
+			"id": "71e834de-3613-403b-9405-97843e4411e7",
+			"name": "1.8 Services list (all)",
+			"url": "http://127.0.0.1:8000/api/services",
+			"time": 26,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {},
+			"testPassFailCounts": {},
+			"times": [
+				26
+			],
+			"allTests": [
+				{}
+			]
+		},
+		{
+			"id": "353a607f-37e8-4779-baed-e1fbf58a7fa5",
+			"name": "1.9 Services show /services/1",
+			"url": "http://127.0.0.1:8000/api/services/1",
+			"time": 23,
+			"responseCode": {
+				"code": 404,
+				"name": "Not Found"
+			},
+			"tests": {},
+			"testPassFailCounts": {},
+			"times": [
+				23
+			],
+			"allTests": [
+				{}
+			]
+		},
+		{
+			"id": "c97cbbfe-b2e9-4283-813a-35e0ff72f4b5",
+			"name": "1.10 Services list (en)",
+			"url": "http://127.0.0.1:8000/api/services",
+			"time": 25,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {},
+			"testPassFailCounts": {},
+			"times": [
+				25
+			],
+			"allTests": [
+				{}
+			]
+		},
+		{
+			"id": "e70373de-033b-445d-80ae-c1d737287e46",
+			"name": "1.11 Services ?type=srv",
+			"url": "http://127.0.0.1:8000/api/services?type=srv",
+			"time": 30,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {},
+			"testPassFailCounts": {},
+			"times": [
+				30
+			],
+			"allTests": [
+				{}
+			]
+		},
+		{
+			"id": "8b53ca37-fd26-425f-b5f4-d44b3293eb7e",
+			"name": "1.12 Services ?type=adv",
+			"url": "http://127.0.0.1:8000/api/services?type=adv",
+			"time": 28,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {},
+			"testPassFailCounts": {},
+			"times": [
+				28
+			],
+			"allTests": [
+				{}
+			]
+		},
+		{
+			"id": "6fc5dd13-3db7-42d2-9344-9660ba7e692a",
+			"name": "1.13 Services ?type=adv (en)",
+			"url": "http://127.0.0.1:8000/api/services?type=adv",
+			"time": 21,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {},
+			"testPassFailCounts": {},
+			"times": [
+				21
+			],
+			"allTests": [
+				{}
+			]
+		},
+		{
+			"id": "49ec06e5-cb95-4b3a-816f-a7a4920a00a7",
+			"name": "1.14 Services invalid type → 422",
+			"url": "http://127.0.0.1:8000/api/services?type=bogus",
+			"time": 16,
+			"responseCode": {
+				"code": 422,
+				"name": "Unprocessable Content"
+			},
+			"tests": {
+				"status is 422": true
+			},
+			"testPassFailCounts": {
+				"status is 422": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				16
+			],
+			"allTests": [
+				{
+					"status is 422": true
+				}
+			]
+		},
+		{
+			"id": "fd816868-3665-4eac-b02f-77c27e77312b",
+			"name": "1.15 Truck types list",
+			"url": "http://127.0.0.1:8000/api/truck-types",
+			"time": 24,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {},
+			"testPassFailCounts": {},
+			"times": [
+				24
+			],
+			"allTests": [
+				{}
+			]
+		},
+		{
+			"id": "711bdc5d-0b04-444d-9028-427a18700c03",
+			"name": "1.16 Truck type show /truck-types/1",
+			"url": "http://127.0.0.1:8000/api/truck-types/1",
+			"time": 23,
+			"responseCode": {
+				"code": 404,
+				"name": "Not Found"
+			},
+			"tests": {},
+			"testPassFailCounts": {},
+			"times": [
+				23
+			],
+			"allTests": [
+				{}
+			]
+		},
+		{
+			"id": "924c3b56-e22c-424e-a4f5-522281cb0494",
+			"name": "1.17 Projects list",
+			"url": "http://127.0.0.1:8000/api/projects",
+			"time": 28,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {},
+			"testPassFailCounts": {},
+			"times": [
+				28
+			],
+			"allTests": [
+				{}
+			]
+		},
+		{
+			"id": "cd870e11-6daf-4a91-bad7-23bb28d56207",
+			"name": "1.18 Project show /projects/1",
+			"url": "http://127.0.0.1:8000/api/projects/1",
+			"time": 23,
+			"responseCode": {
+				"code": 404,
+				"name": "Not Found"
+			},
+			"tests": {},
+			"testPassFailCounts": {},
+			"times": [
+				23
+			],
+			"allTests": [
+				{}
+			]
+		},
+		{
+			"id": "296d6841-541d-4dfb-8d08-bd4c2190c8cd",
+			"name": "1.19 Settings",
+			"url": "http://127.0.0.1:8000/api/settings",
+			"time": 25,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {},
+			"testPassFailCounts": {},
+			"times": [
+				25
+			],
+			"allTests": [
+				{}
+			]
+		},
+		{
+			"id": "5bcd9f26-df65-4dab-bd65-aae639f6dc2b",
+			"name": "1.20 Settings (en)",
+			"url": "http://127.0.0.1:8000/api/settings",
+			"time": 24,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {},
+			"testPassFailCounts": {},
+			"times": [
+				24
+			],
+			"allTests": [
+				{}
+			]
+		},
+		{
+			"id": "36ceca35-8ac0-40dc-8721-0f06a253cd19",
+			"name": "2.1 Serve via controller (HEAD)",
+			"url": "http://127.0.0.1:8000/api/files/products/arch1-XCh1oYSa.png",
+			"time": 34,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {},
+			"testPassFailCounts": {},
+			"times": [
+				34
+			],
+			"allTests": [
+				{}
+			]
+		},
+		{
+			"id": "e50fa958-20a0-4d69-b332-122867896841",
+			"name": "2.2 Serve via symlink (HEAD)",
+			"url": "127.0.0.1:8000/storage/products/arch1-XCh1oYSa.png",
+			"time": 2,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {},
+			"testPassFailCounts": {},
+			"times": [
+				2
+			],
+			"allTests": [
+				{}
+			]
+		},
+		{
+			"id": "38cf703c-f0ae-4a80-ba28-e5c5135365d4",
+			"name": "2.3 Upload product image",
+			"url": "http://127.0.0.1:8000/api/uploads/products",
+			"time": 13,
+			"responseCode": {
+				"code": 401,
+				"name": "Unauthorized"
+			},
+			"tests": {},
+			"testPassFailCounts": {},
+			"times": [
+				13
+			],
+			"allTests": [
+				{}
+			]
+		},
+		{
+			"id": "4d8d76f2-d0a8-405b-8ac1-2c4182acea86",
+			"name": "2.4 Upload bad folder → 422",
+			"url": "http://127.0.0.1:8000/api/uploads/hackers",
+			"time": 10,
+			"responseCode": {
+				"code": 404,
+				"name": "Not Found"
+			},
+			"tests": {
+				"status is 422": false
+			},
+			"testPassFailCounts": {
+				"status is 422": {
+					"pass": 0,
+					"fail": 1
+				}
+			},
+			"times": [
+				10
+			],
+			"allTests": [
+				{
+					"status is 422": false
+				}
+			]
+		},
+		{
+			"id": "b48ed866-7493-411b-97e7-8070d6a9676e",
+			"name": "2.5 DELETE traversal attempt",
+			"url": "http://127.0.0.1:8000/api/uploads/products/..%2F..%2Fetc%2Fpasswd",
+			"time": 11,
+			"responseCode": {
+				"code": 404,
+				"name": "Not Found"
+			},
+			"tests": {},
+			"testPassFailCounts": {},
+			"times": [
+				11
+			],
+			"allTests": [
+				{}
+			]
+		},
+		{
+			"id": "bc64eeba-f463-43d4-8d51-fc7a9e0459db",
+			"name": "2.6 DELETE uploaded image",
+			"url": "http://127.0.0.1:8000/api/uploads/products/battery-9f3a2b1c.jpg",
+			"time": 11,
+			"responseCode": {
+				"code": 401,
+				"name": "Unauthorized"
+			},
+			"tests": {},
+			"testPassFailCounts": {},
+			"times": [
+				11
+			],
+			"allTests": [
+				{}
+			]
+		},
+		{
+			"id": "8e2a8e3a-0bbe-40b5-b666-5695d7592593",
+			"name": "3.1 Auth check /auth/me",
+			"url": "http://127.0.0.1:8000/api/auth/me",
+			"time": 12,
+			"responseCode": {
+				"code": 401,
+				"name": "Unauthorized"
+			},
+			"tests": {},
+			"testPassFailCounts": {},
+			"times": [
+				12
+			],
+			"allTests": [
+				{}
+			]
+		},
+		{
+			"id": "7cd95fe1-d415-4daf-b153-92358b5e6577",
+			"name": "3.2 Logout",
+			"url": "http://127.0.0.1:8000/api/auth/logout",
+			"time": 12,
+			"responseCode": {
+				"code": 401,
+				"name": "Unauthorized"
+			},
+			"tests": {},
+			"testPassFailCounts": {},
+			"times": [
+				12
+			],
+			"allTests": [
+				{}
+			]
+		},
+		{
+			"id": "286b7e00-7746-435c-9d7a-8f900356e3e4",
+			"name": "4.1 Categories — Create",
+			"url": "http://127.0.0.1:8000/api/categories",
+			"time": 12,
+			"responseCode": {
+				"code": 401,
+				"name": "Unauthorized"
+			},
+			"tests": {},
+			"testPassFailCounts": {},
+			"times": [
+				12
+			],
+			"allTests": [
+				{}
+			]
+		},
+		{
+			"id": "c3f927e6-f06e-43d4-852b-7af95aa3ddff",
+			"name": "4.2 Categories — Update",
+			"url": "http://127.0.0.1:8000/api/categories/1",
+			"time": 12,
+			"responseCode": {
+				"code": 401,
+				"name": "Unauthorized"
+			},
+			"tests": {},
+			"testPassFailCounts": {},
+			"times": [
+				12
+			],
+			"allTests": [
+				{}
+			]
+		},
+		{
+			"id": "15894030-8256-45c9-9d9b-623ff1883298",
+			"name": "4.3 Categories — Delete",
+			"url": "http://127.0.0.1:8000/api/categories/1",
+			"time": 13,
+			"responseCode": {
+				"code": 401,
+				"name": "Unauthorized"
+			},
+			"tests": {},
+			"testPassFailCounts": {},
+			"times": [
+				13
+			],
+			"allTests": [
+				{}
+			]
+		},
+		{
+			"id": "7fd338a2-a2a8-414b-a040-16b58103c705",
+			"name": "4.4 Products — Create",
+			"url": "http://127.0.0.1:8000/api/products",
+			"time": 11,
+			"responseCode": {
+				"code": 401,
+				"name": "Unauthorized"
+			},
+			"tests": {},
+			"testPassFailCounts": {},
+			"times": [
+				11
+			],
+			"allTests": [
+				{}
+			]
+		},
+		{
+			"id": "fa4b5a49-b169-4575-bcd5-39d1ff518d1a",
+			"name": "4.5 Products — Update",
+			"url": "http://127.0.0.1:8000/api/products/1",
+			"time": 13,
+			"responseCode": {
+				"code": 401,
+				"name": "Unauthorized"
+			},
+			"tests": {},
+			"testPassFailCounts": {},
+			"times": [
+				13
+			],
+			"allTests": [
+				{}
+			]
+		},
+		{
+			"id": "6e7db573-8079-45d0-9370-a86ae0e9fa5a",
+			"name": "4.6 Products — Delete",
+			"url": "http://127.0.0.1:8000/api/products/1",
+			"time": 18,
+			"responseCode": {
+				"code": 401,
+				"name": "Unauthorized"
+			},
+			"tests": {},
+			"testPassFailCounts": {},
+			"times": [
+				18
+			],
+			"allTests": [
+				{}
+			]
+		},
+		{
+			"id": "8e64a795-c04c-497a-8d4a-be85f7f3fa26",
+			"name": "4.7 Services — Create (default type)",
+			"url": "http://127.0.0.1:8000/api/services",
+			"time": 11,
+			"responseCode": {
+				"code": 401,
+				"name": "Unauthorized"
+			},
+			"tests": {},
+			"testPassFailCounts": {},
+			"times": [
+				11
+			],
+			"allTests": [
+				{}
+			]
+		},
+		{
+			"id": "e3ca4e21-49c5-4746-af29-80d611edace7",
+			"name": "4.8 Services — Create (type=srv)",
+			"url": "http://127.0.0.1:8000/api/services",
+			"time": 12,
+			"responseCode": {
+				"code": 401,
+				"name": "Unauthorized"
+			},
+			"tests": {},
+			"testPassFailCounts": {},
+			"times": [
+				12
+			],
+			"allTests": [
+				{}
+			]
+		},
+		{
+			"id": "39c035bc-50b6-46af-bf87-544a1fb2211b",
+			"name": "4.9 Services — Create advantage (type=adv)",
+			"url": "http://127.0.0.1:8000/api/services",
+			"time": 13,
+			"responseCode": {
+				"code": 401,
+				"name": "Unauthorized"
+			},
+			"tests": {},
+			"testPassFailCounts": {},
+			"times": [
+				13
+			],
+			"allTests": [
+				{}
+			]
+		},
+		{
+			"id": "7f662748-9088-40c8-8f32-5c259b353a60",
+			"name": "4.10 Services — Update type",
+			"url": "http://127.0.0.1:8000/api/services/1",
+			"time": 12,
+			"responseCode": {
+				"code": 401,
+				"name": "Unauthorized"
+			},
+			"tests": {},
+			"testPassFailCounts": {},
+			"times": [
+				12
+			],
+			"allTests": [
+				{}
+			]
+		},
+		{
+			"id": "9c04834f-ad6f-4894-bf8b-ef062ee24e55",
+			"name": "4.11 Services — Update title",
+			"url": "http://127.0.0.1:8000/api/services/1",
+			"time": 13,
+			"responseCode": {
+				"code": 401,
+				"name": "Unauthorized"
+			},
+			"tests": {},
+			"testPassFailCounts": {},
+			"times": [
+				13
+			],
+			"allTests": [
+				{}
+			]
+		},
+		{
+			"id": "b07701fd-087f-4c57-8bf3-2b1d5fe0ed6d",
+			"name": "4.12 Services — Delete",
+			"url": "http://127.0.0.1:8000/api/services/1",
+			"time": 11,
+			"responseCode": {
+				"code": 401,
+				"name": "Unauthorized"
+			},
+			"tests": {},
+			"testPassFailCounts": {},
+			"times": [
+				11
+			],
+			"allTests": [
+				{}
+			]
+		},
+		{
+			"id": "902077d0-0e3e-4513-8132-e7f147bee97c",
+			"name": "4.13 TruckTypes — Create",
+			"url": "http://127.0.0.1:8000/api/truck-types",
+			"time": 12,
+			"responseCode": {
+				"code": 401,
+				"name": "Unauthorized"
+			},
+			"tests": {},
+			"testPassFailCounts": {},
+			"times": [
+				12
+			],
+			"allTests": [
+				{}
+			]
+		},
+		{
+			"id": "c0be0385-ccc9-4054-acfd-761b7827ac8a",
+			"name": "4.14 TruckTypes — Update",
+			"url": "http://127.0.0.1:8000/api/truck-types/1",
+			"time": 11,
+			"responseCode": {
+				"code": 401,
+				"name": "Unauthorized"
+			},
+			"tests": {},
+			"testPassFailCounts": {},
+			"times": [
+				11
+			],
+			"allTests": [
+				{}
+			]
+		},
+		{
+			"id": "1d392de8-fbcd-4056-9952-0bf630bc2b25",
+			"name": "4.15 TruckTypes — Delete",
+			"url": "http://127.0.0.1:8000/api/truck-types/1",
+			"time": 14,
+			"responseCode": {
+				"code": 401,
+				"name": "Unauthorized"
+			},
+			"tests": {},
+			"testPassFailCounts": {},
+			"times": [
+				14
+			],
+			"allTests": [
+				{}
+			]
+		},
+		{
+			"id": "7379f474-fd59-4461-a094-a88407dd4c79",
+			"name": "4.16 Projects — Create",
+			"url": "http://127.0.0.1:8000/api/projects",
+			"time": 10,
+			"responseCode": {
+				"code": 401,
+				"name": "Unauthorized"
+			},
+			"tests": {},
+			"testPassFailCounts": {},
+			"times": [
+				10
+			],
+			"allTests": [
+				{}
+			]
+		},
+		{
+			"id": "5d4df1bc-ab15-4d5d-83d8-5ed5890239f6",
+			"name": "4.17 Projects — Update",
+			"url": "http://127.0.0.1:8000/api/projects/1",
+			"time": 10,
+			"responseCode": {
+				"code": 401,
+				"name": "Unauthorized"
+			},
+			"tests": {},
+			"testPassFailCounts": {},
+			"times": [
+				10
+			],
+			"allTests": [
+				{}
+			]
+		},
+		{
+			"id": "3bb51c48-2ad5-4bf1-8eb7-683576c49b3c",
+			"name": "4.18 Projects — Delete",
+			"url": "http://127.0.0.1:8000/api/projects/1",
+			"time": 13,
+			"responseCode": {
+				"code": 401,
+				"name": "Unauthorized"
+			},
+			"tests": {},
+			"testPassFailCounts": {},
+			"times": [
+				13
+			],
+			"allTests": [
+				{}
+			]
+		},
+		{
+			"id": "44442137-2328-4f27-a3f6-d17d1804c780",
+			"name": "4.19 Settings — Update",
+			"url": "http://127.0.0.1:8000/api/settings",
+			"time": 12,
+			"responseCode": {
+				"code": 401,
+				"name": "Unauthorized"
+			},
+			"tests": {},
+			"testPassFailCounts": {},
+			"times": [
+				12
+			],
+			"allTests": [
+				{}
+			]
+		}
+	],
+	"count": 1,
+	"totalTime": 1864,
+	"collection": {
+		"requests": [
+			{
+				"id": "fff352b6-aae2-447d-a500-1de22a4dbe04",
+				"method": "GET"
+			},
+			{
+				"id": "51587cd9-9148-4b67-9ed5-1ba7e317b45f",
+				"method": "GET"
+			},
+			{
+				"id": "288426fb-11a1-4ab2-977d-fe0f6fea4082",
+				"method": "POST"
+			},
+			{
+				"id": "444c7f31-9445-4f23-88df-4e2017ff67b5",
+				"method": "POST"
+			},
+			{
+				"id": "a271c3b8-1447-4fc8-b78a-f40fd1bf787f",
+				"method": "POST"
+			},
+			{
+				"id": "960e4899-b202-4fd1-bc23-cad7817611ef",
+				"method": "POST"
+			},
+			{
+				"id": "bd1e7757-7afe-409f-825d-7c3f927c724b",
+				"method": "POST"
+			},
+			{
+				"id": "72379b3d-1914-4586-a0a2-26a4a122ff5c",
+				"method": "POST"
+			},
+			{
+				"id": "26b48714-24dc-45d1-954e-fe10e17b5ea4",
+				"method": "GET"
+			},
+			{
+				"id": "db411efa-3c7f-4e28-aa22-0178cea41fba",
+				"method": "GET"
+			},
+			{
+				"id": "a0458028-88fe-4d5b-8227-c639dfde6208",
+				"method": "GET"
+			},
+			{
+				"id": "e00e53ec-2b36-437a-8b48-4c55f437c670",
+				"method": "GET"
+			},
+			{
+				"id": "4b5de9af-dc2a-49fd-b596-54ae8f508982",
+				"method": "GET"
+			},
+			{
+				"id": "e5b249c2-18c8-4fce-90c8-0e1f314725ce",
+				"method": "GET"
+			},
+			{
+				"id": "813d147a-ee01-417b-a897-f865d99272c9",
+				"method": "GET"
+			},
+			{
+				"id": "71e834de-3613-403b-9405-97843e4411e7",
+				"method": "GET"
+			},
+			{
+				"id": "353a607f-37e8-4779-baed-e1fbf58a7fa5",
+				"method": "GET"
+			},
+			{
+				"id": "c97cbbfe-b2e9-4283-813a-35e0ff72f4b5",
+				"method": "GET"
+			},
+			{
+				"id": "e70373de-033b-445d-80ae-c1d737287e46",
+				"method": "GET"
+			},
+			{
+				"id": "8b53ca37-fd26-425f-b5f4-d44b3293eb7e",
+				"method": "GET"
+			},
+			{
+				"id": "6fc5dd13-3db7-42d2-9344-9660ba7e692a",
+				"method": "GET"
+			},
+			{
+				"id": "49ec06e5-cb95-4b3a-816f-a7a4920a00a7",
+				"method": "GET"
+			},
+			{
+				"id": "fd816868-3665-4eac-b02f-77c27e77312b",
+				"method": "GET"
+			},
+			{
+				"id": "711bdc5d-0b04-444d-9028-427a18700c03",
+				"method": "GET"
+			},
+			{
+				"id": "924c3b56-e22c-424e-a4f5-522281cb0494",
+				"method": "GET"
+			},
+			{
+				"id": "cd870e11-6daf-4a91-bad7-23bb28d56207",
+				"method": "GET"
+			},
+			{
+				"id": "296d6841-541d-4dfb-8d08-bd4c2190c8cd",
+				"method": "GET"
+			},
+			{
+				"id": "5bcd9f26-df65-4dab-bd65-aae639f6dc2b",
+				"method": "GET"
+			},
+			{
+				"id": "36ceca35-8ac0-40dc-8721-0f06a253cd19",
+				"method": "HEAD"
+			},
+			{
+				"id": "e50fa958-20a0-4d69-b332-122867896841",
+				"method": "HEAD"
+			},
+			{
+				"id": "38cf703c-f0ae-4a80-ba28-e5c5135365d4",
+				"method": "POST"
+			},
+			{
+				"id": "4d8d76f2-d0a8-405b-8ac1-2c4182acea86",
+				"method": "POST"
+			},
+			{
+				"id": "b48ed866-7493-411b-97e7-8070d6a9676e",
+				"method": "DELETE"
+			},
+			{
+				"id": "bc64eeba-f463-43d4-8d51-fc7a9e0459db",
+				"method": "DELETE"
+			},
+			{
+				"id": "8e2a8e3a-0bbe-40b5-b666-5695d7592593",
+				"method": "GET"
+			},
+			{
+				"id": "7cd95fe1-d415-4daf-b153-92358b5e6577",
+				"method": "POST"
+			},
+			{
+				"id": "286b7e00-7746-435c-9d7a-8f900356e3e4",
+				"method": "POST"
+			},
+			{
+				"id": "c3f927e6-f06e-43d4-852b-7af95aa3ddff",
+				"method": "PUT"
+			},
+			{
+				"id": "15894030-8256-45c9-9d9b-623ff1883298",
+				"method": "DELETE"
+			},
+			{
+				"id": "7fd338a2-a2a8-414b-a040-16b58103c705",
+				"method": "POST"
+			},
+			{
+				"id": "fa4b5a49-b169-4575-bcd5-39d1ff518d1a",
+				"method": "PUT"
+			},
+			{
+				"id": "6e7db573-8079-45d0-9370-a86ae0e9fa5a",
+				"method": "DELETE"
+			},
+			{
+				"id": "8e64a795-c04c-497a-8d4a-be85f7f3fa26",
+				"method": "POST"
+			},
+			{
+				"id": "e3ca4e21-49c5-4746-af29-80d611edace7",
+				"method": "POST"
+			},
+			{
+				"id": "39c035bc-50b6-46af-bf87-544a1fb2211b",
+				"method": "POST"
+			},
+			{
+				"id": "7f662748-9088-40c8-8f32-5c259b353a60",
+				"method": "PUT"
+			},
+			{
+				"id": "9c04834f-ad6f-4894-bf8b-ef062ee24e55",
+				"method": "PUT"
+			},
+			{
+				"id": "b07701fd-087f-4c57-8bf3-2b1d5fe0ed6d",
+				"method": "DELETE"
+			},
+			{
+				"id": "902077d0-0e3e-4513-8132-e7f147bee97c",
+				"method": "POST"
+			},
+			{
+				"id": "c0be0385-ccc9-4054-acfd-761b7827ac8a",
+				"method": "PUT"
+			},
+			{
+				"id": "1d392de8-fbcd-4056-9952-0bf630bc2b25",
+				"method": "DELETE"
+			},
+			{
+				"id": "7379f474-fd59-4461-a094-a88407dd4c79",
+				"method": "POST"
+			},
+			{
+				"id": "5d4df1bc-ab15-4d5d-83d8-5ed5890239f6",
+				"method": "PUT"
+			},
+			{
+				"id": "3bb51c48-2ad5-4bf1-8eb7-683576c49b3c",
+				"method": "DELETE"
+			},
+			{
+				"id": "44442137-2328-4f27-a3f6-d17d1804c780",
+				"method": "PUT"
+			}
+		]
+	}
+}

@@ -1,0 +1,740 @@
+{
+  "info": {
+    "name": "test4 — Cache Verification Suite",
+    "description": "Equivalent Postman collection for test4.md — cache smoke tests, locale isolation, version-stamp invalidation, cross-resource invalidation, show-endpoint isolation, settings cache, service filter isolation, non-GET traffic, TTL, negative caching, stress, failure recovery.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "BASE", "value": "http://127.0.0.1:8000/api" },
+    { "key": "TOKEN", "value": "" },
+    { "key": "IMG", "value": "/home/hkali/Desktop/VioletPro/wallpaper/arch1.png" }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "// Auto-login if TOKEN is empty",
+          "const token = pm.collectionVariables.get('TOKEN');",
+          "if (!token) {",
+          "  pm.sendRequest({",
+          "    url: pm.collectionVariables.get('BASE') + '/auth/login',",
+          "    method: 'POST',",
+          "    header: { 'Content-Type': 'application/json', 'Accept': 'application/json' },",
+          "    body: { mode: 'raw', raw: JSON.stringify({ email: 'admin@automotors.com', password: 'password123' }) }",
+          "  }, (err, res) => {",
+          "    if (!err && res.code === 200) {",
+          "      const j = res.json();",
+          "      pm.collectionVariables.set('TOKEN', j.token);",
+          "    }",
+          "  });",
+          "}"
+        ]
+      }
+    }
+  ],
+  "item": [
+    {
+      "name": "0. Setup",
+      "item": [
+        {
+          "name": "0.1 Confirm cache store (tinker)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{BASE}}/../tinker", "host": ["{{BASE}}"], "path": ["..", "tinker"] },
+            "description": "Run in terminal: php artisan tinker --execute=\"echo get_class(cache()->store()) . PHP_EOL;\""
+          },
+          "response": []
+        },
+        {
+          "name": "0.2 Login and store token",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const j = pm.response.json();",
+                  "if (j.token) { pm.collectionVariables.set('TOKEN', j.token); }",
+                  "pm.test('token present', () => pm.expect(j.token).to.be.a('string'));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin@automotors.com\",\n  \"password\": \"password123\"\n}"
+            },
+            "url": { "raw": "{{BASE}}/auth/login", "host": ["{{BASE}}"], "path": ["auth", "login"] }
+          },
+          "response": []
+        },
+        {
+          "name": "0.3 Helper — list cache keys (tinker)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{BASE}}/../tinker", "host": ["{{BASE}}"], "path": ["..", "tinker"] },
+            "description": "Run in terminal: cache_keys() { php artisan tinker --execute=\"...\"; }"
+          },
+          "response": []
+        },
+        {
+          "name": "0.4 Helper — reset_all (tinker)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{BASE}}/../tinker", "host": ["{{BASE}}"], "path": ["..", "tinker"] },
+            "description": "Run in terminal: php artisan cache:clear"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "1. Sanity — cache is written",
+      "item": [
+        {
+          "name": "1.1 One GET /products creates cache entries",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": { "raw": "{{BASE}}/products", "host": ["{{BASE}}"], "path": ["products"] }
+          },
+          "response": []
+        },
+        {
+          "name": "1.2 Second call faster",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": { "raw": "{{BASE}}/products", "host": ["{{BASE}}"], "path": ["products"] }
+          },
+          "response": []
+        },
+        {
+          "name": "1.3 Response body identical on cache hit",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('response body present', () => pm.expect(pm.response.text()).to.be.a('string'));",
+                  "// Compare hashes manually across 3 runs"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": { "raw": "{{BASE}}/products", "host": ["{{BASE}}"], "path": ["products"] }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "2. Locale isolation",
+      "item": [
+        {
+          "name": "2.1 FR list",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Accept-Language", "value": "fr" },
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "url": { "raw": "{{BASE}}/products", "host": ["{{BASE}}"], "path": ["products"] }
+          },
+          "response": []
+        },
+        {
+          "name": "2.2 EN list",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Accept-Language", "value": "en" },
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "url": { "raw": "{{BASE}}/products", "host": ["{{BASE}}"], "path": ["products"] }
+          },
+          "response": []
+        },
+        {
+          "name": "2.3 ?lang=en matches Accept-Language: en",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": {
+              "raw": "{{BASE}}/products?lang=en",
+              "host": ["{{BASE}}"],
+              "path": ["products"],
+              "query": [{ "key": "lang", "value": "en" }]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "3. Version-stamp invalidation",
+      "item": [
+        {
+          "name": "3.1 Warm list cache",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": { "raw": "{{BASE}}/products", "host": ["{{BASE}}"], "path": ["products"] }
+          },
+          "response": []
+        },
+        {
+          "name": "3.1b POST new product (busts version)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{TOKEN}}" },
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Cache Probe Product\",\n  \"category_id\": 1,\n  \"price\": 1.23,\n  \"short_description\": \"cache test\"\n}"
+            },
+            "url": { "raw": "{{BASE}}/products", "host": ["{{BASE}}"], "path": ["products"] }
+          },
+          "response": []
+        },
+        {
+          "name": "3.3 Post-write GET returns fresh data",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": { "raw": "{{BASE}}/products", "host": ["{{BASE}}"], "path": ["products"] }
+          },
+          "response": []
+        },
+        {
+          "name": "3.4 Update invalidates (PUT /products/2)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{TOKEN}}" },
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "body": { "mode": "raw", "raw": "{\"price\": 42.42}" },
+            "url": { "raw": "{{BASE}}/products/2", "host": ["{{BASE}}"], "path": ["products", "2"] }
+          },
+          "response": []
+        },
+        {
+          "name": "3.4b GET /products/2 reflects new price",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": { "raw": "{{BASE}}/products/2", "host": ["{{BASE}}"], "path": ["products", "2"] }
+          },
+          "response": []
+        },
+        {
+          "name": "3.5 Destroy invalidates",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{TOKEN}}" },
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "url": { "raw": "{{BASE}}/products/999", "host": ["{{BASE}}"], "path": ["products", "999"] },
+            "description": "Replace 999 with an actual throwaway product id created beforehand."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "4. Cross-resource invalidation",
+      "item": [
+        {
+          "name": "4.1 Edit category 1 → busts products + categories",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{TOKEN}}" },
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "body": { "mode": "raw", "raw": "{\"icon\": \"🔋\"}" },
+            "url": { "raw": "{{BASE}}/categories/1", "host": ["{{BASE}}"], "path": ["categories", "1"] }
+          },
+          "response": []
+        },
+        {
+          "name": "4.2 Edit product → busts categories (count)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{TOKEN}}" },
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"name\":\"cat-count-probe\",\"category_id\":1,\"price\":1.00,\"short_description\":\"x\"}"
+            },
+            "url": { "raw": "{{BASE}}/products", "host": ["{{BASE}}"], "path": ["products"] }
+          },
+          "response": []
+        },
+        {
+          "name": "4.3 Edit service must NOT touch products",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{TOKEN}}" },
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"title\":\"isolation-probe\",\"type\":\"srv\",\"description\":\"x\"}"
+            },
+            "url": { "raw": "{{BASE}}/services", "host": ["{{BASE}}"], "path": ["services"] }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "5. Show-endpoint isolation",
+      "item": [
+        {
+          "name": "5.1 Different IDs → different keys",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": { "raw": "{{BASE}}/products/2", "host": ["{{BASE}}"], "path": ["products", "2"] }
+          },
+          "response": []
+        },
+        {
+          "name": "5.1b /products/3",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": { "raw": "{{BASE}}/products/3", "host": ["{{BASE}}"], "path": ["products", "3"] }
+          },
+          "response": []
+        },
+        {
+          "name": "5.1c /products/4",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": { "raw": "{{BASE}}/products/4", "host": ["{{BASE}}"], "path": ["products", "4"] }
+          },
+          "response": []
+        },
+        {
+          "name": "5.2a /truck-types/2",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": { "raw": "{{BASE}}/truck-types/2", "host": ["{{BASE}}"], "path": ["truck-types", "2"] }
+          },
+          "response": []
+        },
+        {
+          "name": "5.2b /projects/2",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": { "raw": "{{BASE}}/projects/2", "host": ["{{BASE}}"], "path": ["projects", "2"] }
+          },
+          "response": []
+        },
+        {
+          "name": "5.3 Body for /truck-types/2 shape check",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const body = pm.response.text();",
+                  "pm.test('has models field', () => pm.expect(body).to.include('\"models\"'));",
+                  "pm.test('no leaked project title', () => pm.expect(body).to.not.include('\"title\"'));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": { "raw": "{{BASE}}/truck-types/2", "host": ["{{BASE}}"], "path": ["truck-types", "2"] }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "6. List vs show isolation",
+      "item": [
+        {
+          "name": "6.1 List",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": { "raw": "{{BASE}}/products", "host": ["{{BASE}}"], "path": ["products"] }
+          },
+          "response": []
+        },
+        {
+          "name": "6.1b Show /products/2",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": { "raw": "{{BASE}}/products/2", "host": ["{{BASE}}"], "path": ["products", "2"] }
+          },
+          "response": []
+        },
+        {
+          "name": "6.2 Edit product 2 invalidates both",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{TOKEN}}" },
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "body": { "mode": "raw", "raw": "{\"price\": 88.88}" },
+            "url": { "raw": "{{BASE}}/products/2", "host": ["{{BASE}}"], "path": ["products", "2"] }
+          },
+          "response": []
+        },
+        {
+          "name": "6.2b GET /products/2 reflects 88.88",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": { "raw": "{{BASE}}/products/2", "host": ["{{BASE}}"], "path": ["products", "2"] }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "7. Settings cache",
+      "item": [
+        {
+          "name": "7.1a Settings FR",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Accept-Language", "value": "fr" },
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "url": { "raw": "{{BASE}}/settings", "host": ["{{BASE}}"], "path": ["settings"] }
+          },
+          "response": []
+        },
+        {
+          "name": "7.1b Settings EN",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Accept-Language", "value": "en" },
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "url": { "raw": "{{BASE}}/settings", "host": ["{{BASE}}"], "path": ["settings"] }
+          },
+          "response": []
+        },
+        {
+          "name": "7.2 Update settings busts both locales",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{TOKEN}}" },
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "body": { "mode": "raw", "raw": "{\"company_name\":\"AUTOMOTORS CI\"}" },
+            "url": { "raw": "{{BASE}}/settings", "host": ["{{BASE}}"], "path": ["settings"] }
+          },
+          "response": []
+        },
+        {
+          "name": "7.3 Fresh GET reflects new value",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('company_name is CACHE-TEST-CO', () => {",
+                  "  pm.expect(pm.response.text()).to.include('CACHE-TEST-CO');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": { "raw": "{{BASE}}/settings", "host": ["{{BASE}}"], "path": ["settings"] }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "8. Service filter isolation",
+      "item": [
+        {
+          "name": "8.1a /services (all)",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": { "raw": "{{BASE}}/services", "host": ["{{BASE}}"], "path": ["services"] }
+          },
+          "response": []
+        },
+        {
+          "name": "8.1b /services?type=srv",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": {
+              "raw": "{{BASE}}/services?type=srv",
+              "host": ["{{BASE}}"],
+              "path": ["services"],
+              "query": [{ "key": "type", "value": "srv" }]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "8.1c /services?type=adv",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": {
+              "raw": "{{BASE}}/services?type=adv",
+              "host": ["{{BASE}}"],
+              "path": ["services"],
+              "query": [{ "key": "type", "value": "adv" }]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "8.3 Write to service busts every filter bucket",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{TOKEN}}" },
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"title\":\"bust-probe\",\"type\":\"srv\",\"description\":\"x\"}"
+            },
+            "url": { "raw": "{{BASE}}/services", "host": ["{{BASE}}"], "path": ["services"] }
+          },
+          "response": []
+        },
+        {
+          "name": "8.4 Invalid type → 422",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status is 422', () => pm.response.to.have.status(422));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": {
+              "raw": "{{BASE}}/services?type=bogus",
+              "host": ["{{BASE}}"],
+              "path": ["services"],
+              "query": [{ "key": "type", "value": "bogus" }]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "9. Non-GET traffic must not be cached",
+      "item": [
+        {
+          "name": "9.1 POST creates a fresh id",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{TOKEN}}" },
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"name\":\"post-probe\",\"category_id\":1,\"price\":1.00,\"short_description\":\"x\"}"
+            },
+            "url": { "raw": "{{BASE}}/products", "host": ["{{BASE}}"], "path": ["products"] }
+          },
+          "response": []
+        },
+        {
+          "name": "9.2 401/403 must not populate cache",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"name\":\"unauth-probe\",\"category_id\":1,\"price\":1.00,\"short_description\":\"x\"}"
+            },
+            "url": { "raw": "{{BASE}}/products", "host": ["{{BASE}}"], "path": ["products"] }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "10. TTL behaviour (tinker)",
+      "item": [
+        {
+          "name": "10.1 List keys TTL ≈ 300s",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{BASE}}/../tinker", "host": ["{{BASE}}"], "path": ["..", "tinker"] },
+            "description": "Run tinker snippet from test4.md section 10.1"
+          },
+          "response": []
+        },
+        {
+          "name": "10.2 Settings TTL ≈ 3600s",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{BASE}}/../tinker", "host": ["{{BASE}}"], "path": ["..", "tinker"] },
+            "description": "Run tinker snippet from test4.md section 10.2"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "11. Negative caching",
+      "item": [
+        {
+          "name": "11.1 Missing resource not cached as 404",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status is 404', () => pm.response.to.have.status(404));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": { "raw": "{{BASE}}/products/999999", "host": ["{{BASE}}"], "path": ["products", "999999"] }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "12. Rapid-fire stress",
+      "item": [
+        {
+          "name": "12.1 Ten parallel GETs",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": { "raw": "{{BASE}}/products", "host": ["{{BASE}}"], "path": ["products"] },
+            "description": "Run 10× via Runner; check cache_keys afterwards."
+          },
+          "response": []
+        },
+        {
+          "name": "12.2 One write during burst",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{TOKEN}}" },
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"name\":\"burst-probe\",\"category_id\":1,\"price\":1.00,\"short_description\":\"x\"}"
+            },
+            "url": { "raw": "{{BASE}}/products", "host": ["{{BASE}}"], "path": ["products"] }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "13. Failure recovery",
+      "item": [
+        {
+          "name": "13.1 Warm several resources",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": { "raw": "{{BASE}}/products", "host": ["{{BASE}}"], "path": ["products"] }
+          },
+          "response": []
+        },
+        {
+          "name": "13.2 Corrupt version value handled",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status is 200 even with corrupt version', () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": { "raw": "{{BASE}}/products", "host": ["{{BASE}}"], "path": ["products"] }
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}

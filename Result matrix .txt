@@ -1,0 +1,36 @@
+#	Area	Test	HTTP / output	Pass condition
+1.1	Sanity	One GET writes keys	200	list + version keys present
+1.2	Sanity	Second call faster	200 × 3	2nd/3rd << 1st
+1.3	Sanity	Identical bodies	200 × 3	3 equal sha256
+2.1	Locale	FR/EN separate keys	200 × 2	both :fr and :en keys
+2.2	Locale	FR ≠ EN	200 × 2	bodies differ when translations exist
+2.3	Locale	?lang=en reuses EN	200 × 3	key count unchanged
+3.1	Version	Write bumps	201	+1
+3.2	Version	Old key orphaned	—	both versions present
+3.3	Version	Fresh row visible	201+200	after >= 1
+3.4	Version	Update invalidates	200	new price visible
+3.5	Version	Destroy invalidates	201+200	count goes 1 → 0
+4.1	Cross	Category edit bumps both	200	both +1
+4.2	Cross	Product write bumps categories	201	categories +1
+4.3	Cross	Service write isolated	201	products unchanged
+5.1	Show	Distinct id → distinct key	200 × 3	3 keys
+5.2	Show	No truck/project collision	200 × 2	2 distinct prefixes
+5.3	Show	Truck-type shape	200	has models, no title
+6.1	List/Show	Separate keys	200 × 2	exactly 3 products keys
+6.2	List/Show	Edit invalidates both	200	fresh price in both
+7.1	Settings	Per-locale keys	200 × 2	api:settings:fr + :en
+7.2	Settings	Update forgets both	200	count 2 → 0
+7.3	Settings	Fresh value visible	200	new company_name
+8.1	Services	3 buckets	200 × 3	3 list keys + version
+8.2	Services	all ≠ srv	200 × 2	only srv rows
+8.3	Services	Write busts all	201	version +1
+8.4	Services	Invalid → 422	422	no bogus key
+9.1	Non-GET	Two POSTs → 2 ids	201 × 2	ids differ
+9.2	Non-GET	401 no cache	401	no new keys
+10.1	TTL	List TTL	200	280–300
+10.2	TTL	Settings TTL	200	3500–3600
+11.1	Neg	404 not cached	404	no 999999 key
+12.1	Stress	10 parallel → 1 key	200 × 10	key count = 1
+12.2	Stress	Write during burst wins	200+201	probe row visible
+13.1	Failure	cache:clear empties	200 × 6	rows ↓
+13.2	Failure	Corrupt version safe	200	reads succeed

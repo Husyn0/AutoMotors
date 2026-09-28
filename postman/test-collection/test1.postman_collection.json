@@ -1,0 +1,851 @@
+{
+  "info": {
+    "name": "test1 — Auth, Public Content, CRUD",
+    "description": "Equivalent Postman collection for test1.md — login, register, refresh, rate limiting, public GET endpoints, image uploading, and protected CRUD operations.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "BASE", "value": "http://127.0.0.1:8000/api" },
+    { "key": "TOKEN", "value": "" },
+    { "key": "IMG", "value": "/home/hkali/Desktop/VioletPro/wallpaper/arch1.png" }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "const token = pm.collectionVariables.get('TOKEN');",
+          "if (!token) {",
+          "  pm.sendRequest({",
+          "    url: pm.collectionVariables.get('BASE') + '/auth/login',",
+          "    method: 'POST',",
+          "    header: { 'Content-Type': 'application/json', 'Accept': 'application/json' },",
+          "    body: { mode: 'raw', raw: JSON.stringify({ email: 'admin@automotors.com', password: 'password123' }) }",
+          "  }, (err, res) => {",
+          "    if (!err && res.code === 200) {",
+          "      pm.collectionVariables.set('TOKEN', res.json().token);",
+          "    }",
+          "  });",
+          "}"
+        ]
+      }
+    }
+  ],
+  "item": [
+    {
+      "name": "0. Setup",
+      "item": [
+        {
+          "name": "0.1 Export base URL",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{BASE}}", "host": ["{{BASE}}"], "path": [] }
+          },
+          "response": []
+        },
+        {
+          "name": "0.2 Clear limiter state (dev only)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{BASE}}/../tinker", "host": ["{{BASE}}"], "path": ["..", "tinker"] },
+            "description": "Run: php artisan cache:clear"
+          },
+          "response": []
+        },
+        {
+          "name": "0.3 Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const j = pm.response.json();",
+                  "if (j.token) { pm.collectionVariables.set('TOKEN', j.token); }",
+                  "pm.test('token present', () => pm.expect(j.token).to.be.a('string'));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin@automotors.com\",\n  \"password\": \"password123\"\n}"
+            },
+            "url": { "raw": "{{BASE}}/auth/login", "host": ["{{BASE}}"], "path": ["auth", "login"] }
+          },
+          "response": []
+        },
+        {
+          "name": "0.4 Register",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Test Admin\",\n  \"email\": \"test@automotors.com\",\n  \"password\": \"password123\",\n  \"password_confirmation\": \"password123\"\n}"
+            },
+            "url": { "raw": "{{BASE}}/auth/register", "host": ["{{BASE}}"], "path": ["auth", "register"] }
+          },
+          "response": []
+        },
+        {
+          "name": "0.5 Refresh Token",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{TOKEN}}" },
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "url": { "raw": "{{BASE}}/auth/refresh", "host": ["{{BASE}}"], "path": ["auth", "refresh"] }
+          },
+          "response": []
+        },
+        {
+          "name": "0.6 Rate limiting — 5 wrong attempts",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"email\":\"admin@automotors.com\",\"password\":\"WRONG123\"}"
+            },
+            "url": { "raw": "{{BASE}}/auth/login", "host": ["{{BASE}}"], "path": ["auth", "login"] },
+            "description": "Run 5 iterations; expect 5×401."
+          },
+          "response": []
+        },
+        {
+          "name": "0.7 Sixth wrong attempt — 429",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status is 429', () => pm.response.to.have.status(429));",
+                  "pm.test('Retry-After present', () => pm.response.to.have.header('Retry-After'));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"email\":\"admin@automotors.com\",\"password\":\"WRONG123\"}"
+            },
+            "url": { "raw": "{{BASE}}/auth/login", "host": ["{{BASE}}"], "path": ["auth", "login"] }
+          },
+          "response": []
+        },
+        {
+          "name": "0.8 Correct password while locked — 429",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status is 429', () => pm.response.to.have.status(429));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"email\":\"admin@automotors.com\",\"password\":\"password123\"}"
+            },
+            "url": { "raw": "{{BASE}}/auth/login", "host": ["{{BASE}}"], "path": ["auth", "login"] }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "1. Public Content (GET)",
+      "item": [
+        {
+          "name": "1.1 Categories list",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": { "raw": "{{BASE}}/categories", "host": ["{{BASE}}"], "path": ["categories"] }
+          },
+          "response": []
+        },
+        {
+          "name": "1.2 Categories list (en)",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Accept-Language", "value": "en" },
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "url": { "raw": "{{BASE}}/categories", "host": ["{{BASE}}"], "path": ["categories"] }
+          },
+          "response": []
+        },
+        {
+          "name": "1.3 Category show /categories/1",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": { "raw": "{{BASE}}/categories/1", "host": ["{{BASE}}"], "path": ["categories", "1"] }
+          },
+          "response": []
+        },
+        {
+          "name": "1.4 Products list (default fr)",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": { "raw": "{{BASE}}/products", "host": ["{{BASE}}"], "path": ["products"] }
+          },
+          "response": []
+        },
+        {
+          "name": "1.5 Products list (en header)",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Accept-Language", "value": "en" },
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "url": { "raw": "{{BASE}}/products", "host": ["{{BASE}}"], "path": ["products"] }
+          },
+          "response": []
+        },
+        {
+          "name": "1.6 Products list (?lang=en)",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": {
+              "raw": "{{BASE}}/products?lang=en",
+              "host": ["{{BASE}}"],
+              "path": ["products"],
+              "query": [{ "key": "lang", "value": "en" }]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "1.7 Product show /products/1",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": { "raw": "{{BASE}}/products/1", "host": ["{{BASE}}"], "path": ["products", "1"] }
+          },
+          "response": []
+        },
+        {
+          "name": "1.8 Services list (all)",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": { "raw": "{{BASE}}/services", "host": ["{{BASE}}"], "path": ["services"] }
+          },
+          "response": []
+        },
+        {
+          "name": "1.9 Services show /services/1",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": { "raw": "{{BASE}}/services/1", "host": ["{{BASE}}"], "path": ["services", "1"] }
+          },
+          "response": []
+        },
+        {
+          "name": "1.10 Services list (en)",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Accept-Language", "value": "en" },
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "url": { "raw": "{{BASE}}/services", "host": ["{{BASE}}"], "path": ["services"] }
+          },
+          "response": []
+        },
+        {
+          "name": "1.11 Services ?type=srv",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": {
+              "raw": "{{BASE}}/services?type=srv",
+              "host": ["{{BASE}}"],
+              "path": ["services"],
+              "query": [{ "key": "type", "value": "srv" }]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "1.12 Services ?type=adv",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": {
+              "raw": "{{BASE}}/services?type=adv",
+              "host": ["{{BASE}}"],
+              "path": ["services"],
+              "query": [{ "key": "type", "value": "adv" }]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "1.13 Services ?type=adv (en)",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Accept-Language", "value": "en" },
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "url": {
+              "raw": "{{BASE}}/services?type=adv",
+              "host": ["{{BASE}}"],
+              "path": ["services"],
+              "query": [{ "key": "type", "value": "adv" }]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "1.14 Services invalid type → 422",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status is 422', () => pm.response.to.have.status(422));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": {
+              "raw": "{{BASE}}/services?type=bogus",
+              "host": ["{{BASE}}"],
+              "path": ["services"],
+              "query": [{ "key": "type", "value": "bogus" }]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "1.15 Truck types list",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": { "raw": "{{BASE}}/truck-types", "host": ["{{BASE}}"], "path": ["truck-types"] }
+          },
+          "response": []
+        },
+        {
+          "name": "1.16 Truck type show /truck-types/1",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": { "raw": "{{BASE}}/truck-types/1", "host": ["{{BASE}}"], "path": ["truck-types", "1"] }
+          },
+          "response": []
+        },
+        {
+          "name": "1.17 Projects list",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": { "raw": "{{BASE}}/projects", "host": ["{{BASE}}"], "path": ["projects"] }
+          },
+          "response": []
+        },
+        {
+          "name": "1.18 Project show /projects/1",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": { "raw": "{{BASE}}/projects/1", "host": ["{{BASE}}"], "path": ["projects", "1"] }
+          },
+          "response": []
+        },
+        {
+          "name": "1.19 Settings",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": { "raw": "{{BASE}}/settings", "host": ["{{BASE}}"], "path": ["settings"] }
+          },
+          "response": []
+        },
+        {
+          "name": "1.20 Settings (en)",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Accept-Language", "value": "en" },
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "url": { "raw": "{{BASE}}/settings", "host": ["{{BASE}}"], "path": ["settings"] }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "2. Image Uploading",
+      "item": [
+        {
+          "name": "2.1 Serve via controller (HEAD)",
+          "request": {
+            "method": "HEAD",
+            "header": [],
+            "url": {
+              "raw": "{{BASE}}/files/products/arch1-XCh1oYSa.png",
+              "host": ["{{BASE}}"],
+              "path": ["files", "products", "arch1-XCh1oYSa.png"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "2.2 Serve via symlink (HEAD)",
+          "request": {
+            "method": "HEAD",
+            "header": [],
+            "url": {
+              "raw": "http://127.0.0.1:8000/storage/products/arch1-XCh1oYSa.png",
+              "host": ["127.0.0.1"],
+              "port": "8000",
+              "path": ["storage", "products", "arch1-XCh1oYSa.png"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "2.3 Upload product image",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{TOKEN}}" },
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                { "key": "file", "type": "file", "src": "{{IMG}}" }
+              ]
+            },
+            "url": { "raw": "{{BASE}}/uploads/products", "host": ["{{BASE}}"], "path": ["uploads", "products"] }
+          },
+          "response": []
+        },
+        {
+          "name": "2.4 Upload bad folder → 422",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status is 422', () => pm.response.to.have.status(422));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{TOKEN}}" },
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                { "key": "file", "type": "file", "src": "{{IMG}}" }
+              ]
+            },
+            "url": { "raw": "{{BASE}}/uploads/hackers", "host": ["{{BASE}}"], "path": ["uploads", "hackers"] }
+          },
+          "response": []
+        },
+        {
+          "name": "2.5 DELETE traversal attempt",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{TOKEN}}" },
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "url": {
+              "raw": "{{BASE}}/uploads/products/..%2F..%2Fetc%2Fpasswd",
+              "host": ["{{BASE}}"],
+              "path": ["uploads", "products", "..%2F..%2Fetc%2Fpasswd"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "2.6 DELETE uploaded image",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{TOKEN}}" },
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "url": {
+              "raw": "{{BASE}}/uploads/products/battery-9f3a2b1c.jpg",
+              "host": ["{{BASE}}"],
+              "path": ["uploads", "products", "battery-9f3a2b1c.jpg"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "3. Protected Routes (JWT Required)",
+      "item": [
+        {
+          "name": "3.1 Auth check /auth/me",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{TOKEN}}" },
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "url": { "raw": "{{BASE}}/auth/me", "host": ["{{BASE}}"], "path": ["auth", "me"] }
+          },
+          "response": []
+        },
+        {
+          "name": "3.2 Logout",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{TOKEN}}" },
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "url": { "raw": "{{BASE}}/auth/logout", "host": ["{{BASE}}"], "path": ["auth", "logout"] }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "4. CRUD (Protected)",
+      "item": [
+        {
+          "name": "4.1 Categories — Create",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{TOKEN}}" },
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Accessoires\",\n  \"icon\": \"✨\",\n  \"translations\": { \"en\": { \"name\": \"Accessories\" } }\n}"
+            },
+            "url": { "raw": "{{BASE}}/categories", "host": ["{{BASE}}"], "path": ["categories"] }
+          },
+          "response": []
+        },
+        {
+          "name": "4.2 Categories — Update",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{TOKEN}}" },
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "body": { "mode": "raw", "raw": "{\"name\": \"Batteries Auto\"}" },
+            "url": { "raw": "{{BASE}}/categories/1", "host": ["{{BASE}}"], "path": ["categories", "1"] }
+          },
+          "response": []
+        },
+        {
+          "name": "4.3 Categories — Delete",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{TOKEN}}" },
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "url": { "raw": "{{BASE}}/categories/1", "host": ["{{BASE}}"], "path": ["categories", "1"] }
+          },
+          "response": []
+        },
+        {
+          "name": "4.4 Products — Create",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{TOKEN}}" },
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Batterie Test\",\n  \"category_id\": 1,\n  \"price\": 99.99,\n  \"short_description\": \"Description test\",\n  \"translations\": {\n    \"en\": {\n      \"name\": \"Test Battery\",\n      \"short_description\": \"Test description\"\n    }\n  }\n}"
+            },
+            "url": { "raw": "{{BASE}}/products", "host": ["{{BASE}}"], "path": ["products"] }
+          },
+          "response": []
+        },
+        {
+          "name": "4.5 Products — Update",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{TOKEN}}" },
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "body": { "mode": "raw", "raw": "{\"price\": 79.99}" },
+            "url": { "raw": "{{BASE}}/products/1", "host": ["{{BASE}}"], "path": ["products", "1"] }
+          },
+          "response": []
+        },
+        {
+          "name": "4.6 Products — Delete",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{TOKEN}}" },
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "url": { "raw": "{{BASE}}/products/1", "host": ["{{BASE}}"], "path": ["products", "1"] }
+          },
+          "response": []
+        },
+        {
+          "name": "4.7 Services — Create (default type)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{TOKEN}}" },
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Service Test\",\n  \"description\": \"Description test\",\n  \"translations\": {\n    \"en\": { \"title\": \"Test Service\", \"description\": \"Test description\" }\n  }\n}"
+            },
+            "url": { "raw": "{{BASE}}/services", "host": ["{{BASE}}"], "path": ["services"] }
+          },
+          "response": []
+        },
+        {
+          "name": "4.8 Services — Create (type=srv)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{TOKEN}}" },
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Nouveau service\",\n  \"type\": \"srv\",\n  \"description\": \"Description\",\n  \"translations\": { \"en\": { \"title\": \"New service\", \"description\": \"Description\" } }\n}"
+            },
+            "url": { "raw": "{{BASE}}/services", "host": ["{{BASE}}"], "path": ["services"] }
+          },
+          "response": []
+        },
+        {
+          "name": "4.9 Services — Create advantage (type=adv)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{TOKEN}}" },
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Avantage test\",\n  \"type\": \"adv\",\n  \"description\": \"Description avantage\",\n  \"translations\": { \"en\": { \"title\": \"Test advantage\", \"description\": \"Advantage description\" } }\n}"
+            },
+            "url": { "raw": "{{BASE}}/services", "host": ["{{BASE}}"], "path": ["services"] }
+          },
+          "response": []
+        },
+        {
+          "name": "4.10 Services — Update type",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{TOKEN}}" },
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "body": { "mode": "raw", "raw": "{\"type\": \"adv\"}" },
+            "url": { "raw": "{{BASE}}/services/1", "host": ["{{BASE}}"], "path": ["services", "1"] }
+          },
+          "response": []
+        },
+        {
+          "name": "4.11 Services — Update title",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{TOKEN}}" },
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "body": { "mode": "raw", "raw": "{\"title\": \"Service Modifié\"}" },
+            "url": { "raw": "{{BASE}}/services/1", "host": ["{{BASE}}"], "path": ["services", "1"] }
+          },
+          "response": []
+        },
+        {
+          "name": "4.12 Services — Delete",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{TOKEN}}" },
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "url": { "raw": "{{BASE}}/services/1", "host": ["{{BASE}}"], "path": ["services", "1"] }
+          },
+          "response": []
+        },
+        {
+          "name": "4.13 TruckTypes — Create",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{TOKEN}}" },
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Camion Test\",\n  \"models\": \"Volvo, Scania\",\n  \"description\": \"Description\",\n  \"icon\": \"🚛\",\n  \"translations\": {\n    \"en\": {\n      \"name\": \"Test Truck\",\n      \"description\": \"Test description\"\n    }\n  }\n}"
+            },
+            "url": { "raw": "{{BASE}}/truck-types", "host": ["{{BASE}}"], "path": ["truck-types"] }
+          },
+          "response": []
+        },
+        {
+          "name": "4.14 TruckTypes — Update",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{TOKEN}}" },
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "body": { "mode": "raw", "raw": "{\"name\": \"Camion Modifié\"}" },
+            "url": { "raw": "{{BASE}}/truck-types/1", "host": ["{{BASE}}"], "path": ["truck-types", "1"] }
+          },
+          "response": []
+        },
+        {
+          "name": "4.15 TruckTypes — Delete",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{TOKEN}}" },
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "url": { "raw": "{{BASE}}/truck-types/1", "host": ["{{BASE}}"], "path": ["truck-types", "1"] }
+          },
+          "response": []
+        },
+        {
+          "name": "4.16 Projects — Create",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{TOKEN}}" },
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Projet Test\",\n  \"description\": \"Description test\",\n  \"image\": \"🔧\",\n  \"translations\": {\n    \"en\": {\n      \"title\": \"Test Project\",\n      \"description\": \"Test description\"\n    }\n  }\n}"
+            },
+            "url": { "raw": "{{BASE}}/projects", "host": ["{{BASE}}"], "path": ["projects"] }
+          },
+          "response": []
+        },
+        {
+          "name": "4.17 Projects — Update",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{TOKEN}}" },
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "body": { "mode": "raw", "raw": "{\"title\": \"Projet Modifié\"}" },
+            "url": { "raw": "{{BASE}}/projects/1", "host": ["{{BASE}}"], "path": ["projects", "1"] }
+          },
+          "response": []
+        },
+        {
+          "name": "4.18 Projects — Delete",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{TOKEN}}" },
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "url": { "raw": "{{BASE}}/projects/1", "host": ["{{BASE}}"], "path": ["projects", "1"] }
+          },
+          "response": []
+        },
+        {
+          "name": "4.19 Settings — Update",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{TOKEN}}" },
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"company_name\": \"AUTOMOTORS CI\",\n  \"email_address\": \"new@automotors.com\"\n}"
+            },
+            "url": { "raw": "{{BASE}}/settings", "host": ["{{BASE}}"], "path": ["settings"] }
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}

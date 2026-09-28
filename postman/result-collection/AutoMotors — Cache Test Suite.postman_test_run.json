@@ -1,0 +1,886 @@
+{
+	"id": "a2b372c1-d062-4162-a51c-f2d6fadfa002",
+	"name": "AutoMotors — Cache Test Suite",
+	"timestamp": "2026-09-27T18:50:54.717Z",
+	"collection_id": "50446717-71d1c5ff-0254-472c-84ac-1e4056fd9031",
+	"folder_id": 0,
+	"environment_id": "0",
+	"totalPass": 41,
+	"delay": 0,
+	"persist": true,
+	"status": "finished",
+	"startedAt": "2026-09-27T18:50:51.930Z",
+	"totalFail": 3,
+	"results": [
+		{
+			"id": "879a60d0-da5c-499c-9657-5f7a3221b755",
+			"name": "0.2 Login → stores TOKEN",
+			"url": "http://127.0.0.1:8000/api/auth/login",
+			"time": 776,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"200 OK": true,
+				"has token": true
+			},
+			"testPassFailCounts": {
+				"200 OK": {
+					"pass": 1,
+					"fail": 0
+				},
+				"has token": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				776
+			],
+			"allTests": [
+				{
+					"200 OK": true,
+					"has token": true
+				}
+			]
+		},
+		{
+			"id": "2f572783-7fc0-43af-bf7a-2500126628a8",
+			"name": "1.1 GET /products creates cache (200)",
+			"url": "http://127.0.0.1:8000/api/products",
+			"time": 121,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"200": true,
+				"array body": true
+			},
+			"testPassFailCounts": {
+				"200": {
+					"pass": 1,
+					"fail": 0
+				},
+				"array body": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				121
+			],
+			"allTests": [
+				{
+					"200": true,
+					"array body": true
+				}
+			]
+		},
+		{
+			"id": "e7bec9a4-d92d-4f8b-8148-7869263951a5",
+			"name": "1.2 Second call is faster (cache hit)",
+			"url": "http://127.0.0.1:8000/api/products",
+			"time": 21,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"200": true,
+				"second call is not slower than first": true
+			},
+			"testPassFailCounts": {
+				"200": {
+					"pass": 1,
+					"fail": 0
+				},
+				"second call is not slower than first": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				21
+			],
+			"allTests": [
+				{
+					"200": true,
+					"second call is not slower than first": true
+				}
+			]
+		},
+		{
+			"id": "afda16a2-f52d-4853-8706-00366707fa74",
+			"name": "1.3 Identical bodies across two hits",
+			"url": "http://127.0.0.1:8000/api/products",
+			"time": 18,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"200": true,
+				"bodies identical": true
+			},
+			"testPassFailCounts": {
+				"200": {
+					"pass": 1,
+					"fail": 0
+				},
+				"bodies identical": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				18
+			],
+			"allTests": [
+				{
+					"200": true,
+					"bodies identical": true
+				}
+			]
+		},
+		{
+			"id": "10fc3d92-f62c-48e6-a57e-b30447e6195f",
+			"name": "2.1 FR and EN lists (200 each)",
+			"url": "http://127.0.0.1:8000/api/products",
+			"time": 18,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"FR 200": true,
+				"EN 200": true
+			},
+			"testPassFailCounts": {
+				"FR 200": {
+					"pass": 1,
+					"fail": 0
+				},
+				"EN 200": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				18
+			],
+			"allTests": [
+				{
+					"FR 200": true,
+					"EN 200": true
+				}
+			]
+		},
+		{
+			"id": "10fa974e-ac41-419c-8ef1-945fa2d47a93",
+			"name": "2.2 FR body and EN body differ",
+			"url": "http://127.0.0.1:8000/api/products",
+			"time": 14,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"FR and EN differ": true
+			},
+			"testPassFailCounts": {
+				"FR and EN differ": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				14
+			],
+			"allTests": [
+				{
+					"FR and EN differ": true
+				}
+			]
+		},
+		{
+			"id": "bd5bf7f3-9499-4ea0-8113-b7ad4cf0b3bc",
+			"name": "2.3 ?lang=en returns EN payload",
+			"url": "http://127.0.0.1:8000/api/products?lang=en",
+			"time": 16,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"matches EN header body": true
+			},
+			"testPassFailCounts": {
+				"matches EN header body": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				16
+			],
+			"allTests": [
+				{
+					"matches EN header body": true
+				}
+			]
+		},
+		{
+			"id": "d277ed9a-fc98-4b37-a0b8-79cd1ca9d017",
+			"name": "3.3 Post-write GET contains the fresh row",
+			"url": "http://127.0.0.1:8000/api/products",
+			"time": 52,
+			"responseCode": {
+				"code": 201,
+				"name": "Created"
+			},
+			"tests": {
+				"201 created": true,
+				"list contains fresh row": true
+			},
+			"testPassFailCounts": {
+				"201 created": {
+					"pass": 1,
+					"fail": 0
+				},
+				"list contains fresh row": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				52
+			],
+			"allTests": [
+				{
+					"201 created": true,
+					"list contains fresh row": true
+				}
+			]
+		},
+		{
+			"id": "c9a5d439-9288-40bb-98fe-caa33d554a69",
+			"name": "3.4 Update price → show reflects it",
+			"url": "http://127.0.0.1:8000/api/products/",
+			"time": 11,
+			"responseCode": {
+				"code": 405,
+				"name": "Method Not Allowed"
+			},
+			"tests": {
+				"update 200": false,
+				"show has new price": false
+			},
+			"testPassFailCounts": {
+				"update 200": {
+					"pass": 0,
+					"fail": 1
+				},
+				"show has new price": {
+					"pass": 0,
+					"fail": 1
+				}
+			},
+			"times": [
+				11
+			],
+			"allTests": [
+				{
+					"update 200": false,
+					"show has new price": false
+				}
+			]
+		},
+		{
+			"id": "8fde3d53-ce6e-4bd3-a5b9-382631ff6e1f",
+			"name": "3.5 Create throwaway product (captures id)",
+			"url": "http://127.0.0.1:8000/api/products",
+			"time": 37,
+			"responseCode": {
+				"code": 201,
+				"name": "Created"
+			},
+			"tests": {
+				"201": true
+			},
+			"testPassFailCounts": {
+				"201": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				37
+			],
+			"allTests": [
+				{
+					"201": true
+				}
+			]
+		},
+		{
+			"id": "747a4468-2217-4929-b8e8-572b9d8e0d39",
+			"name": "3.5b Delete throwaway → next list omits it",
+			"url": "http://127.0.0.1:8000/api/products/26",
+			"time": 35,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"delete 200": true,
+				"deleted row absent from list": true
+			},
+			"testPassFailCounts": {
+				"delete 200": {
+					"pass": 1,
+					"fail": 0
+				},
+				"deleted row absent from list": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				35
+			],
+			"allTests": [
+				{
+					"delete 200": true,
+					"deleted row absent from list": true
+				}
+			]
+		},
+		{
+			"id": "d416726e-1cb9-431e-a19c-3ad17cd6d641",
+			"name": "5.3 Truck-type show has 'models', not 'title'",
+			"url": "http://127.0.0.1:8000/api/truck-types/2",
+			"time": 22,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"200": true,
+				"has models": true,
+				"no title (would mean it leaked a Project)": true
+			},
+			"testPassFailCounts": {
+				"200": {
+					"pass": 1,
+					"fail": 0
+				},
+				"has models": {
+					"pass": 1,
+					"fail": 0
+				},
+				"no title (would mean it leaked a Project)": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				22
+			],
+			"allTests": [
+				{
+					"200": true,
+					"has models": true,
+					"no title (would mean it leaked a Project)": true
+				}
+			]
+		},
+		{
+			"id": "3c2308f8-df3e-4711-9311-c360874deeae",
+			"name": "6.2 Edit product 2 → show reflects new price",
+			"url": "http://127.0.0.1:8000/api/products/2",
+			"time": 45,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"write ok": true,
+				"price reflected": true
+			},
+			"testPassFailCounts": {
+				"write ok": {
+					"pass": 1,
+					"fail": 0
+				},
+				"price reflected": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				45
+			],
+			"allTests": [
+				{
+					"write ok": true,
+					"price reflected": true
+				}
+			]
+		},
+		{
+			"id": "895c6e64-be97-4963-926f-035e1c6a1426",
+			"name": "7.1 Settings FR (200)",
+			"url": "http://127.0.0.1:8000/api/settings",
+			"time": 24,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"200": true,
+				"object body": true
+			},
+			"testPassFailCounts": {
+				"200": {
+					"pass": 1,
+					"fail": 0
+				},
+				"object body": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				24
+			],
+			"allTests": [
+				{
+					"200": true,
+					"object body": true
+				}
+			]
+		},
+		{
+			"id": "17be0820-8069-4515-9e41-9e97e400f85a",
+			"name": "7.1b Settings EN (200)",
+			"url": "http://127.0.0.1:8000/api/settings",
+			"time": 20,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"200": true
+			},
+			"testPassFailCounts": {
+				"200": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				20
+			],
+			"allTests": [
+				{
+					"200": true
+				}
+			]
+		},
+		{
+			"id": "54e06066-251c-4204-a8f9-a5d893bf5f8b",
+			"name": "7.3 Update settings → fresh GET reflects new value",
+			"url": "http://127.0.0.1:8000/api/settings",
+			"time": 37,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"update 200": true,
+				"company_name = CACHE-TEST-CO": true
+			},
+			"testPassFailCounts": {
+				"update 200": {
+					"pass": 1,
+					"fail": 0
+				},
+				"company_name = CACHE-TEST-CO": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				37
+			],
+			"allTests": [
+				{
+					"update 200": true,
+					"company_name = CACHE-TEST-CO": true
+				}
+			]
+		},
+		{
+			"id": "19b2a65f-71c5-43d8-8fe4-19193d890284",
+			"name": "8.2 ?type=srv → only srv rows",
+			"url": "http://127.0.0.1:8000/api/services?type=srv",
+			"time": 28,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"200": true,
+				"only srv present": true
+			},
+			"testPassFailCounts": {
+				"200": {
+					"pass": 1,
+					"fail": 0
+				},
+				"only srv present": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				28
+			],
+			"allTests": [
+				{
+					"200": true,
+					"only srv present": true
+				}
+			]
+		},
+		{
+			"id": "2fcfa77d-49df-4f52-8347-f613c7520df9",
+			"name": "8.2b ?type=adv → only adv rows",
+			"url": "http://127.0.0.1:8000/api/services?type=adv",
+			"time": 22,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"200": true,
+				"only adv present": true
+			},
+			"testPassFailCounts": {
+				"200": {
+					"pass": 1,
+					"fail": 0
+				},
+				"only adv present": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				22
+			],
+			"allTests": [
+				{
+					"200": true,
+					"only adv present": true
+				}
+			]
+		},
+		{
+			"id": "2dd0b4e9-526a-461c-a334-ba7c9582d497",
+			"name": "8.4 Invalid type → 422",
+			"url": "http://127.0.0.1:8000/api/services?type=bogus",
+			"time": 13,
+			"responseCode": {
+				"code": 422,
+				"name": "Unprocessable Content"
+			},
+			"tests": {
+				"422": true,
+				"has allowed list": true
+			},
+			"testPassFailCounts": {
+				"422": {
+					"pass": 1,
+					"fail": 0
+				},
+				"has allowed list": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				13
+			],
+			"allTests": [
+				{
+					"422": true,
+					"has allowed list": true
+				}
+			]
+		},
+		{
+			"id": "a85174c1-238a-4280-889d-a934bd4aed97",
+			"name": "9.1 Two POSTs → two different ids",
+			"url": "http://127.0.0.1:8000/api/products",
+			"time": 37,
+			"responseCode": {
+				"code": 201,
+				"name": "Created"
+			},
+			"tests": {
+				"201": true,
+				"second POST 201": true,
+				"different ids": true
+			},
+			"testPassFailCounts": {
+				"201": {
+					"pass": 1,
+					"fail": 0
+				},
+				"second POST 201": {
+					"pass": 1,
+					"fail": 0
+				},
+				"different ids": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				37
+			],
+			"allTests": [
+				{
+					"201": true,
+					"second POST 201": true,
+					"different ids": true
+				}
+			]
+		},
+		{
+			"id": "93501ebf-be68-4697-bbcf-bcb156d78362",
+			"name": "9.2 Unauthenticated POST → 401",
+			"url": "http://127.0.0.1:8000/api/products",
+			"time": 44,
+			"responseCode": {
+				"code": 201,
+				"name": "Created"
+			},
+			"tests": {
+				"401": false
+			},
+			"testPassFailCounts": {
+				"401": {
+					"pass": 0,
+					"fail": 1
+				}
+			},
+			"times": [
+				44
+			],
+			"allTests": [
+				{
+					"401": false
+				}
+			]
+		},
+		{
+			"id": "7e7c0d3b-caeb-43b7-801b-d329e20e2059",
+			"name": "11.1 Missing product → 404",
+			"url": "http://127.0.0.1:8000/api/products/999999",
+			"time": 18,
+			"responseCode": {
+				"code": 404,
+				"name": "Not Found"
+			},
+			"tests": {
+				"404": true,
+				"error key present": true
+			},
+			"testPassFailCounts": {
+				"404": {
+					"pass": 1,
+					"fail": 0
+				},
+				"error key present": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				18
+			],
+			"allTests": [
+				{
+					"404": true,
+					"error key present": true
+				}
+			]
+		},
+		{
+			"id": "cf5ad885-70e8-438d-861b-dbbe432e4506",
+			"name": "12.1 Ten parallel GETs (run via Runner 'iterations')",
+			"url": "http://127.0.0.1:8000/api/products",
+			"time": 30,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"200": true,
+				"body is array": true
+			},
+			"testPassFailCounts": {
+				"200": {
+					"pass": 1,
+					"fail": 0
+				},
+				"body is array": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				30
+			],
+			"allTests": [
+				{
+					"200": true,
+					"body is array": true
+				}
+			]
+		},
+		{
+			"id": "9a803b92-0e26-4e03-b3ad-a6fa443005e1",
+			"name": "13.2 Corrupt version value → reads still 200",
+			"url": "http://127.0.0.1:8000/api/products",
+			"time": 16,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"200 despite corrupt version": true
+			},
+			"testPassFailCounts": {
+				"200 despite corrupt version": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				16
+			],
+			"allTests": [
+				{
+					"200 despite corrupt version": true
+				}
+			]
+		}
+	],
+	"count": 1,
+	"totalTime": 1475,
+	"collection": {
+		"requests": [
+			{
+				"id": "879a60d0-da5c-499c-9657-5f7a3221b755",
+				"method": "POST"
+			},
+			{
+				"id": "2f572783-7fc0-43af-bf7a-2500126628a8",
+				"method": "GET"
+			},
+			{
+				"id": "e7bec9a4-d92d-4f8b-8148-7869263951a5",
+				"method": "GET"
+			},
+			{
+				"id": "afda16a2-f52d-4853-8706-00366707fa74",
+				"method": "GET"
+			},
+			{
+				"id": "10fc3d92-f62c-48e6-a57e-b30447e6195f",
+				"method": "GET"
+			},
+			{
+				"id": "10fa974e-ac41-419c-8ef1-945fa2d47a93",
+				"method": "GET"
+			},
+			{
+				"id": "bd5bf7f3-9499-4ea0-8113-b7ad4cf0b3bc",
+				"method": "GET"
+			},
+			{
+				"id": "d277ed9a-fc98-4b37-a0b8-79cd1ca9d017",
+				"method": "POST"
+			},
+			{
+				"id": "c9a5d439-9288-40bb-98fe-caa33d554a69",
+				"method": "PUT"
+			},
+			{
+				"id": "8fde3d53-ce6e-4bd3-a5b9-382631ff6e1f",
+				"method": "POST"
+			},
+			{
+				"id": "747a4468-2217-4929-b8e8-572b9d8e0d39",
+				"method": "DELETE"
+			},
+			{
+				"id": "d416726e-1cb9-431e-a19c-3ad17cd6d641",
+				"method": "GET"
+			},
+			{
+				"id": "3c2308f8-df3e-4711-9311-c360874deeae",
+				"method": "PUT"
+			},
+			{
+				"id": "895c6e64-be97-4963-926f-035e1c6a1426",
+				"method": "GET"
+			},
+			{
+				"id": "17be0820-8069-4515-9e41-9e97e400f85a",
+				"method": "GET"
+			},
+			{
+				"id": "54e06066-251c-4204-a8f9-a5d893bf5f8b",
+				"method": "PUT"
+			},
+			{
+				"id": "19b2a65f-71c5-43d8-8fe4-19193d890284",
+				"method": "GET"
+			},
+			{
+				"id": "2fcfa77d-49df-4f52-8347-f613c7520df9",
+				"method": "GET"
+			},
+			{
+				"id": "2dd0b4e9-526a-461c-a334-ba7c9582d497",
+				"method": "GET"
+			},
+			{
+				"id": "a85174c1-238a-4280-889d-a934bd4aed97",
+				"method": "POST"
+			},
+			{
+				"id": "93501ebf-be68-4697-bbcf-bcb156d78362",
+				"method": "POST"
+			},
+			{
+				"id": "7e7c0d3b-caeb-43b7-801b-d329e20e2059",
+				"method": "GET"
+			},
+			{
+				"id": "cf5ad885-70e8-438d-861b-dbbe432e4506",
+				"method": "GET"
+			},
+			{
+				"id": "9a803b92-0e26-4e03-b3ad-a6fa443005e1",
+				"method": "GET"
+			}
+		]
+	}
+}

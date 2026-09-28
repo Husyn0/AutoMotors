@@ -1,0 +1,2009 @@
+{
+	"id": "1a1a510c-a554-481f-a46a-0b0148e22669",
+	"name": "test2 — Image / Upload Test Suite",
+	"timestamp": "2026-09-27T20:00:11.806Z",
+	"collection_id": "50446717-e10763d2-006f-4110-acb9-561c9531996c",
+	"folder_id": 0,
+	"environment_id": "0",
+	"totalPass": 7,
+	"delay": 0,
+	"persist": true,
+	"status": "finished",
+	"startedAt": "2026-09-27T20:00:07.941Z",
+	"totalFail": 6,
+	"results": [
+		{
+			"id": "065091ff-c4cb-4d7a-a02a-2717736d9203",
+			"name": "0.1 Export base URL and image path",
+			"url": "http://127.0.0.1:8000/api/",
+			"time": 9,
+			"responseCode": {
+				"code": 404,
+				"name": "Not Found"
+			},
+			"tests": {},
+			"testPassFailCounts": {},
+			"times": [
+				9
+			],
+			"allTests": [
+				{}
+			]
+		},
+		{
+			"id": "1ced7a44-c63f-4f7c-ad4f-0e63c795d5e2",
+			"name": "0.2 Login — fresh token",
+			"url": "http://127.0.0.1:8000/api/auth/login",
+			"time": 216,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"token present": true
+			},
+			"testPassFailCounts": {
+				"token present": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				216
+			],
+			"allTests": [
+				{
+					"token present": true
+				}
+			]
+		},
+		{
+			"id": "d35cf546-0bc8-42e7-8a39-ca49196992a3",
+			"name": "0.3 Upload helper — sanity first upload",
+			"url": "http://127.0.0.1:8000/api/uploads/products",
+			"time": 41,
+			"responseCode": {
+				"code": 422,
+				"name": "Unprocessable Content"
+			},
+			"tests": {
+				"path present": false
+			},
+			"testPassFailCounts": {
+				"path present": {
+					"pass": 0,
+					"fail": 1
+				}
+			},
+			"times": [
+				41
+			],
+			"allTests": [
+				{
+					"path present": false
+				}
+			]
+		},
+		{
+			"id": "ec5446f1-9573-4bc5-ab23-893f10f577de",
+			"name": "1.1a Upload products",
+			"url": "http://127.0.0.1:8000/api/uploads/products",
+			"time": 40,
+			"responseCode": {
+				"code": 422,
+				"name": "Unprocessable Content"
+			},
+			"tests": {},
+			"testPassFailCounts": {},
+			"times": [
+				40
+			],
+			"allTests": [
+				{}
+			]
+		},
+		{
+			"id": "5aeefc9f-d702-4409-9910-1c94ec9e4e7e",
+			"name": "1.1b Upload categories",
+			"url": "http://127.0.0.1:8000/api/uploads/categories",
+			"time": 29,
+			"responseCode": {
+				"code": 422,
+				"name": "Unprocessable Content"
+			},
+			"tests": {},
+			"testPassFailCounts": {},
+			"times": [
+				29
+			],
+			"allTests": [
+				{}
+			]
+		},
+		{
+			"id": "063f3f33-266f-4df7-94a8-4b9a56e8c4d3",
+			"name": "1.1c Upload services",
+			"url": "http://127.0.0.1:8000/api/uploads/services",
+			"time": 24,
+			"responseCode": {
+				"code": 422,
+				"name": "Unprocessable Content"
+			},
+			"tests": {},
+			"testPassFailCounts": {},
+			"times": [
+				24
+			],
+			"allTests": [
+				{}
+			]
+		},
+		{
+			"id": "6d6fd26f-e6bb-41e6-910b-a7530f577289",
+			"name": "1.1d Upload truck-types",
+			"url": "http://127.0.0.1:8000/api/uploads/truck-types",
+			"time": 29,
+			"responseCode": {
+				"code": 422,
+				"name": "Unprocessable Content"
+			},
+			"tests": {},
+			"testPassFailCounts": {},
+			"times": [
+				29
+			],
+			"allTests": [
+				{}
+			]
+		},
+		{
+			"id": "4ee83f9b-3e8e-4d1d-b436-4d2201c57edf",
+			"name": "1.1e Upload projects",
+			"url": "http://127.0.0.1:8000/api/uploads/projects",
+			"time": 26,
+			"responseCode": {
+				"code": 422,
+				"name": "Unprocessable Content"
+			},
+			"tests": {},
+			"testPassFailCounts": {},
+			"times": [
+				26
+			],
+			"allTests": [
+				{}
+			]
+		},
+		{
+			"id": "35fe7a16-a7f7-44fb-a5f7-cee2e1e9cebf",
+			"name": "1.1f Upload settings",
+			"url": "http://127.0.0.1:8000/api/uploads/settings",
+			"time": 25,
+			"responseCode": {
+				"code": 422,
+				"name": "Unprocessable Content"
+			},
+			"tests": {},
+			"testPassFailCounts": {},
+			"times": [
+				25
+			],
+			"allTests": [
+				{}
+			]
+		},
+		{
+			"id": "9d11849a-445e-4162-a807-d9a23b79f784",
+			"name": "1.2 Upload with explicit Accept header",
+			"url": "http://127.0.0.1:8000/api/uploads/products",
+			"time": 25,
+			"responseCode": {
+				"code": 422,
+				"name": "Unprocessable Content"
+			},
+			"tests": {},
+			"testPassFailCounts": {},
+			"times": [
+				25
+			],
+			"allTests": [
+				{}
+			]
+		},
+		{
+			"id": "9939e807-62f4-4260-92c6-c19fb2db789e",
+			"name": "1.3 Symlink serve check",
+			"url": "http://127.0.0.1:8000/api/storage/",
+			"time": 8,
+			"responseCode": {
+				"code": 404,
+				"name": "Not Found"
+			},
+			"tests": {},
+			"testPassFailCounts": {},
+			"times": [
+				8
+			],
+			"allTests": [
+				{}
+			]
+		},
+		{
+			"id": "fec7ebf7-9d91-4a98-86f1-3f778cd1ed73",
+			"name": "1.4 Controller serve check",
+			"url": "http://127.0.0.1:8000/api/files/",
+			"time": 7,
+			"responseCode": {
+				"code": 404,
+				"name": "Not Found"
+			},
+			"tests": {},
+			"testPassFailCounts": {},
+			"times": [
+				7
+			],
+			"allTests": [
+				{}
+			]
+		},
+		{
+			"id": "c699c7ad-c5ed-4153-9c32-01a62e46ded7",
+			"name": "2.1 Upload without auth → 401",
+			"url": "http://127.0.0.1:8000/api/uploads/products",
+			"time": 7,
+			"responseCode": {
+				"code": 401,
+				"name": "Unauthorized"
+			},
+			"tests": {
+				"status is 401": true
+			},
+			"testPassFailCounts": {
+				"status is 401": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				7
+			],
+			"allTests": [
+				{
+					"status is 401": true
+				}
+			]
+		},
+		{
+			"id": "16c35cd5-e0d5-42cd-93b6-28fa7ea3965e",
+			"name": "2.2 Upload to invalid folder → 422",
+			"url": "http://127.0.0.1:8000/api/uploads/hackers",
+			"time": 8,
+			"responseCode": {
+				"code": 404,
+				"name": "Not Found"
+			},
+			"tests": {
+				"status is 422": false
+			},
+			"testPassFailCounts": {
+				"status is 422": {
+					"pass": 0,
+					"fail": 1
+				}
+			},
+			"times": [
+				8
+			],
+			"allTests": [
+				{
+					"status is 422": false
+				}
+			]
+		},
+		{
+			"id": "482efd49-53b8-4613-96d7-c7ee00dcbda7",
+			"name": "2.3 Upload with missing file → 422",
+			"url": "http://127.0.0.1:8000/api/uploads/products",
+			"time": 27,
+			"responseCode": {
+				"code": 422,
+				"name": "Unprocessable Content"
+			},
+			"tests": {
+				"status is 422": true
+			},
+			"testPassFailCounts": {
+				"status is 422": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				27
+			],
+			"allTests": [
+				{
+					"status is 422": true
+				}
+			]
+		},
+		{
+			"id": "eb3a0476-1a2e-4372-9d22-87210525cb36",
+			"name": "2.4 Upload disallowed MIME (.php) → 422",
+			"url": "http://127.0.0.1:8000/api/uploads/products",
+			"time": 28,
+			"responseCode": {
+				"code": 422,
+				"name": "Unprocessable Content"
+			},
+			"tests": {
+				"status is 422": true
+			},
+			"testPassFailCounts": {
+				"status is 422": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				28
+			],
+			"allTests": [
+				{
+					"status is 422": true
+				}
+			]
+		},
+		{
+			"id": "d3f4b625-7040-4c60-9c98-8791bc897789",
+			"name": "2.5 Upload oversize → 422",
+			"url": "http://127.0.0.1:8000/api/uploads/products",
+			"time": 25,
+			"responseCode": {
+				"code": 429,
+				"name": "Too Many Requests"
+			},
+			"tests": {
+				"status is 422": false
+			},
+			"testPassFailCounts": {
+				"status is 422": {
+					"pass": 0,
+					"fail": 1
+				}
+			},
+			"times": [
+				25
+			],
+			"allTests": [
+				{
+					"status is 422": false
+				}
+			]
+		},
+		{
+			"id": "8e9ccf6d-2674-4831-8420-0113fe39e9b1",
+			"name": "2.6a Traversal in folder segment (POST)",
+			"url": "http://127.0.0.1:8000/api/uploads/..%2Fpublic",
+			"time": 7,
+			"responseCode": {
+				"code": 404,
+				"name": "Not Found"
+			},
+			"tests": {},
+			"testPassFailCounts": {},
+			"times": [
+				7
+			],
+			"allTests": [
+				{}
+			]
+		},
+		{
+			"id": "3fb7daf9-f28a-4bfd-be12-d2064a09b84c",
+			"name": "2.6b Traversal in file segment (DELETE) → 404",
+			"url": "http://127.0.0.1:8000/api/uploads/products/..%2F..%2Fetc%2Fpasswd",
+			"time": 7,
+			"responseCode": {
+				"code": 404,
+				"name": "Not Found"
+			},
+			"tests": {},
+			"testPassFailCounts": {},
+			"times": [
+				7
+			],
+			"allTests": [
+				{}
+			]
+		},
+		{
+			"id": "2fac2cfb-9c37-4de9-9dba-96ce852c05a1",
+			"name": "2.6c Traversal on stream route (GET) → 404",
+			"url": "http://127.0.0.1:8000/api/files/products/..%2F..%2Fetc%2Fpasswd",
+			"time": 7,
+			"responseCode": {
+				"code": 404,
+				"name": "Not Found"
+			},
+			"tests": {},
+			"testPassFailCounts": {},
+			"times": [
+				7
+			],
+			"allTests": [
+				{}
+			]
+		},
+		{
+			"id": "3eefc621-11ba-4a0c-b746-d822540b9961",
+			"name": "3.1 Serve existing file via symlink",
+			"url": "http://127.0.0.1:8000/api/storage/",
+			"time": 8,
+			"responseCode": {
+				"code": 404,
+				"name": "Not Found"
+			},
+			"tests": {},
+			"testPassFailCounts": {},
+			"times": [
+				8
+			],
+			"allTests": [
+				{}
+			]
+		},
+		{
+			"id": "cf456255-9e60-48f0-a241-d71465e0d9e7",
+			"name": "3.2 Serve existing file via controller",
+			"url": "http://127.0.0.1:8000/api/files/",
+			"time": 8,
+			"responseCode": {
+				"code": 404,
+				"name": "Not Found"
+			},
+			"tests": {},
+			"testPassFailCounts": {},
+			"times": [
+				8
+			],
+			"allTests": [
+				{}
+			]
+		},
+		{
+			"id": "ab2a29ac-040b-4830-b54c-de495ffa3f85",
+			"name": "3.3 Non-existent file → 404 (controller)",
+			"url": "http://127.0.0.1:8000/api/files/products/does-not-exist.png",
+			"time": 26,
+			"responseCode": {
+				"code": 404,
+				"name": "Not Found"
+			},
+			"tests": {
+				"status is 404": true
+			},
+			"testPassFailCounts": {
+				"status is 404": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				26
+			],
+			"allTests": [
+				{
+					"status is 404": true
+				}
+			]
+		},
+		{
+			"id": "4e01dcd7-ed60-4448-a535-3185d3a66c99",
+			"name": "3.4 Non-existent file → 404 (symlink)",
+			"url": "http://127.0.0.1:8000/api/storage/products/does-not-exist.png",
+			"time": 7,
+			"responseCode": {
+				"code": 404,
+				"name": "Not Found"
+			},
+			"tests": {},
+			"testPassFailCounts": {},
+			"times": [
+				7
+			],
+			"allTests": [
+				{}
+			]
+		},
+		{
+			"id": "f2163f1b-ecd3-4744-8348-202bea54960c",
+			"name": "3.5 Invalid folder on stream route → 404",
+			"url": "http://127.0.0.1:8000/api/files/hackers/anything.png",
+			"time": 7,
+			"responseCode": {
+				"code": 404,
+				"name": "Not Found"
+			},
+			"tests": {
+				"status is 404": true
+			},
+			"testPassFailCounts": {
+				"status is 404": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				7
+			],
+			"allTests": [
+				{
+					"status is 404": true
+				}
+			]
+		},
+		{
+			"id": "32b9ab2d-fb49-4fdf-93a9-fb9f0879a4ae",
+			"name": "4.1 Upload throwaway then delete",
+			"url": "http://127.0.0.1:8000/api/uploads/products",
+			"time": 19,
+			"responseCode": {
+				"code": 429,
+				"name": "Too Many Requests"
+			},
+			"tests": {
+				"path present": false
+			},
+			"testPassFailCounts": {
+				"path present": {
+					"pass": 0,
+					"fail": 1
+				}
+			},
+			"times": [
+				19
+			],
+			"allTests": [
+				{
+					"path present": false
+				}
+			]
+		},
+		{
+			"id": "b2cb864b-8536-43fd-b560-6e808c4d1446",
+			"name": "4.1b Delete the throwaway file",
+			"url": "http://127.0.0.1:8000/api/uploads/products/",
+			"time": 7,
+			"responseCode": {
+				"code": 405,
+				"name": "Method Not Allowed"
+			},
+			"tests": {},
+			"testPassFailCounts": {},
+			"times": [
+				7
+			],
+			"allTests": [
+				{}
+			]
+		},
+		{
+			"id": "90dc78e6-3314-46a6-9475-ca2e07a78f13",
+			"name": "4.2 Verify deleted file is gone",
+			"url": "http://127.0.0.1:8000/api/storage/",
+			"time": 7,
+			"responseCode": {
+				"code": 404,
+				"name": "Not Found"
+			},
+			"tests": {},
+			"testPassFailCounts": {},
+			"times": [
+				7
+			],
+			"allTests": [
+				{}
+			]
+		},
+		{
+			"id": "5fe0e423-b080-446a-be0a-c61c0ad040ce",
+			"name": "4.3 Delete again → 404",
+			"url": "http://127.0.0.1:8000/api/uploads/products/",
+			"time": 7,
+			"responseCode": {
+				"code": 405,
+				"name": "Method Not Allowed"
+			},
+			"tests": {
+				"status is 404": false
+			},
+			"testPassFailCounts": {
+				"status is 404": {
+					"pass": 0,
+					"fail": 1
+				}
+			},
+			"times": [
+				7
+			],
+			"allTests": [
+				{
+					"status is 404": false
+				}
+			]
+		},
+		{
+			"id": "1f319ca9-387e-4366-b64d-39afedf1cc84",
+			"name": "4.4 Delete without auth → 401",
+			"url": "http://127.0.0.1:8000/api/uploads/products/whatever.png",
+			"time": 8,
+			"responseCode": {
+				"code": 401,
+				"name": "Unauthorized"
+			},
+			"tests": {
+				"status is 401": true
+			},
+			"testPassFailCounts": {
+				"status is 401": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				8
+			],
+			"allTests": [
+				{
+					"status is 401": true
+				}
+			]
+		},
+		{
+			"id": "236030a4-cfc4-42b8-8f71-d71f5055e562",
+			"name": "5.1 Upload image + create product",
+			"url": "http://127.0.0.1:8000/api/uploads/products",
+			"time": 20,
+			"responseCode": {
+				"code": 429,
+				"name": "Too Many Requests"
+			},
+			"tests": {
+				"path present": false
+			},
+			"testPassFailCounts": {
+				"path present": {
+					"pass": 0,
+					"fail": 1
+				}
+			},
+			"times": [
+				20
+			],
+			"allTests": [
+				{
+					"path present": false
+				}
+			]
+		},
+		{
+			"id": "83f1e7b8-616a-4e78-8b97-d7cfba365058",
+			"name": "5.1b Create product with image",
+			"url": "http://127.0.0.1:8000/api/products",
+			"time": 65,
+			"responseCode": {
+				"code": 201,
+				"name": "Created"
+			},
+			"tests": {},
+			"testPassFailCounts": {},
+			"times": [
+				65
+			],
+			"allTests": [
+				{}
+			]
+		},
+		{
+			"id": "7a86c072-6129-4798-a9c1-4c7a2f10f084",
+			"name": "5.2 GET product by id",
+			"url": "http://127.0.0.1:8000/api/products/10",
+			"time": 21,
+			"responseCode": {
+				"code": 404,
+				"name": "Not Found"
+			},
+			"tests": {},
+			"testPassFailCounts": {},
+			"times": [
+				21
+			],
+			"allTests": [
+				{}
+			]
+		},
+		{
+			"id": "d012a1f7-fe80-47fd-8bde-fdebe335a9e7",
+			"name": "5.3 Verify product image URL serves",
+			"url": "http://127.0.0.1:8000/api/storage/",
+			"time": 8,
+			"responseCode": {
+				"code": 404,
+				"name": "Not Found"
+			},
+			"tests": {},
+			"testPassFailCounts": {},
+			"times": [
+				8
+			],
+			"allTests": [
+				{}
+			]
+		},
+		{
+			"id": "c48ab72c-f288-4103-8423-8206f25e1e5b",
+			"name": "5.4 Update product image — upload new",
+			"url": "http://127.0.0.1:8000/api/uploads/products",
+			"time": 24,
+			"responseCode": {
+				"code": 429,
+				"name": "Too Many Requests"
+			},
+			"tests": {},
+			"testPassFailCounts": {},
+			"times": [
+				24
+			],
+			"allTests": [
+				{}
+			]
+		},
+		{
+			"id": "ad143ea7-d3d6-4f43-8f06-3c465f2156f0",
+			"name": "5.4b PUT product with new image",
+			"url": "http://127.0.0.1:8000/api/products/10",
+			"time": 26,
+			"responseCode": {
+				"code": 404,
+				"name": "Not Found"
+			},
+			"tests": {},
+			"testPassFailCounts": {},
+			"times": [
+				26
+			],
+			"allTests": [
+				{}
+			]
+		},
+		{
+			"id": "0b0ddaa7-552c-4c2e-8a1b-ca666881f6dc",
+			"name": "5.5 Locale-independent image_url check (en)",
+			"url": "http://127.0.0.1:8000/api/products/10",
+			"time": 34,
+			"responseCode": {
+				"code": 404,
+				"name": "Not Found"
+			},
+			"tests": {},
+			"testPassFailCounts": {},
+			"times": [
+				34
+			],
+			"allTests": [
+				{}
+			]
+		},
+		{
+			"id": "258bbcde-08c7-4575-b630-0ce1aa181fd5",
+			"name": "5.5b Locale-independent image_url check (fr)",
+			"url": "http://127.0.0.1:8000/api/products/10",
+			"time": 33,
+			"responseCode": {
+				"code": 404,
+				"name": "Not Found"
+			},
+			"tests": {},
+			"testPassFailCounts": {},
+			"times": [
+				33
+			],
+			"allTests": [
+				{}
+			]
+		},
+		{
+			"id": "941f10b9-d686-44fa-88d8-69ed256bb046",
+			"name": "5.6 Legacy path passthrough",
+			"url": "http://127.0.0.1:8000/api/products/10",
+			"time": 31,
+			"responseCode": {
+				"code": 404,
+				"name": "Not Found"
+			},
+			"tests": {},
+			"testPassFailCounts": {},
+			"times": [
+				31
+			],
+			"allTests": [
+				{}
+			]
+		},
+		{
+			"id": "5fd50b51-0054-46da-8027-f2a75de80e95",
+			"name": "5.7 Absolute URL passthrough",
+			"url": "http://127.0.0.1:8000/api/products/10",
+			"time": 35,
+			"responseCode": {
+				"code": 404,
+				"name": "Not Found"
+			},
+			"tests": {},
+			"testPassFailCounts": {},
+			"times": [
+				35
+			],
+			"allTests": [
+				{}
+			]
+		},
+		{
+			"id": "dda232c8-1fb9-4c22-a5ea-7d10ac221b22",
+			"name": "5.8 Null image",
+			"url": "http://127.0.0.1:8000/api/products/10",
+			"time": 27,
+			"responseCode": {
+				"code": 404,
+				"name": "Not Found"
+			},
+			"tests": {},
+			"testPassFailCounts": {},
+			"times": [
+				27
+			],
+			"allTests": [
+				{}
+			]
+		},
+		{
+			"id": "165431ba-8d00-4ba1-9f20-bc618534e4e3",
+			"name": "5.9a Restore image",
+			"url": "http://127.0.0.1:8000/api/products/10",
+			"time": 26,
+			"responseCode": {
+				"code": 404,
+				"name": "Not Found"
+			},
+			"tests": {},
+			"testPassFailCounts": {},
+			"times": [
+				26
+			],
+			"allTests": [
+				{}
+			]
+		},
+		{
+			"id": "f7b9126b-78dc-42b3-8b58-bb163dfbd670",
+			"name": "5.9b Delete product",
+			"url": "http://127.0.0.1:8000/api/products/10",
+			"time": 25,
+			"responseCode": {
+				"code": 404,
+				"name": "Not Found"
+			},
+			"tests": {},
+			"testPassFailCounts": {},
+			"times": [
+				25
+			],
+			"allTests": [
+				{}
+			]
+		},
+		{
+			"id": "d628b30a-472c-42dd-b783-9f15441259d3",
+			"name": "5.9c File remains after delete",
+			"url": "http://127.0.0.1:8000/api/storage/",
+			"time": 7,
+			"responseCode": {
+				"code": 404,
+				"name": "Not Found"
+			},
+			"tests": {},
+			"testPassFailCounts": {},
+			"times": [
+				7
+			],
+			"allTests": [
+				{}
+			]
+		},
+		{
+			"id": "2f275030-6410-4dc6-876a-79ac489eb99c",
+			"name": "6.1 Upload + create category with image",
+			"url": "http://127.0.0.1:8000/api/uploads/categories",
+			"time": 18,
+			"responseCode": {
+				"code": 429,
+				"name": "Too Many Requests"
+			},
+			"tests": {},
+			"testPassFailCounts": {},
+			"times": [
+				18
+			],
+			"allTests": [
+				{}
+			]
+		},
+		{
+			"id": "d723ee94-8535-4684-aa9b-f83b1728721f",
+			"name": "6.1b Create category",
+			"url": "http://127.0.0.1:8000/api/categories",
+			"time": 40,
+			"responseCode": {
+				"code": 201,
+				"name": "Created"
+			},
+			"tests": {},
+			"testPassFailCounts": {},
+			"times": [
+				40
+			],
+			"allTests": [
+				{}
+			]
+		},
+		{
+			"id": "bda58ae9-2f41-4b23-855a-718689858e9c",
+			"name": "6.2 GET categories list",
+			"url": "http://127.0.0.1:8000/api/categories",
+			"time": 26,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {},
+			"testPassFailCounts": {},
+			"times": [
+				26
+			],
+			"allTests": [
+				{}
+			]
+		},
+		{
+			"id": "5efb07c8-b6d8-44c7-a0dc-baef95e037e7",
+			"name": "6.3 GET single category",
+			"url": "http://127.0.0.1:8000/api/categories/",
+			"time": 18,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {},
+			"testPassFailCounts": {},
+			"times": [
+				18
+			],
+			"allTests": [
+				{}
+			]
+		},
+		{
+			"id": "6519bf52-a943-43e7-94a1-512b1a9619c1",
+			"name": "6.4 Update category image — upload new",
+			"url": "http://127.0.0.1:8000/api/uploads/categories",
+			"time": 19,
+			"responseCode": {
+				"code": 429,
+				"name": "Too Many Requests"
+			},
+			"tests": {},
+			"testPassFailCounts": {},
+			"times": [
+				19
+			],
+			"allTests": [
+				{}
+			]
+		},
+		{
+			"id": "23ab08cd-80ad-4a38-86b9-4492fa2b842c",
+			"name": "6.4b PUT category with new image",
+			"url": "http://127.0.0.1:8000/api/categories/",
+			"time": 8,
+			"responseCode": {
+				"code": 405,
+				"name": "Method Not Allowed"
+			},
+			"tests": {},
+			"testPassFailCounts": {},
+			"times": [
+				8
+			],
+			"allTests": [
+				{}
+			]
+		},
+		{
+			"id": "e451b4ca-0f63-445d-8151-d080c956ed41",
+			"name": "6.5 Verify updated category image serves",
+			"url": "http://127.0.0.1:8000/api/storage/",
+			"time": 12,
+			"responseCode": {
+				"code": 404,
+				"name": "Not Found"
+			},
+			"tests": {},
+			"testPassFailCounts": {},
+			"times": [
+				12
+			],
+			"allTests": [
+				{}
+			]
+		},
+		{
+			"id": "da4fb000-5e1f-4d7d-b484-3a235f0517ad",
+			"name": "6.6 Delete category",
+			"url": "http://127.0.0.1:8000/api/categories/",
+			"time": 10,
+			"responseCode": {
+				"code": 405,
+				"name": "Method Not Allowed"
+			},
+			"tests": {},
+			"testPassFailCounts": {},
+			"times": [
+				10
+			],
+			"allTests": [
+				{}
+			]
+		},
+		{
+			"id": "a5f8ef18-4fef-41d6-967f-3d336a1da909",
+			"name": "7.1 Upload + create project with image",
+			"url": "http://127.0.0.1:8000/api/uploads/projects",
+			"time": 19,
+			"responseCode": {
+				"code": 429,
+				"name": "Too Many Requests"
+			},
+			"tests": {},
+			"testPassFailCounts": {},
+			"times": [
+				19
+			],
+			"allTests": [
+				{}
+			]
+		},
+		{
+			"id": "e78bd184-3fea-4a7a-8cf9-b1e60586dc7a",
+			"name": "7.1b Create project",
+			"url": "http://127.0.0.1:8000/api/projects",
+			"time": 37,
+			"responseCode": {
+				"code": 201,
+				"name": "Created"
+			},
+			"tests": {},
+			"testPassFailCounts": {},
+			"times": [
+				37
+			],
+			"allTests": [
+				{}
+			]
+		},
+		{
+			"id": "54d9ce9c-978a-4085-adef-f5564c4fca47",
+			"name": "7.2 GET projects list",
+			"url": "http://127.0.0.1:8000/api/projects",
+			"time": 25,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {},
+			"testPassFailCounts": {},
+			"times": [
+				25
+			],
+			"allTests": [
+				{}
+			]
+		},
+		{
+			"id": "5f7a42a8-0749-47a1-9dc5-e6931fca3dbb",
+			"name": "7.2b GET single project",
+			"url": "http://127.0.0.1:8000/api/projects/",
+			"time": 17,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {},
+			"testPassFailCounts": {},
+			"times": [
+				17
+			],
+			"allTests": [
+				{}
+			]
+		},
+		{
+			"id": "f6df141e-8c6d-46b7-8f68-8a90f7e0c5b2",
+			"name": "7.3 Update project image — upload new",
+			"url": "http://127.0.0.1:8000/api/uploads/projects",
+			"time": 20,
+			"responseCode": {
+				"code": 429,
+				"name": "Too Many Requests"
+			},
+			"tests": {},
+			"testPassFailCounts": {},
+			"times": [
+				20
+			],
+			"allTests": [
+				{}
+			]
+		},
+		{
+			"id": "d9b3d19c-358e-4364-9b3a-b4a14a642dda",
+			"name": "7.3b PUT project with new image",
+			"url": "http://127.0.0.1:8000/api/projects/",
+			"time": 8,
+			"responseCode": {
+				"code": 405,
+				"name": "Method Not Allowed"
+			},
+			"tests": {},
+			"testPassFailCounts": {},
+			"times": [
+				8
+			],
+			"allTests": [
+				{}
+			]
+		},
+		{
+			"id": "035f8944-9937-4e46-bb11-0d79c4adbc09",
+			"name": "7.4 Verify updated project image serves",
+			"url": "http://127.0.0.1:8000/api/storage/",
+			"time": 8,
+			"responseCode": {
+				"code": 404,
+				"name": "Not Found"
+			},
+			"tests": {},
+			"testPassFailCounts": {},
+			"times": [
+				8
+			],
+			"allTests": [
+				{}
+			]
+		},
+		{
+			"id": "90935fcc-de5c-4bd7-8583-0e50dd07fa1e",
+			"name": "7.5 Delete project",
+			"url": "http://127.0.0.1:8000/api/projects/",
+			"time": 8,
+			"responseCode": {
+				"code": 405,
+				"name": "Method Not Allowed"
+			},
+			"tests": {},
+			"testPassFailCounts": {},
+			"times": [
+				8
+			],
+			"allTests": [
+				{}
+			]
+		},
+		{
+			"id": "783ad094-d9e6-4b66-bc92-bd74fbb73d81",
+			"name": "8.1 Attach image to category 1",
+			"url": "http://127.0.0.1:8000/api/uploads/categories",
+			"time": 20,
+			"responseCode": {
+				"code": 429,
+				"name": "Too Many Requests"
+			},
+			"tests": {},
+			"testPassFailCounts": {},
+			"times": [
+				20
+			],
+			"allTests": [
+				{}
+			]
+		},
+		{
+			"id": "0f286c27-3569-46b3-a6b7-8dec0313e0ad",
+			"name": "8.1b PUT category 1 with image",
+			"url": "http://127.0.0.1:8000/api/categories/1",
+			"time": 38,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {},
+			"testPassFailCounts": {},
+			"times": [
+				38
+			],
+			"allTests": [
+				{}
+			]
+		},
+		{
+			"id": "2875b0fd-64d5-4d4a-85a3-6ee329a08634",
+			"name": "8.2 Upload + create product in category 1",
+			"url": "http://127.0.0.1:8000/api/uploads/products",
+			"time": 21,
+			"responseCode": {
+				"code": 429,
+				"name": "Too Many Requests"
+			},
+			"tests": {},
+			"testPassFailCounts": {},
+			"times": [
+				21
+			],
+			"allTests": [
+				{}
+			]
+		},
+		{
+			"id": "9826767b-fd70-4157-bc3f-ba14bdc232e6",
+			"name": "8.2b Create product in category 1",
+			"url": "http://127.0.0.1:8000/api/products",
+			"time": 41,
+			"responseCode": {
+				"code": 201,
+				"name": "Created"
+			},
+			"tests": {},
+			"testPassFailCounts": {},
+			"times": [
+				41
+			],
+			"allTests": [
+				{}
+			]
+		},
+		{
+			"id": "155f91fe-7ab3-42f1-bfbc-624924d7a0cc",
+			"name": "8.3 Fetch product — nested category has image_url",
+			"url": "http://127.0.0.1:8000/api/products/31",
+			"time": 33,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {},
+			"testPassFailCounts": {},
+			"times": [
+				33
+			],
+			"allTests": [
+				{}
+			]
+		},
+		{
+			"id": "2eb20533-5282-4588-aafd-44aa49f8a2d8",
+			"name": "8.4 Same fetch in EN locale",
+			"url": "http://127.0.0.1:8000/api/products/31",
+			"time": 27,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {},
+			"testPassFailCounts": {},
+			"times": [
+				27
+			],
+			"allTests": [
+				{}
+			]
+		},
+		{
+			"id": "3c17863d-48de-4e55-bb72-73cef1925e20",
+			"name": "8.5 Delete relation-test product",
+			"url": "http://127.0.0.1:8000/api/products/31",
+			"time": 39,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {},
+			"testPassFailCounts": {},
+			"times": [
+				39
+			],
+			"allTests": [
+				{}
+			]
+		},
+		{
+			"id": "ba6b85eb-a5ef-4c91-b2e5-c57c309750cd",
+			"name": "9.1 Three access paths sha256 must match",
+			"url": "http://127.0.0.1:8000/api/products",
+			"time": 34,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {},
+			"testPassFailCounts": {},
+			"times": [
+				34
+			],
+			"allTests": [
+				{}
+			]
+		},
+		{
+			"id": "f25252d6-3aa4-4602-80ed-6bc08d52fd26",
+			"name": "9.2 Rapid uploads — unique names",
+			"url": "http://127.0.0.1:8000/api/uploads/products",
+			"time": 19,
+			"responseCode": {
+				"code": 429,
+				"name": "Too Many Requests"
+			},
+			"tests": {},
+			"testPassFailCounts": {},
+			"times": [
+				19
+			],
+			"allTests": [
+				{}
+			]
+		},
+		{
+			"id": "6faebbc6-c3c0-47ea-8153-003d0c966507",
+			"name": "9.3 Folder isolation",
+			"url": "http://127.0.0.1:8000/api/../tinker",
+			"time": 9,
+			"responseCode": {
+				"code": 404,
+				"name": "Not Found"
+			},
+			"tests": {},
+			"testPassFailCounts": {},
+			"times": [
+				9
+			],
+			"allTests": [
+				{}
+			]
+		},
+		{
+			"id": "3b05df9c-5edc-49ff-a472-76e866038c6c",
+			"name": "10.1 Auth /auth/me",
+			"url": "http://127.0.0.1:8000/api/auth/me",
+			"time": 41,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {},
+			"testPassFailCounts": {},
+			"times": [
+				41
+			],
+			"allTests": [
+				{}
+			]
+		},
+		{
+			"id": "02f7fdff-bc53-4c6b-84ec-b0fe0756c4fc",
+			"name": "10.1b Auth /auth/refresh",
+			"url": "http://127.0.0.1:8000/api/auth/refresh",
+			"time": 60,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {},
+			"testPassFailCounts": {},
+			"times": [
+				60
+			],
+			"allTests": [
+				{}
+			]
+		},
+		{
+			"id": "dbe8ea87-5f9e-48b1-963a-4784bf9b173d",
+			"name": "10.2 Public reads — categories",
+			"url": "http://127.0.0.1:8000/api/categories",
+			"time": 24,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {},
+			"testPassFailCounts": {},
+			"times": [
+				24
+			],
+			"allTests": [
+				{}
+			]
+		},
+		{
+			"id": "fc2fdfd1-cc9d-4d65-a68b-81ba84730f65",
+			"name": "10.2b Public reads — products",
+			"url": "http://127.0.0.1:8000/api/products",
+			"time": 18,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {},
+			"testPassFailCounts": {},
+			"times": [
+				18
+			],
+			"allTests": [
+				{}
+			]
+		},
+		{
+			"id": "7edc68c8-89b0-4519-b403-a258ace5e6be",
+			"name": "10.2c Public reads — services",
+			"url": "http://127.0.0.1:8000/api/services",
+			"time": 29,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {},
+			"testPassFailCounts": {},
+			"times": [
+				29
+			],
+			"allTests": [
+				{}
+			]
+		},
+		{
+			"id": "b6892f1e-5d9c-4016-b73a-06abcff72625",
+			"name": "10.2d Public reads — services ?type=srv",
+			"url": "http://127.0.0.1:8000/api/services?type=srv",
+			"time": 41,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {},
+			"testPassFailCounts": {},
+			"times": [
+				41
+			],
+			"allTests": [
+				{}
+			]
+		},
+		{
+			"id": "a523a329-d4d6-4c29-9c95-448e48bd47dd",
+			"name": "10.2e Public reads — services ?type=adv",
+			"url": "http://127.0.0.1:8000/api/services?type=adv",
+			"time": 35,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {},
+			"testPassFailCounts": {},
+			"times": [
+				35
+			],
+			"allTests": [
+				{}
+			]
+		},
+		{
+			"id": "5a0f5ea2-1108-4403-be2a-f51183ec1319",
+			"name": "10.2f Public reads — truck-types",
+			"url": "http://127.0.0.1:8000/api/truck-types",
+			"time": 28,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {},
+			"testPassFailCounts": {},
+			"times": [
+				28
+			],
+			"allTests": [
+				{}
+			]
+		},
+		{
+			"id": "44e1cbef-6260-46a1-a245-e6680291f5d9",
+			"name": "10.2g Public reads — projects",
+			"url": "http://127.0.0.1:8000/api/projects",
+			"time": 16,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {},
+			"testPassFailCounts": {},
+			"times": [
+				16
+			],
+			"allTests": [
+				{}
+			]
+		},
+		{
+			"id": "009f7ad4-ceda-422f-a34d-876c8356e065",
+			"name": "10.2h Public reads — settings",
+			"url": "http://127.0.0.1:8000/api/settings",
+			"time": 16,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {},
+			"testPassFailCounts": {},
+			"times": [
+				16
+			],
+			"allTests": [
+				{}
+			]
+		},
+		{
+			"id": "aa4bea3e-281d-44b4-a22f-d5e036235771",
+			"name": "10.2i Public reads — settings (en)",
+			"url": "http://127.0.0.1:8000/api/settings",
+			"time": 18,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {},
+			"testPassFailCounts": {},
+			"times": [
+				18
+			],
+			"allTests": [
+				{}
+			]
+		},
+		{
+			"id": "3a52d5b2-e09b-4569-8188-7bcfca0e2311",
+			"name": "10.3a Protected write — truck-types",
+			"url": "http://127.0.0.1:8000/api/truck-types",
+			"time": 13,
+			"responseCode": {
+				"code": 401,
+				"name": "Unauthorized"
+			},
+			"tests": {},
+			"testPassFailCounts": {},
+			"times": [
+				13
+			],
+			"allTests": [
+				{}
+			]
+		},
+		{
+			"id": "8993f6ae-822f-4b03-a3d2-4d62435899cf",
+			"name": "10.3b Protected write — services",
+			"url": "http://127.0.0.1:8000/api/services",
+			"time": 11,
+			"responseCode": {
+				"code": 401,
+				"name": "Unauthorized"
+			},
+			"tests": {},
+			"testPassFailCounts": {},
+			"times": [
+				11
+			],
+			"allTests": [
+				{}
+			]
+		},
+		{
+			"id": "5b1ebc66-2f58-48c8-9ffc-f2e71f189d35",
+			"name": "11.1 List all uploaded files",
+			"url": "http://127.0.0.1:8000/api/../tinker",
+			"time": 8,
+			"responseCode": {
+				"code": 404,
+				"name": "Not Found"
+			},
+			"tests": {},
+			"testPassFailCounts": {},
+			"times": [
+				8
+			],
+			"allTests": [
+				{}
+			]
+		},
+		{
+			"id": "cfd24950-7f8a-41d1-b71a-ff73726b9727",
+			"name": "11.2 Confirm symlink target",
+			"url": "http://127.0.0.1:8000/api/../tinker",
+			"time": 7,
+			"responseCode": {
+				"code": 404,
+				"name": "Not Found"
+			},
+			"tests": {},
+			"testPassFailCounts": {},
+			"times": [
+				7
+			],
+			"allTests": [
+				{}
+			]
+		}
+	],
+	"count": 1,
+	"totalTime": 2020,
+	"collection": {
+		"requests": [
+			{
+				"id": "065091ff-c4cb-4d7a-a02a-2717736d9203",
+				"method": "GET"
+			},
+			{
+				"id": "1ced7a44-c63f-4f7c-ad4f-0e63c795d5e2",
+				"method": "POST"
+			},
+			{
+				"id": "d35cf546-0bc8-42e7-8a39-ca49196992a3",
+				"method": "POST"
+			},
+			{
+				"id": "ec5446f1-9573-4bc5-ab23-893f10f577de",
+				"method": "POST"
+			},
+			{
+				"id": "5aeefc9f-d702-4409-9910-1c94ec9e4e7e",
+				"method": "POST"
+			},
+			{
+				"id": "063f3f33-266f-4df7-94a8-4b9a56e8c4d3",
+				"method": "POST"
+			},
+			{
+				"id": "6d6fd26f-e6bb-41e6-910b-a7530f577289",
+				"method": "POST"
+			},
+			{
+				"id": "4ee83f9b-3e8e-4d1d-b436-4d2201c57edf",
+				"method": "POST"
+			},
+			{
+				"id": "35fe7a16-a7f7-44fb-a5f7-cee2e1e9cebf",
+				"method": "POST"
+			},
+			{
+				"id": "9d11849a-445e-4162-a807-d9a23b79f784",
+				"method": "POST"
+			},
+			{
+				"id": "9939e807-62f4-4260-92c6-c19fb2db789e",
+				"method": "HEAD"
+			},
+			{
+				"id": "fec7ebf7-9d91-4a98-86f1-3f778cd1ed73",
+				"method": "HEAD"
+			},
+			{
+				"id": "c699c7ad-c5ed-4153-9c32-01a62e46ded7",
+				"method": "POST"
+			},
+			{
+				"id": "16c35cd5-e0d5-42cd-93b6-28fa7ea3965e",
+				"method": "POST"
+			},
+			{
+				"id": "482efd49-53b8-4613-96d7-c7ee00dcbda7",
+				"method": "POST"
+			},
+			{
+				"id": "eb3a0476-1a2e-4372-9d22-87210525cb36",
+				"method": "POST"
+			},
+			{
+				"id": "d3f4b625-7040-4c60-9c98-8791bc897789",
+				"method": "POST"
+			},
+			{
+				"id": "8e9ccf6d-2674-4831-8420-0113fe39e9b1",
+				"method": "POST"
+			},
+			{
+				"id": "3fb7daf9-f28a-4bfd-be12-d2064a09b84c",
+				"method": "DELETE"
+			},
+			{
+				"id": "2fac2cfb-9c37-4de9-9dba-96ce852c05a1",
+				"method": "GET"
+			},
+			{
+				"id": "3eefc621-11ba-4a0c-b746-d822540b9961",
+				"method": "HEAD"
+			},
+			{
+				"id": "cf456255-9e60-48f0-a241-d71465e0d9e7",
+				"method": "HEAD"
+			},
+			{
+				"id": "ab2a29ac-040b-4830-b54c-de495ffa3f85",
+				"method": "GET"
+			},
+			{
+				"id": "4e01dcd7-ed60-4448-a535-3185d3a66c99",
+				"method": "HEAD"
+			},
+			{
+				"id": "f2163f1b-ecd3-4744-8348-202bea54960c",
+				"method": "GET"
+			},
+			{
+				"id": "32b9ab2d-fb49-4fdf-93a9-fb9f0879a4ae",
+				"method": "POST"
+			},
+			{
+				"id": "b2cb864b-8536-43fd-b560-6e808c4d1446",
+				"method": "DELETE"
+			},
+			{
+				"id": "90dc78e6-3314-46a6-9475-ca2e07a78f13",
+				"method": "HEAD"
+			},
+			{
+				"id": "5fe0e423-b080-446a-be0a-c61c0ad040ce",
+				"method": "DELETE"
+			},
+			{
+				"id": "1f319ca9-387e-4366-b64d-39afedf1cc84",
+				"method": "DELETE"
+			},
+			{
+				"id": "236030a4-cfc4-42b8-8f71-d71f5055e562",
+				"method": "POST"
+			},
+			{
+				"id": "83f1e7b8-616a-4e78-8b97-d7cfba365058",
+				"method": "POST"
+			},
+			{
+				"id": "7a86c072-6129-4798-a9c1-4c7a2f10f084",
+				"method": "GET"
+			},
+			{
+				"id": "d012a1f7-fe80-47fd-8bde-fdebe335a9e7",
+				"method": "HEAD"
+			},
+			{
+				"id": "c48ab72c-f288-4103-8423-8206f25e1e5b",
+				"method": "POST"
+			},
+			{
+				"id": "ad143ea7-d3d6-4f43-8f06-3c465f2156f0",
+				"method": "PUT"
+			},
+			{
+				"id": "0b0ddaa7-552c-4c2e-8a1b-ca666881f6dc",
+				"method": "GET"
+			},
+			{
+				"id": "258bbcde-08c7-4575-b630-0ce1aa181fd5",
+				"method": "GET"
+			},
+			{
+				"id": "941f10b9-d686-44fa-88d8-69ed256bb046",
+				"method": "PUT"
+			},
+			{
+				"id": "5fd50b51-0054-46da-8027-f2a75de80e95",
+				"method": "PUT"
+			},
+			{
+				"id": "dda232c8-1fb9-4c22-a5ea-7d10ac221b22",
+				"method": "PUT"
+			},
+			{
+				"id": "165431ba-8d00-4ba1-9f20-bc618534e4e3",
+				"method": "PUT"
+			},
+			{
+				"id": "f7b9126b-78dc-42b3-8b58-bb163dfbd670",
+				"method": "DELETE"
+			},
+			{
+				"id": "d628b30a-472c-42dd-b783-9f15441259d3",
+				"method": "HEAD"
+			},
+			{
+				"id": "2f275030-6410-4dc6-876a-79ac489eb99c",
+				"method": "POST"
+			},
+			{
+				"id": "d723ee94-8535-4684-aa9b-f83b1728721f",
+				"method": "POST"
+			},
+			{
+				"id": "bda58ae9-2f41-4b23-855a-718689858e9c",
+				"method": "GET"
+			},
+			{
+				"id": "5efb07c8-b6d8-44c7-a0dc-baef95e037e7",
+				"method": "GET"
+			},
+			{
+				"id": "6519bf52-a943-43e7-94a1-512b1a9619c1",
+				"method": "POST"
+			},
+			{
+				"id": "23ab08cd-80ad-4a38-86b9-4492fa2b842c",
+				"method": "PUT"
+			},
+			{
+				"id": "e451b4ca-0f63-445d-8151-d080c956ed41",
+				"method": "HEAD"
+			},
+			{
+				"id": "da4fb000-5e1f-4d7d-b484-3a235f0517ad",
+				"method": "DELETE"
+			},
+			{
+				"id": "a5f8ef18-4fef-41d6-967f-3d336a1da909",
+				"method": "POST"
+			},
+			{
+				"id": "e78bd184-3fea-4a7a-8cf9-b1e60586dc7a",
+				"method": "POST"
+			},
+			{
+				"id": "54d9ce9c-978a-4085-adef-f5564c4fca47",
+				"method": "GET"
+			},
+			{
+				"id": "5f7a42a8-0749-47a1-9dc5-e6931fca3dbb",
+				"method": "GET"
+			},
+			{
+				"id": "f6df141e-8c6d-46b7-8f68-8a90f7e0c5b2",
+				"method": "POST"
+			},
+			{
+				"id": "d9b3d19c-358e-4364-9b3a-b4a14a642dda",
+				"method": "PUT"
+			},
+			{
+				"id": "035f8944-9937-4e46-bb11-0d79c4adbc09",
+				"method": "HEAD"
+			},
+			{
+				"id": "90935fcc-de5c-4bd7-8583-0e50dd07fa1e",
+				"method": "DELETE"
+			},
+			{
+				"id": "783ad094-d9e6-4b66-bc92-bd74fbb73d81",
+				"method": "POST"
+			},
+			{
+				"id": "0f286c27-3569-46b3-a6b7-8dec0313e0ad",
+				"method": "PUT"
+			},
+			{
+				"id": "2875b0fd-64d5-4d4a-85a3-6ee329a08634",
+				"method": "POST"
+			},
+			{
+				"id": "9826767b-fd70-4157-bc3f-ba14bdc232e6",
+				"method": "POST"
+			},
+			{
+				"id": "155f91fe-7ab3-42f1-bfbc-624924d7a0cc",
+				"method": "GET"
+			},
+			{
+				"id": "2eb20533-5282-4588-aafd-44aa49f8a2d8",
+				"method": "GET"
+			},
+			{
+				"id": "3c17863d-48de-4e55-bb72-73cef1925e20",
+				"method": "DELETE"
+			},
+			{
+				"id": "ba6b85eb-a5ef-4c91-b2e5-c57c309750cd",
+				"method": "GET"
+			},
+			{
+				"id": "f25252d6-3aa4-4602-80ed-6bc08d52fd26",
+				"method": "POST"
+			},
+			{
+				"id": "6faebbc6-c3c0-47ea-8153-003d0c966507",
+				"method": "GET"
+			},
+			{
+				"id": "3b05df9c-5edc-49ff-a472-76e866038c6c",
+				"method": "GET"
+			},
+			{
+				"id": "02f7fdff-bc53-4c6b-84ec-b0fe0756c4fc",
+				"method": "POST"
+			},
+			{
+				"id": "dbe8ea87-5f9e-48b1-963a-4784bf9b173d",
+				"method": "GET"
+			},
+			{
+				"id": "fc2fdfd1-cc9d-4d65-a68b-81ba84730f65",
+				"method": "GET"
+			},
+			{
+				"id": "7edc68c8-89b0-4519-b403-a258ace5e6be",
+				"method": "GET"
+			},
+			{
+				"id": "b6892f1e-5d9c-4016-b73a-06abcff72625",
+				"method": "GET"
+			},
+			{
+				"id": "a523a329-d4d6-4c29-9c95-448e48bd47dd",
+				"method": "GET"
+			},
+			{
+				"id": "5a0f5ea2-1108-4403-be2a-f51183ec1319",
+				"method": "GET"
+			},
+			{
+				"id": "44e1cbef-6260-46a1-a245-e6680291f5d9",
+				"method": "GET"
+			},
+			{
+				"id": "009f7ad4-ceda-422f-a34d-876c8356e065",
+				"method": "GET"
+			},
+			{
+				"id": "aa4bea3e-281d-44b4-a22f-d5e036235771",
+				"method": "GET"
+			},
+			{
+				"id": "3a52d5b2-e09b-4569-8188-7bcfca0e2311",
+				"method": "POST"
+			},
+			{
+				"id": "8993f6ae-822f-4b03-a3d2-4d62435899cf",
+				"method": "POST"
+			},
+			{
+				"id": "5b1ebc66-2f58-48c8-9ffc-f2e71f189d35",
+				"method": "GET"
+			},
+			{
+				"id": "cfd24950-7f8a-41d1-b71a-ff73726b9727",
+				"method": "GET"
+			}
+		]
+	}
+}

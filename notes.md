@@ -64,3 +64,20 @@ admin@automotors.com
 ```
 password123
 ```
+
+
+# Manual — the artisan command
+## Safe preview — nothing deleted
+```bash
+php artisan images:reap --dry-run
+```
+## Normal run (respects 60-min grace window)
+```bash
+php artisan images:reap
+```
+## Force: ignore grace window (use with --dry-run first!)
+```bash
+php artisan images:reap --force --dry-run
+php artisan images:reap --force
+```
+

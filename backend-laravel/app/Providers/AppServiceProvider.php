@@ -6,6 +6,10 @@ use Illuminate\Support\ServiceProvider;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\RateLimiter;
+use App\Models\Category;
+use App\Models\Product;
+use App\Models\Project;
+use App\Observers\ImageObserver;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -59,6 +63,12 @@ class AppServiceProvider extends ServiceProvider
         RateLimiter::for('api-anon', function (Request $request) {
             return Limit::perMinute(60)->by($request->ip());
         });
+
+
+        // Image cleanup observers
+        Product::observe(ImageObserver::class);
+        Category::observe(ImageObserver::class);
+        Project::observe(ImageObserver::class);
 
     }
 }
